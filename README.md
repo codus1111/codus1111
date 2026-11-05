@@ -11,9 +11,9 @@
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-error.svg" width="210" height="80" alt="교차검증 평균 절대 오차율 14.6%에서 11.1%로 개선" />
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-eval.svg" width="210" height="80" alt="AI 평가 28문항 중 27문항 통과" />
 
-<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/salary-portfolio.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portfolio.svg" width="164" height="38" alt="회사 연봉 AI 모션 포트폴리오 보기" /></a>
-&nbsp;
 <a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-service-v2.svg" width="164" height="38" alt="회사 연봉 AI 서비스 사용하기" /></a>
+&nbsp;
+<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/salary-portfolio.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portfolio.svg" width="164" height="38" alt="회사 연봉 AI 모션 포트폴리오 보기" /></a>
 &nbsp;
 <a href="https://github.com/codus1111/pension-salary#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-report-v2.svg" width="164" height="38" alt="연봉 AI 분석 과정 보기" /></a>
 

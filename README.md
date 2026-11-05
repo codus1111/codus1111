@@ -2,10 +2,14 @@
 
 <br>
 
-### 01 &nbsp; 회사 연봉 AI
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-data.svg" width="360" height="28" alt="01 · DATA ANALYSIS / AI SERVICE" />
+
+### 회사 연봉 AI
 국민연금 데이터로 연봉을 추정하고, 실제 공시 급여로 검증한 회사 탐색 서비스.
 
-**2,392곳 검증** &nbsp; / &nbsp; **추정 오차 14.6% → 11.1%¹** &nbsp; / &nbsp; **AI 평가 27/28 통과²**
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-companies.svg" width="210" height="80" alt="검증 기업 2,392곳" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-error.svg" width="210" height="80" alt="교차검증 평균 절대 오차율 14.6%에서 11.1%로 개선" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-eval.svg" width="210" height="80" alt="AI 평가 28문항 중 27문항 통과" />
 
 <a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-service-v2.svg" width="164" height="38" alt="회사 연봉 AI 서비스 사용하기" /></a>
 &nbsp;
@@ -15,7 +19,9 @@
 
 ---
 
-### 02 &nbsp; 제로이드 × 무신사 뷰티
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-brand.svg" width="360" height="28" alt="02 · BRAND STRATEGY / PROPOSAL" />
+
+### 제로이드 × 무신사 뷰티
 브랜드 분석과 꿈돌이 협업 아이디어를 담은 무신사 뷰티 입점 제안서.
 
 <a href="https://github.com/codus1111/daejeon_01/blob/main/codus1111/zeroid-세로형/제로이드_무신사_입점제안서_세로형.pdf"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portrait-v2.svg" width="164" height="38" alt="제로이드 제안서 세로형 PDF 보기" /></a>
@@ -26,7 +32,9 @@
 
 ---
 
-### 03 &nbsp; 솔트웨어 인사이트
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content.svg" width="360" height="28" alt="03 · CONTENT / AI AUTOMATION" />
+
+### 솔트웨어 인사이트
 리서치·글쓰기·이미지 제작을 분담한 AI 에이전트 팀과 블로그 콘텐츠 **12편**.
 
 <a href="https://github.com/codus1111/daejeon_01/tree/main/codus1111/saltware-blog/output"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-content-v2.svg" width="164" height="38" alt="솔트웨어 완성 콘텐츠 보기" /></a>

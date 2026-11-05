@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="224" viewBox="0 0 960 224" role="img" aria-label="KIM CHAE YEON — Data, ideas, and things I build">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F0EEFF"/><stop offset="1" stop-color="#FFF8EF"/></linearGradient></defs>
+<rect width="960" height="224" rx="18" fill="url(#bg)"/>
+<circle cx="878" cy="39" r="96" fill="#DDD7FA" opacity=".55"/>
+<circle cx="878" cy="39" r="65" fill="none" stroke="#FBFAFF" stroke-width="1.5"/>
+<circle cx="878" cy="39" r="37" fill="none" stroke="#FBFAFF" stroke-width="1.5"/>
+<circle cx="817" cy="172" r="8" fill="#B6A9E5"/><circle cx="841" cy="172" r="8" fill="#D2C6EF"/><circle cx="865" cy="172" r="8" fill="#E7DFF7"/>
+<text x="44" y="47" fill="#7F749C" font-family="Arial,sans-serif" font-size="11" letter-spacing="3.5">SELECTED WORK · PORTFOLIO</text>
+<text x="42" y="104" fill="#302A43" font-family="Arial,sans-serif" font-size="43" font-weight="700" letter-spacing="-1">KIM CHAE YEON</text>
+<text x="44" y="143" fill="#655D76" font-family="Arial,'Noto Sans KR',sans-serif" font-size="16">데이터를 해석하고, 아이디어를 결과물로 만듭니다.</text>
+<text x="44" y="188" fill="#7D708F" font-family="Arial,sans-serif" font-size="10" letter-spacing="2">DATA ANALYSIS   /   SERVICE PLANNING   /   AI AGENT</text>
+</svg>

@@ -102,7 +102,7 @@ render();
 
 // ---- 구글 로그인 동기화 ----
 let syncUserNow=null,syncStatus='';
-function syncButton(){const b=document.getElementById('sync-btn');if(!b)return;if(!syncEnabled()){b.hidden=true;return}b.hidden=false;b.textContent=syncUserNow?(syncStatus==='error'?'동기화 오류 · 다시 시도':'동기화 켜짐 · '+(syncUserNow.displayName||'내 계정')):'구글 로그인으로 기록 동기화';b.title=syncUserNow?'누르면 로그아웃해요':'폰과 PC의 학습 기록을 같은 계정으로 맞춰요'}
+function syncButton(){const b=document.getElementById('sync-btn');if(!b)return;if(!syncEnabled()){b.hidden=true;return}b.hidden=false;b.textContent=syncUserNow?(syncStatus==='error'?'⚠ 동기화 오류':'✓ 동기화 켜짐'):'구글 로그인';b.title=syncUserNow?(syncUserNow.email||'')+' 로 동기화 중 · 누르면 로그아웃해요':'로그인하면 폰과 PC의 학습 기록이 같은 계정으로 맞춰져요'}
 document.addEventListener('click',async e=>{if(e.target.id!=='sync-btn')return;try{if(syncUserNow){if(confirm('로그아웃할까요? 이 기기의 기록은 그대로 남아요.')){await signOutUser();toast('로그아웃했어요.')}}else await signIn()}catch(err){console.warn(err);toast('로그인하지 못했어요. 잠시 뒤 다시 시도해 주세요.')}});
 initSync({
  getRaw:()=>{try{return storage.getItem(STATE_KEY)}catch{return null}},

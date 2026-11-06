@@ -1,0 +1,142 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0D0D0D"><title>금융권 클라우드 10년 · 한 달 만의 첫 이전부터 금융업 등록까지 | 솔트웨어 인사이트</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"><style>
+:root{--bg:#0D0D0D;--panel:#141414;--panel2:#1B1B1B;--line:#262626;--line2:#333;--text:#F2F2F2;--text2:#C4C4C4;--muted:#8C8C8C;
+--o:#F49F20;--o2:#E8811A;--o-soft:rgba(244,159,32,.12);--mono:'IBM Plex Mono','Pretendard Variable',Pretendard,ui-monospace,monospace;--w:1240px;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Pretendard Variable',Pretendard,-apple-system,'Malgun Gothic',sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--o);color:#000}:focus-visible{outline:2px solid var(--o);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 40px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.o{color:var(--o)}
+.btn{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 22px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid var(--line2);background:transparent;cursor:pointer;transition:.2s}
+.btn:hover{border-color:var(--text)}.btn.fill{background:var(--o);border-color:var(--o);color:#0D0D0D}.btn.fill:hover{background:#FFB548;border-color:#FFB548}
+.arr{transition:transform .25s var(--ease);display:inline-block}a:hover .arr,button:hover .arr{transform:translateX(4px)}
+/* 머리글 */
+.top{position:sticky;top:0;z-index:50;background:rgba(13,13,13,.92);border-bottom:1px solid var(--line)}
+.nav{max-width:var(--w);margin:0 auto;padding:0 40px;height:72px;display:flex;align-items:center;gap:48px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:25px;letter-spacing:-.045em;color:var(--text)}
+.logo i{width:21px;height:21px;flex:none;background:radial-gradient(circle,var(--o) 4.4px,transparent 4.8px) 0 0/10.5px 10.5px}
+.logo small{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;color:var(--muted);margin-left:6px}
+.menu{display:flex;gap:30px;align-items:center}
+.menu a{font-size:15px;color:var(--text2);padding:6px 0;position:relative}.menu a:hover{color:var(--text)}
+.menu a.on{color:var(--text)}.menu a.on:before{content:"";position:absolute;left:-12px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--o)}
+.tools{margin-left:auto;display:flex;gap:10px;align-items:center}
+.ib{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.ib:hover{border-color:var(--text)}.burger{display:none}
+.drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;z-index:49;background:var(--bg);padding:20px;overflow-y:auto}
+.drawer.open{display:block}.drawer a{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--line);font-size:22px;font-weight:700}
+.drawer a span{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}.drawer .btn{margin-top:28px;width:100%;justify-content:center;font-size:16px;border-bottom:1px solid var(--o)}
+/* 바닥글 */
+.foot{border-top:1px solid var(--line);margin-top:140px}
+.foot .wrap{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-top:64px;padding-bottom:48px;font-size:14.5px;color:var(--muted)}
+.foot p{margin:18px 0 0;line-height:1.7;max-width:320px}.foot b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--text2);margin-bottom:16px;font-weight:500}
+.foot a:not(.logo){display:block;margin:10px 0}.foot a:hover{color:var(--o)}
+.copy{border-top:1px solid var(--line)}.copy .wrap{padding-top:20px;padding-bottom:36px;font-family:var(--mono);font-size:11.5px;color:#5E5E5E;letter-spacing:.04em}
+.toast{position:fixed;left:50%;bottom:30px;max-width:calc(100vw - 32px);white-space:nowrap;transform:translate(-50%,14px);background:var(--o);color:#000;font-weight:700;padding:12px 22px;border-radius:999px;font-size:14.5px;opacity:0;transition:.25s;pointer-events:none;z-index:70}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* 글자 표지 */
+.kw{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;align-items:flex-end;isolation:isolate}
+.kw:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at var(--gx,78%) var(--gy,22%),rgba(244,159,32,.38),rgba(244,159,32,0) 46%),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px)}
+.kw b{font-weight:800;letter-spacing:-.06em;line-height:.82;color:var(--text);padding:0 0 .08em .06em;white-space:nowrap}
+.kw b:after{content:".";color:var(--o)}
+.kw .tag{position:absolute;top:18px;left:20px}.kw .num{position:absolute;top:18px;right:20px}
+.todo{color:#FF6B5B;font-weight:600}
+@media (max-width:1080px){.nav{gap:32px}.menu{gap:22px}.logo small{display:none}}
+@media (max-width:400px){.wrap,.nav{padding:0 16px!important}.logo{font-size:21px}.logo i{width:18px;height:18px;background-size:9px 9px}.ib{width:40px;height:40px}}
+@media (max-width:780px){.wrap,.nav{padding:0 20px}.nav{height:64px}.menu,.tools .btn{display:none}.burger{display:flex}.foot .wrap{grid-template-columns:1fr 1fr}}
+
+.bar-p{position:fixed;top:0;left:0;height:2px;background:var(--o);width:0;z-index:60}
+.ph{padding:72px 0 48px;max-width:960px}
+.crumb{display:flex;gap:10px;margin-bottom:36px}.crumb a:hover{color:var(--text)}
+.ph h1{font-size:clamp(27px,5vw,64px);line-height:1.12;letter-spacing:-.05em;margin:18px 0 24px;font-weight:800}
+.ph .dek{font-size:19px;line-height:1.7;color:var(--text2);margin:0 0 36px;max-width:760px}
+.by{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line)}
+.by .sh{margin-left:auto;display:flex;gap:8px}.by .sh button{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--text2)}
+.by .sh button:hover{border-color:var(--text);color:var(--text)}
+.cover{aspect-ratio:21/8}
+.lay{display:grid;grid-template-columns:220px minmax(0,700px);gap:96px;padding-top:80px;justify-content:start}
+.toc{position:sticky;top:104px;align-self:start}.toc .mono{margin-bottom:16px;display:block}
+.toc a{display:grid;grid-template-columns:28px 1fr;gap:6px;padding:9px 0;font-size:14px;line-height:1.5;color:var(--muted);border-top:1px solid var(--line)}
+.toc a span{font-family:var(--mono);font-size:11px;padding-top:3px}.toc a:hover{color:var(--text)}.toc a.on{color:var(--text)}.toc a.on span{color:var(--o)}
+.sum{border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin:0 0 56px;background:var(--panel)}
+.sum ol{list-style:none;margin:14px 0 0;padding:0}.sum li{display:grid;grid-template-columns:34px 1fr;padding:10px 0;font-size:16px;line-height:1.65;color:var(--text);border-top:1px solid var(--line)}
+.sum li span{font-family:var(--mono);font-size:12px;color:var(--o);padding-top:4px}
+article{font-size:18px;line-height:1.9;color:var(--text2);counter-reset:h}
+article p{margin:0 0 26px}
+article .lead{font-size:22px;line-height:1.6;color:var(--text);font-weight:600;letter-spacing:-.025em;margin:40px 0;padding-left:22px;border-left:2px solid var(--o)}
+article h2{counter-increment:h;font-size:29px;line-height:1.35;color:var(--text);letter-spacing:-.04em;margin:84px 0 22px;scroll-margin-top:100px}
+article h2:before{content:counter(h,decimal-leading-zero);display:block;font-family:var(--mono);font-size:12px;color:var(--o);letter-spacing:.08em;margin-bottom:12px}
+article strong{color:var(--text);font-weight:700;box-shadow:inset 0 -.38em 0 rgba(244,159,32,.28)}
+article figure{margin:48px 0}article figure img{border-radius:14px;border:1px solid var(--line);width:100%}
+article figcaption{margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.03em}
+article a{color:var(--o);text-decoration:underline;text-underline-offset:3px}article ul{padding-left:22px}
+.refs{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}.refs p{margin:0 0 8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+.refs ul{margin:0;padding-left:18px}.refs li{margin:6px 0}.refs a{color:var(--muted);word-break:break-all}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:40px}.tags a{height:34px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--line2);font-size:13.5px;color:var(--text2)}.tags a:hover{border-color:var(--o);color:var(--o)}
+.pn{display:grid;grid-template-columns:1fr 1fr;margin-top:56px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pn a,.pn span{display:block;padding:28px 0;font-size:17px;font-weight:600;line-height:1.5}.pn small{display:block;margin-bottom:8px}
+.pn .nx{text-align:right;border-left:1px solid var(--line);padding-left:24px}.pn .pv{padding-right:24px}.pn a:hover{color:var(--o)}.pn span{color:var(--muted);font-weight:400}
+.rel{margin-top:120px}.rel h2{font-size:34px;letter-spacing:-.045em;margin:12px 0 28px}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.rg .kw{aspect-ratio:16/10}.rg h3{font-size:18px;line-height:1.45;letter-spacing:-.025em;margin:16px 0 0}.rg a:hover h3{color:var(--o)}
+.cta{margin-top:120px;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;padding:48px 52px;border-radius:24px;border:1px solid var(--line);background:radial-gradient(circle at 0 100%,rgba(244,159,32,.18),transparent 50%),var(--panel)}
+.cta h2{font-size:30px;letter-spacing:-.04em;line-height:1.3;margin:12px 0 0}.cta .b{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:1080px){.lay{grid-template-columns:1fr;gap:0;padding-top:48px}.toc{display:none}}
+@media (max-width:640px){.ph{padding:44px 0 32px}.ph .dek{font-size:17px}.cover{aspect-ratio:16/10}.by .sh{margin-left:0}article{font-size:16.5px}article h2{font-size:23px;margin-top:64px}
+.pn{grid-template-columns:1fr}.pn .nx{text-align:left;border-left:0;border-top:1px solid var(--line);padding-left:0}.rg{grid-template-columns:1fr}.cta{padding:32px 24px}.sum{padding:20px 18px}.cta h2{font-size:24px}}
+</style></head><body>
+<header class="top"><div class="nav">
+<a class="logo" href="../../index.html" aria-label="솔트웨어 인사이트 홈"><i></i>saltware<small>INSIGHTS</small></a>
+<nav class="menu" aria-label="주요 메뉴"><a href="../../index.html" data-cat="all" class="">인사이트</a><a href="../../index.html?cat=spoon#archive" data-cat="spoon" class="">데이터 한 스푼</a><a href="../../index.html?cat=note#archive" data-cat="note" class="">데이터 노트</a><a href="../../index.html?cat=case#archive" data-cat="case" class="on">고객 사례</a></nav>
+<div class="tools"><a class="ib search-btn" href="../../index.html?focus=search#archive" aria-label="검색"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+<a class="btn" href="../../contact.html">문의하기 <span class="arr o">→</span></a>
+<button class="ib burger" aria-label="메뉴" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h16M4 16h16"/></svg></button></div></div></header>
+<nav class="drawer" aria-label="모바일 메뉴"><a href="../../index.html">인사이트<span>ALL</span></a><a href="../../index.html?cat=spoon#archive">데이터 한 스푼<span>DATA SPOON</span></a><a href="../../index.html?cat=note#archive">데이터 노트<span>DATA NOTE</span></a><a href="../../index.html?cat=case#archive">고객 사례<span>CUSTOMER STORY</span></a><a class="btn fill" href="../../contact.html">문의하기</a></nav>
+<div class="bar-p"></div><main class="wrap">
+<section class="ph"><div class="crumb mono"><a href="../../index.html">Insights</a><span>/</span><a href="../../index.html?cat=case#archive">CUSTOMER STORY</a></div>
+<span class="mono o">CUSTOMER STORY · 고객 사례</span><h1>금융권 클라우드 10년 · 한 달 만의 첫 이전부터 금융업 등록까지</h1><p class="dek">2015년 국내 금융권 첫 AWS 이전 사례로 보도된 일부터 2025년 전자금융업 등록 지원까지, 솔트웨어가 금융권과 걸어온 길을 정리했습니다.</p>
+<div class="by mono"><span>금융사업팀 [이름]</span><span>2026.11.03</span><span>3 MIN READ</span>
+<div class="sh"><button id="cp" type="button">COPY LINK</button><button id="tt" type="button">TOP ↑</button></div></div></section>
+<div class="cover-w"><div class="kw cover" style="--gx:64%;--gy:18%"><b style="font-size:clamp(80px,15vw,230px)">FSI</b><span class="mono tag">CUSTOMER STORY</span></div></div>
+<div class="lay"><nav class="toc" aria-label="목차"><span class="mono">CONTENTS</span><a href="#옮기는-일에서-운영하는-일로"><span>01</span>옮기는 일에서 운영하는 일로</a><a href="#금융업-등록-서류가-곧-설계입니다"><span>02</span>금융업 등록, 서류가 곧 설계입니다</a><a href="#규칙-중심에서-원칙-중심으로"><span>03</span>규칙 중심에서 원칙 중심으로</a><a href="#비슷한-회사라면"><span>04</span>비슷한 회사라면</a></nav>
+<div><div class="sum"><span class="mono o">3줄 요약</span><ol><li><span>01</span>2015년 미래에셋자산운용 AWS 이전은 국내 금융권 첫 사례로 보도됐습니다</li><li><span>02</span>옮기는 일에서 운영, 금융업 등록 증빙까지 맡는 범위가 넓어졌습니다</li><li><span>03</span>규제가 원칙 중심으로 바뀌어 근거를 설계 단계부터 남겨야 합니다</li></ol></div>
+<article><p>금융회사가 클라우드를 쓴다는 말이 낯설던 때가 있었습니다. 2015년 솔트웨어는 미래에셋자산운용의 웹서버 일부를 AWS로 옮겼습니다. 분석과 설계까지 포함해 한 달 안에 끝낸 일이었고, 전자신문은 이를 국내 금융권 첫 사례로 보도했습니다.</p>
+<p>그로부터 10년. 그 사이 금융 규제도 바뀌고, 솔트웨어가 금융권에서 맡는 일의 범위도 넓어졌습니다. 이번 글은 그 흐름을 시간 순서로 따라갑니다.</p>
+<figure><img src="images/img-01.png" alt="솔트웨어 금융 클라우드 10년" loading="lazy"></figure>
+<h2 id="옮기는-일에서-운영하는-일로">옮기는 일에서 운영하는 일로</h2>
+<p>첫 이전 이후 금융 쪽 일은 점점 커졌습니다. 2018년에는 금융 산업 클라우드 역량을 AWS가 검증해 주는 AWS Financial Services Competency를 받았습니다.</p>
+<p>2019년에는 생명보험협회와 손해보험협회의 광고 심의 시스템을 AWS로 옮겼고, 옮긴 뒤의 운영도 이어서 맡았습니다. 2022년에는 쿼터백자산운용이 개인연금저축 일임서비스를 AWS에 올리는 일을 도왔습니다. 옮기는 일에서 시작해, 그 위에서 서비스가 굴러가는 동안 계속 함께하는 쪽으로 일이 넓어진 셈입니다.</p>
+<h2 id="금융업-등록-서류가-곧-설계입니다">금융업 등록, 서류가 곧 설계입니다</h2>
+<p>새로 금융업을 시작하는 회사에는 등록이라는 큰 관문이 있습니다. 렌딧이 P2P 금융업 등록을 준비할 때 솔트웨어는 보안 아키텍처와 컴플라이언스 대응을 맡았습니다. 아워스포츠네이션이 전자금융업 등록을 준비할 때는 금융 클라우드 이용 보고와 증빙 문서를 함께 준비했습니다.</p>
+<p>이 일을 해 보면 알게 되는 게 있습니다. 증빙 서류는 나중에 쓰는 보고서가 아니라 처음 설계할 때 정해지는 것이라는 점입니다. 어떤 기록을 남길지 설계 단계에서 정하지 않으면, 막상 필요할 때 찾을 수 없거나 모으는 데 오래 걸립니다.</p>
+<h2 id="규칙-중심에서-원칙-중심으로">규칙 중심에서 원칙 중심으로</h2>
+<p>금융 규제도 크게 달라졌습니다. 금융위원회는 2024년 망분리 개선 로드맵에서 '자율보안·결과책임'을 원칙으로 세웠습니다. 2025년 2월 전자금융감독규정 개정으로 지켜야 할 세부 항목은 293개에서 166개로 줄었습니다.</p>
+<p>항목이 줄었다고 할 일이 줄어든 건 아닙니다. 예전에는 정해진 방식을 따르면 됐다면, 이제는 각 회사가 방식을 정하고 왜 그게 안전한지 설명해야 합니다. 쓸 수 있는 클라우드와 AI가 늘어난 만큼 그 근거를 스스로 갖춰야 하는 거죠.</p>
+<figure><img src="images/img-02.png" alt="규제가 바뀐 방향" loading="lazy"></figure>
+<h2 id="비슷한-회사라면">비슷한 회사라면</h2>
+<p>금융권에서 클라우드를 검토한다면 "옮길 수 있나"보다 "옮긴 뒤 무엇을 증명해야 하나"를 먼저 정리해 보세요. 감사와 보고에 필요한 기록을 설계 단계에 넣어 두면 이전도 운영도 훨씬 수월해집니다.</p>
+<div class="refs"><p>참고한 자료</p><ul><li>솔트웨어 홈페이지, 금융 산업: <a href="https://www.saltware.co.kr/industries/finance.html" target="_blank" rel="noopener">https://www.saltware.co.kr/industries/finance.html</a></li><li>금융위원회 보도자료, 전자금융감독규정 개정 (2025.02.05): <a href="https://www.fsc.go.kr" target="_blank" rel="noopener">https://www.fsc.go.kr</a></li></ul></div></article><div class="tags"><a href="../../index.html?tag=금융클라우드사례#archive">#금융클라우드사례</a><a href="../../index.html?tag=금융클라우드이전#archive">#금융클라우드이전</a><a href="../../index.html?tag=전자금융업등록#archive">#전자금융업등록</a><a href="../../index.html?tag=AWS#archive">#AWS</a><a href="../../index.html?tag=솔트웨어#archive">#솔트웨어</a></div><div class="pn"><a class="pv" href="../../output/case-backpacker/preview.html"><small class="mono">PREVIOUS</small>백패커(아이디어스) · 쇼핑몰이 커질 때마다 함께 바꾼 것들</a><a class="nx" href="../../output/case-yeonsung/preview.html"><small class="mono">NEXT</small>연성대학교 · 한 달 2,500건 입시 문의에 챗봇을 세운 이유</a></div></div></div>
+<section class="cta"><div><span class="mono o">START WITH YOUR GOAL</span><h2>우리 회사에도 맞을지<br>담당자와 이야기해 보세요.</h2></div>
+<div class="b"><a class="btn fill" href="../../contact.html?topic=case">문의하기 <span class="arr">→</span></a><a class="btn" href="../../index.html#newsletter">뉴스레터 구독</a></div></section>
+<section class="rel"><span class="mono">KEEP READING</span><h2>함께 읽으면 좋은 글<span class="o">.</span></h2><div class="rg"><a href="../../output/case-yeonsung/preview.html"><div class="kw" style="--gx:70%;--gy:44%"><b style="font-size:64px">RAG</b><span class="mono tag">CUSTOMER STORY</span></div><h3>연성대학교 · 한 달 2,500건 입시 문의에 챗봇을 세운 이유</h3></a><a href="../../output/case-backpacker/preview.html"><div class="kw" style="--gx:73%;--gy:24%"><b style="font-size:64px">EKS</b><span class="mono tag">CUSTOMER STORY</span></div><h3>백패커(아이디어스) · 쇼핑몰이 커질 때마다 함께 바꾼 것들</h3></a><a href="../../output/case-refine/preview.html"><div class="kw" style="--gx:60%;--gy:47%"><b style="font-size:64px">Amplify</b><span class="mono tag">CUSTOMER STORY</span></div><h3>리파인 · 모바일 개발자 없이 모바일 서비스 만들기</h3></a></div></section></main>
+<footer class="foot"><div class="wrap">
+<div><a class="logo" href="../../index.html"><i></i>saltware</a><p>Connect Any Data. Understand with AI. Act with Agents.<br>솔트웨어가 현장에서 겪은 데이터·AI 이야기를 씁니다.</p></div>
+<div><b>SERIES</b><a href="../../index.html?cat=spoon#archive">데이터 한 스푼</a><a href="../../index.html?cat=note#archive">데이터 노트</a><a href="../../index.html?cat=case#archive">고객 사례</a></div>
+<div><b>SALTWARE</b><a href="https://www.saltware.co.kr" target="_blank" rel="noopener">회사 홈페이지</a><a href="https://www.youtube.com/@saltware_youtube" target="_blank" rel="noopener">유튜브</a><a href="https://fitcloud.github.io/" target="_blank" rel="noopener">기술 블로그</a></div>
+<div><b>CONTACT</b><a href="../../contact.html">문의하기</a><a href="../../index.html#newsletter">뉴스레터</a></div>
+</div><div class="copy"><div class="wrap">블로그 기획 과제용 시안 · 문의·구독 폼은 실제로 전송되지 않습니다</div></div></footer><div class="toast" role="status"></div>
+<script>
+function toast(m){var t=document.querySelector('.toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2200)}
+(function(){var b=document.querySelector('.burger'),d=document.querySelector('.drawer'),ic=b.innerHTML;
+function set(o){d.classList.toggle('open',o);b.setAttribute('aria-expanded',o);b.innerHTML=o?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18"/></svg>':ic;document.body.style.overflow=o?'hidden':''}
+b.addEventListener('click',function(){set(!d.classList.contains('open'))});d.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
+addEventListener('resize',function(){if(innerWidth>780)set(false)});addEventListener('keydown',function(e){if(e.key==='Escape')set(false)})})();
+
+var br=document.querySelector('.bar-p'),ar=document.querySelector('article');function pr(){var r=ar.getBoundingClientRect(),t=ar.offsetHeight-innerHeight;br.style.width=Math.min(100,Math.max(0,-r.top/(t>0?t:1)*100))+'%'}addEventListener('scroll',pr,{passive:true});pr();
+var L=document.querySelectorAll('.toc a');if('IntersectionObserver' in window&&L.length){var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting)L.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+x.target.id)})})},{rootMargin:'-100px 0px -65% 0px'});document.querySelectorAll('article h2[id]').forEach(function(h){io.observe(h)})}
+document.querySelectorAll('article figure').forEach(function(f){var i=f.querySelector('img');if(i&&i.alt){var c=document.createElement('figcaption');c.textContent=i.alt;f.appendChild(c)}});
+document.querySelector('#cp').addEventListener('click',function(){var u=location.href;if(navigator.clipboard&&isSecureContext){navigator.clipboard.writeText(u).then(function(){toast('링크를 복사했어요')},function(){fb(u)})}else fb(u)});
+function fb(u){var t=document.createElement('textarea');t.value=u;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('링크를 복사했어요')}catch(x){toast('복사하지 못했어요')}t.remove()}
+document.querySelector('#tt').addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
+</script></body></html>

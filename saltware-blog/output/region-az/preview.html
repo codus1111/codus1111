@@ -1,0 +1,144 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0D0D0D"><title>리전? 가용 영역? 아파트 단지로 이해하는 클라우드 지도 🏢 | 솔트웨어 인사이트</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"><style>
+:root{--bg:#0D0D0D;--panel:#141414;--panel2:#1B1B1B;--line:#262626;--line2:#333;--text:#F2F2F2;--text2:#C4C4C4;--muted:#8C8C8C;
+--o:#F49F20;--o2:#E8811A;--o-soft:rgba(244,159,32,.12);--mono:'IBM Plex Mono','Pretendard Variable',Pretendard,ui-monospace,monospace;--w:1240px;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Pretendard Variable',Pretendard,-apple-system,'Malgun Gothic',sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--o);color:#000}:focus-visible{outline:2px solid var(--o);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 40px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.o{color:var(--o)}
+.btn{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 22px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid var(--line2);background:transparent;cursor:pointer;transition:.2s}
+.btn:hover{border-color:var(--text)}.btn.fill{background:var(--o);border-color:var(--o);color:#0D0D0D}.btn.fill:hover{background:#FFB548;border-color:#FFB548}
+.arr{transition:transform .25s var(--ease);display:inline-block}a:hover .arr,button:hover .arr{transform:translateX(4px)}
+/* 머리글 */
+.top{position:sticky;top:0;z-index:50;background:rgba(13,13,13,.92);border-bottom:1px solid var(--line)}
+.nav{max-width:var(--w);margin:0 auto;padding:0 40px;height:72px;display:flex;align-items:center;gap:48px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:25px;letter-spacing:-.045em;color:var(--text)}
+.logo i{width:21px;height:21px;flex:none;background:radial-gradient(circle,var(--o) 4.4px,transparent 4.8px) 0 0/10.5px 10.5px}
+.logo small{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;color:var(--muted);margin-left:6px}
+.menu{display:flex;gap:30px;align-items:center}
+.menu a{font-size:15px;color:var(--text2);padding:6px 0;position:relative}.menu a:hover{color:var(--text)}
+.menu a.on{color:var(--text)}.menu a.on:before{content:"";position:absolute;left:-12px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--o)}
+.tools{margin-left:auto;display:flex;gap:10px;align-items:center}
+.ib{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+.ib:hover{border-color:var(--text)}.burger{display:none}
+.drawer{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;z-index:49;background:var(--bg);padding:20px;overflow-y:auto}
+.drawer.open{display:block}.drawer a{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--line);font-size:22px;font-weight:700}
+.drawer a span{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}.drawer .btn{margin-top:28px;width:100%;justify-content:center;font-size:16px;border-bottom:1px solid var(--o)}
+/* 바닥글 */
+.foot{border-top:1px solid var(--line);margin-top:140px}
+.foot .wrap{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-top:64px;padding-bottom:48px;font-size:14.5px;color:var(--muted)}
+.foot p{margin:18px 0 0;line-height:1.7;max-width:320px}.foot b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--text2);margin-bottom:16px;font-weight:500}
+.foot a:not(.logo){display:block;margin:10px 0}.foot a:hover{color:var(--o)}
+.copy{border-top:1px solid var(--line)}.copy .wrap{padding-top:20px;padding-bottom:36px;font-family:var(--mono);font-size:11.5px;color:#5E5E5E;letter-spacing:.04em}
+.toast{position:fixed;left:50%;bottom:30px;max-width:calc(100vw - 32px);white-space:nowrap;transform:translate(-50%,14px);background:var(--o);color:#000;font-weight:700;padding:12px 22px;border-radius:999px;font-size:14.5px;opacity:0;transition:.25s;pointer-events:none;z-index:70}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* 글자 표지 */
+.kw{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;align-items:flex-end;isolation:isolate}
+.kw:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at var(--gx,78%) var(--gy,22%),rgba(244,159,32,.38),rgba(244,159,32,0) 46%),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px)}
+.kw b{font-weight:800;letter-spacing:-.06em;line-height:.82;color:var(--text);padding:0 0 .08em .06em;white-space:nowrap}
+.kw b:after{content:".";color:var(--o)}
+.kw .tag{position:absolute;top:18px;left:20px}.kw .num{position:absolute;top:18px;right:20px}
+.todo{color:#FF6B5B;font-weight:600}
+@media (max-width:1080px){.nav{gap:32px}.menu{gap:22px}.logo small{display:none}}
+@media (max-width:400px){.wrap,.nav{padding:0 16px!important}.logo{font-size:21px}.logo i{width:18px;height:18px;background-size:9px 9px}.ib{width:40px;height:40px}}
+@media (max-width:780px){.wrap,.nav{padding:0 20px}.nav{height:64px}.menu,.tools .btn{display:none}.burger{display:flex}.foot .wrap{grid-template-columns:1fr 1fr}}
+
+.bar-p{position:fixed;top:0;left:0;height:2px;background:var(--o);width:0;z-index:60}
+.ph{padding:72px 0 48px;max-width:960px}
+.crumb{display:flex;gap:10px;margin-bottom:36px}.crumb a:hover{color:var(--text)}
+.ph h1{font-size:clamp(27px,5vw,64px);line-height:1.12;letter-spacing:-.05em;margin:18px 0 24px;font-weight:800}
+.ph .dek{font-size:19px;line-height:1.7;color:var(--text2);margin:0 0 36px;max-width:760px}
+.by{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line)}
+.by .sh{margin-left:auto;display:flex;gap:8px}.by .sh button{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--text2)}
+.by .sh button:hover{border-color:var(--text);color:var(--text)}
+.cover{aspect-ratio:21/8}
+.lay{display:grid;grid-template-columns:220px minmax(0,700px);gap:96px;padding-top:80px;justify-content:start}
+.toc{position:sticky;top:104px;align-self:start}.toc .mono{margin-bottom:16px;display:block}
+.toc a{display:grid;grid-template-columns:28px 1fr;gap:6px;padding:9px 0;font-size:14px;line-height:1.5;color:var(--muted);border-top:1px solid var(--line)}
+.toc a span{font-family:var(--mono);font-size:11px;padding-top:3px}.toc a:hover{color:var(--text)}.toc a.on{color:var(--text)}.toc a.on span{color:var(--o)}
+.sum{border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin:0 0 56px;background:var(--panel)}
+.sum ol{list-style:none;margin:14px 0 0;padding:0}.sum li{display:grid;grid-template-columns:34px 1fr;padding:10px 0;font-size:16px;line-height:1.65;color:var(--text);border-top:1px solid var(--line)}
+.sum li span{font-family:var(--mono);font-size:12px;color:var(--o);padding-top:4px}
+article{font-size:18px;line-height:1.9;color:var(--text2);counter-reset:h}
+article p{margin:0 0 26px}
+article .lead{font-size:22px;line-height:1.6;color:var(--text);font-weight:600;letter-spacing:-.025em;margin:40px 0;padding-left:22px;border-left:2px solid var(--o)}
+article h2{counter-increment:h;font-size:29px;line-height:1.35;color:var(--text);letter-spacing:-.04em;margin:84px 0 22px;scroll-margin-top:100px}
+article h2:before{content:counter(h,decimal-leading-zero);display:block;font-family:var(--mono);font-size:12px;color:var(--o);letter-spacing:.08em;margin-bottom:12px}
+article strong{color:var(--text);font-weight:700;box-shadow:inset 0 -.38em 0 rgba(244,159,32,.28)}
+article figure{margin:48px 0}article figure img{border-radius:14px;border:1px solid var(--line);width:100%}
+article figcaption{margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.03em}
+article a{color:var(--o);text-decoration:underline;text-underline-offset:3px}article ul{padding-left:22px}
+.refs{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}.refs p{margin:0 0 8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+.refs ul{margin:0;padding-left:18px}.refs li{margin:6px 0}.refs a{color:var(--muted);word-break:break-all}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:40px}.tags a{height:34px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;border:1px solid var(--line2);font-size:13.5px;color:var(--text2)}.tags a:hover{border-color:var(--o);color:var(--o)}
+.pn{display:grid;grid-template-columns:1fr 1fr;margin-top:56px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pn a,.pn span{display:block;padding:28px 0;font-size:17px;font-weight:600;line-height:1.5}.pn small{display:block;margin-bottom:8px}
+.pn .nx{text-align:right;border-left:1px solid var(--line);padding-left:24px}.pn .pv{padding-right:24px}.pn a:hover{color:var(--o)}.pn span{color:var(--muted);font-weight:400}
+.rel{margin-top:120px}.rel h2{font-size:34px;letter-spacing:-.045em;margin:12px 0 28px}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.rg .kw{aspect-ratio:16/10}.rg h3{font-size:18px;line-height:1.45;letter-spacing:-.025em;margin:16px 0 0}.rg a:hover h3{color:var(--o)}
+.cta{margin-top:120px;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;padding:48px 52px;border-radius:24px;border:1px solid var(--line);background:radial-gradient(circle at 0 100%,rgba(244,159,32,.18),transparent 50%),var(--panel)}
+.cta h2{font-size:30px;letter-spacing:-.04em;line-height:1.3;margin:12px 0 0}.cta .b{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:1080px){.lay{grid-template-columns:1fr;gap:0;padding-top:48px}.toc{display:none}}
+@media (max-width:640px){.ph{padding:44px 0 32px}.ph .dek{font-size:17px}.cover{aspect-ratio:16/10}.by .sh{margin-left:0}article{font-size:16.5px}article h2{font-size:23px;margin-top:64px}
+.pn{grid-template-columns:1fr}.pn .nx{text-align:left;border-left:0;border-top:1px solid var(--line);padding-left:0}.rg{grid-template-columns:1fr}.cta{padding:32px 24px}.sum{padding:20px 18px}.cta h2{font-size:24px}}
+</style></head><body>
+<header class="top"><div class="nav">
+<a class="logo" href="../../index.html" aria-label="솔트웨어 인사이트 홈"><i></i>saltware<small>INSIGHTS</small></a>
+<nav class="menu" aria-label="주요 메뉴"><a href="../../index.html" data-cat="all" class="">인사이트</a><a href="../../index.html?cat=spoon#archive" data-cat="spoon" class="on">데이터 한 스푼</a><a href="../../index.html?cat=note#archive" data-cat="note" class="">데이터 노트</a><a href="../../index.html?cat=case#archive" data-cat="case" class="">고객 사례</a></nav>
+<div class="tools"><a class="ib search-btn" href="../../index.html?focus=search#archive" aria-label="검색"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+<a class="btn" href="../../contact.html">문의하기 <span class="arr o">→</span></a>
+<button class="ib burger" aria-label="메뉴" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h16M4 16h16"/></svg></button></div></div></header>
+<nav class="drawer" aria-label="모바일 메뉴"><a href="../../index.html">인사이트<span>ALL</span></a><a href="../../index.html?cat=spoon#archive">데이터 한 스푼<span>DATA SPOON</span></a><a href="../../index.html?cat=note#archive">데이터 노트<span>DATA NOTE</span></a><a href="../../index.html?cat=case#archive">고객 사례<span>CUSTOMER STORY</span></a><a class="btn fill" href="../../contact.html">문의하기</a></nav>
+<div class="bar-p"></div><main class="wrap">
+<section class="ph"><div class="crumb mono"><a href="../../index.html">Insights</a><span>/</span><a href="../../index.html?cat=spoon#archive">DATA SPOON</a></div>
+<span class="mono o">DATA SPOON · 데이터 한 스푼</span><h1>리전? 가용 영역? 아파트 단지로 이해하는 클라우드 지도 🏢</h1><p class="dek">클라우드를 처음 열면 가장 먼저 만나는 단어, 리전과 가용 영역. 아파트 단지와 동에 빗대어 쉽게 풀었어요.</p>
+<div class="by mono"><span>클라우드사업팀 [이름]</span><span>2026.11.03</span><span>3 MIN READ</span>
+<div class="sh"><button id="cp" type="button">COPY LINK</button><button id="tt" type="button">TOP ↑</button></div></div></section>
+<div class="cover-w"><div class="kw cover" style="--gx:88%;--gy:21%"><b style="font-size:clamp(80px,15vw,230px)">Region</b><span class="mono tag">DATA SPOON</span></div></div>
+<div class="lay"><nav class="toc" aria-label="목차"><span class="mono">CONTENTS</span><a href="#리전은-아파트-단지예요"><span>01</span>리전은 아파트 단지예요</a><a href="#가용-영역은-단지-안의-동이에요"><span>02</span>가용 영역은 단지 안의 동이에요</a><a href="#그래서-두-동에-나눠-살아요"><span>03</span>그래서 두 동에 나눠 살아요</a><a href="#단지-밖에도-정류장이-있어요"><span>04</span>단지 밖에도 정류장이 있어요</a><a href="#오늘의-한-스푼"><span>05</span>오늘의 한 스푼</a></nav>
+<div><div class="sum"><span class="mono o">3줄 요약</span><ol><li><span>01</span>리전은 아파트 단지, 가용 영역은 단지 안의 동이에요</li><li><span>02</span>서울 리전에는 전원과 네트워크가 따로인 가용 영역이 4개 있어요</li><li><span>03</span>중요한 서비스는 두 개 이상의 가용 영역에 나눠 두세요</li></ol></div>
+<article><p>안녕하세요, 솔트웨어 블로그 '데이터 한 스푼'입니다. 오늘 고른 단어는 리전과 가용 영역이에요.</p>
+<p>AWS 콘솔을 처음 열면 오른쪽 위에 '서울', '도쿄', '버지니아 북부' 같은 이름이 보입니다. 서버를 하나 만들려고 해도 "가용 영역을 선택하세요"라는 말이 나오고요. 솔트웨어가 AWS와 함께 연 '클라우드 왕초보 맞춤 교육' 웨비나에서도 가장 먼저 다룬 게 이 두 단어였어요. 오늘은 아파트 단지에 빗대어 풀어 볼게요.</p>
+<figure><img src="images/img-01.png" alt="리전, 가용 영역, 데이터센터 관계" loading="lazy"></figure>
+<h2 id="리전은-아파트-단지예요">리전은 아파트 단지예요</h2>
+<p>리전은 지역적으로 떨어져 있는 큰 구역이에요. 아파트로 치면 하나의 단지입니다. 서울에 단지가 하나, 도쿄에 하나, 미국 동부에도 여럿 있는 식이죠. 한국에는 서울 리전이 하나 있어요.</p>
+<p>어느 단지에 살지 고르는 기준은 사는 사람, 그러니까 서비스 이용자가 어디 있느냐예요. 한국 고객이 쓰는 서비스라면 서울 리전에 두는 게 가장 빠릅니다. 개인정보처럼 나라 밖으로 나가면 안 되는 데이터가 있다면 리전 선택은 규정 문제이기도 해요.</p>
+<h2 id="가용-영역은-단지-안의-동이에요">가용 영역은 단지 안의 동이에요</h2>
+<p>단지 안에는 여러 동이 있어요. 이게 가용 영역(AZ)이에요. 가용 영역 하나는 데이터센터 여러 개를 묶은 구역이고, 서울 리전에는 가용 영역이 4개 있어요.</p>
+<p>중요한 건 동마다 전기와 수도, 그러니까 전원과 네트워크가 따로 들어온다는 점이에요. 한 동에 정전이 나도 옆 동은 멀쩡하죠. 대신 같은 단지 안이라 동끼리는 빠른 길로 이어져 있어서 서로 주고받는 속도는 빨라요.</p>
+<h2 id="그래서-두-동에-나눠-살아요">그래서 두 동에 나눠 살아요</h2>
+<p>서비스를 한 가용 영역에만 두면, 그 동에 문제가 생겼을 때 서비스도 같이 멈춰요. 그래서 중요한 서비스는 두 개 이상의 가용 영역에 나눠 둡니다. 이걸 고가용성이라고 불러요. 앞서 소개한 [고객 사례] 크몽도 각 층을 여러 가용 영역(Multi-AZ)에 나눠 두는 구조로 바꿨어요.</p>
+<figure><img src="images/img-02.png" alt="한 동에 살 때와 두 동에 나눠 살 때" loading="lazy"></figure>
+<h2 id="단지-밖에도-정류장이-있어요">단지 밖에도 정류장이 있어요</h2>
+<p>리전과 가용 영역 말고도 알아 두면 좋은 게 두 가지 더 있어요. 엣지 로케이션은 단지 밖 곳곳에 있는 택배 보관함 같은 곳이에요. 자주 찾는 이미지나 영상을 사용자 가까운 곳에 미리 두어 빨리 보여 주는 CDN 서비스(CloudFront)의 접속 지점이죠. Direct Connect는 우리 회사 건물과 단지를 잇는 전용 도로예요. 인터넷을 거치지 않고 전용선으로 AWS와 연결합니다.</p>
+<h2 id="오늘의-한-스푼">오늘의 한 스푼</h2>
+<p class="lead"><strong>리전은 단지, 가용 영역은 동, 중요한 건 두 동에 나눠 살기.</strong> 처음 서버를 만들 때 "어느 단지에, 몇 개 동에 나눠 둘까?"부터 정하면 나머지 설정이 훨씬 쉽게 정리돼요.</p>
+<p>다음 '데이터 한 스푼'에서는 AI가 사내 문서를 찾아 읽는 방식, RAG를 다룹니다.</p>
+<div class="refs"><p>참고한 영상</p><ul><li>솔트웨어 웨비나, AWS X 솔트웨어 클라우드 왕초보 맞춤 교육 입문반: <a href="https://www.youtube.com/watch?v=u06P6t3cgYU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=u06P6t3cgYU</a></li><li>AWS 공식 문서, 리전과 가용 영역: <a href="https://aws.amazon.com/ko/about-aws/global-infrastructure/regions_az/" target="_blank" rel="noopener">https://aws.amazon.com/ko/about-aws/global-infrastructure/regions_az/</a></li></ul></div></article><div class="tags"><a href="../../index.html?tag=리전가용영역#archive">#리전가용영역</a><a href="../../index.html?tag=AWS기초#archive">#AWS기초</a><a href="../../index.html?tag=고가용성#archive">#고가용성</a><a href="../../index.html?tag=클라우드입문#archive">#클라우드입문</a><a href="../../index.html?tag=솔트웨어#archive">#솔트웨어</a></div><div class="pn"><a class="pv" href="../../output/manufacturing-ai-gap/preview.html"><small class="mono">PREVIOUS</small>제조 데이터, 모으는 곳은 60%인데 AI로 읽는 곳은 0.1% · 그 사이에 무엇이 있나</a><span class="nx"><small class="mono">NEXT</small>가장 최근 글입니다</span></div></div></div>
+<section class="cta"><div><span class="mono o">START WITH YOUR GOAL</span><h2>우리 회사에도 맞을지<br>담당자와 이야기해 보세요.</h2></div>
+<div class="b"><a class="btn fill" href="../../contact.html?topic=spoon">문의하기 <span class="arr">→</span></a><a class="btn" href="../../index.html#newsletter">뉴스레터 구독</a></div></section>
+<section class="rel"><span class="mono">KEEP READING</span><h2>함께 읽으면 좋은 글<span class="o">.</span></h2><div class="rg"><a href="../../output/realtime-kinesis/preview.html"><div class="kw" style="--gx:64%;--gy:48%"><b style="font-size:64px">Streaming</b><span class="mono tag">DATA SPOON</span></div><h3>실시간 데이터는 어떻게 흐를까? 수도관으로 보는 Kinesis 🚰</h3></a><a href="../../output/lakehouse/preview.html"><div class="kw" style="--gx:71%;--gy:29%"><b style="font-size:64px">Lakehouse</b><span class="mono tag">DATA SPOON</span></div><h3>레이크하우스란? 창고와 호수 사이, 데이터가 사는 집 🏠</h3></a><a href="../../output/manufacturing-ai-gap/preview.html"><div class="kw" style="--gx:60%;--gy:17%"><b style="font-size:64px">0.1%</b><span class="mono tag">DATA NOTE</span></div><h3>제조 데이터, 모으는 곳은 60%인데 AI로 읽는 곳은 0.1% · 그 사이에 무엇이 있나</h3></a></div></section></main>
+<footer class="foot"><div class="wrap">
+<div><a class="logo" href="../../index.html"><i></i>saltware</a><p>Connect Any Data. Understand with AI. Act with Agents.<br>솔트웨어가 현장에서 겪은 데이터·AI 이야기를 씁니다.</p></div>
+<div><b>SERIES</b><a href="../../index.html?cat=spoon#archive">데이터 한 스푼</a><a href="../../index.html?cat=note#archive">데이터 노트</a><a href="../../index.html?cat=case#archive">고객 사례</a></div>
+<div><b>SALTWARE</b><a href="https://www.saltware.co.kr" target="_blank" rel="noopener">회사 홈페이지</a><a href="https://www.youtube.com/@saltware_youtube" target="_blank" rel="noopener">유튜브</a><a href="https://fitcloud.github.io/" target="_blank" rel="noopener">기술 블로그</a></div>
+<div><b>CONTACT</b><a href="../../contact.html">문의하기</a><a href="../../index.html#newsletter">뉴스레터</a></div>
+</div><div class="copy"><div class="wrap">블로그 기획 과제용 시안 · 문의·구독 폼은 실제로 전송되지 않습니다</div></div></footer><div class="toast" role="status"></div>
+<script>
+function toast(m){var t=document.querySelector('.toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2200)}
+(function(){var b=document.querySelector('.burger'),d=document.querySelector('.drawer'),ic=b.innerHTML;
+function set(o){d.classList.toggle('open',o);b.setAttribute('aria-expanded',o);b.innerHTML=o?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18"/></svg>':ic;document.body.style.overflow=o?'hidden':''}
+b.addEventListener('click',function(){set(!d.classList.contains('open'))});d.addEventListener('click',function(e){if(e.target.closest('a'))set(false)});
+addEventListener('resize',function(){if(innerWidth>780)set(false)});addEventListener('keydown',function(e){if(e.key==='Escape')set(false)})})();
+
+var br=document.querySelector('.bar-p'),ar=document.querySelector('article');function pr(){var r=ar.getBoundingClientRect(),t=ar.offsetHeight-innerHeight;br.style.width=Math.min(100,Math.max(0,-r.top/(t>0?t:1)*100))+'%'}addEventListener('scroll',pr,{passive:true});pr();
+var L=document.querySelectorAll('.toc a');if('IntersectionObserver' in window&&L.length){var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting)L.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+x.target.id)})})},{rootMargin:'-100px 0px -65% 0px'});document.querySelectorAll('article h2[id]').forEach(function(h){io.observe(h)})}
+document.querySelectorAll('article figure').forEach(function(f){var i=f.querySelector('img');if(i&&i.alt){var c=document.createElement('figcaption');c.textContent=i.alt;f.appendChild(c)}});
+document.querySelector('#cp').addEventListener('click',function(){var u=location.href;if(navigator.clipboard&&isSecureContext){navigator.clipboard.writeText(u).then(function(){toast('링크를 복사했어요')},function(){fb(u)})}else fb(u)});
+function fb(u){var t=document.createElement('textarea');t.value=u;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('링크를 복사했어요')}catch(x){toast('복사하지 못했어요')}t.remove()}
+document.querySelector('#tt').addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
+</script></body></html>

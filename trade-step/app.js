@@ -1,5 +1,6 @@
 import {subjects,subjectMeta,lessons,questions} from './content.js';
-import {loadState,saveState,submitAnswer,toggleComplete,getWrongs,stats,validateExam,gradeExam,remainingSeconds,studyDayKey,todayCount,nextStudyReset,getReviewItems,setWrongReviewed,markQuestionForReview,isCorrect} from './state.js';
+import {initSync,scheduleUpload,signIn,signOutUser,syncEnabled} from './sync.js';
+import {loadState,saveState,submitAnswer,toggleComplete,getWrongs,stats,validateExam,gradeExam,remainingSeconds,studyDayKey,todayCount,nextStudyReset,getReviewItems,setWrongReviewed,markQuestionForReview,isCorrect,mergeStates,STATE_KEY} from './state.js';
 import {generateDailyQuestions,shuffleQuestions,selectQuestions} from './daily.js';
 import {pastBanks} from './past-data.js';
 const $=s=>document.querySelector(s), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -13,7 +14,7 @@ const uuid=()=>crypto.randomUUID();
 const date=x=>new Intl.DateTimeFormat('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul'}).format(new Date(x));
 const today=x=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(x));
 function toast(msg){$('#toast').textContent=msg;$('#toast').classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('#toast').classList.remove('show'),3200)}
-function persist(){const ok=saveState(storage,state);if(!ok&&!state.storageIssue)state.storageIssue='blocked';return ok}
+function persist(){const ok=saveState(storage,state);if(!ok&&!state.storageIssue)state.storageIssue='blocked';if(ok)scheduleUpload();return ok}
 function go(route){if(location.hash==='#'+route)render();else location.hash=route}
 function storageWarning(){return state.storageIssue?`<div class="storage-warning">${state.storageIssue==='corrupt'?'저장된 기록 일부를 읽을 수 없어요. 기존 데이터는 덮어쓰지 않았으며, 이번 접속 중 학습은 가능해요.':'이 브라우저에서 기록 저장이 차단되었어요. 이번 접속 중에는 공부할 수 있지만 창을 닫으면 새 기록이 남지 않을 수 있어요.'}</div>`:''}
 function title(eyebrow,heading,sub){return `<div class="intro-row"><div><div class="eyebrow">${eyebrow}</div><h1>${heading}</h1><p>${sub}</p></div></div>`}
@@ -98,3 +99,15 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState!==
 scheduleBoundary();
 
 render();
+
+// ---- 구글 로그인 동기화 ----
+let syncUserNow=null,syncStatus='';
+function syncButton(){const b=document.getElementById('sync-btn');if(!b)return;if(!syncEnabled()){b.hidden=true;return}b.hidden=false;b.textContent=syncUserNow?(syncStatus==='error'?'동기화 오류 · 다시 시도':'동기화 켜짐 · '+(syncUserNow.displayName||'내 계정')):'구글 로그인으로 기록 동기화';b.title=syncUserNow?'누르면 로그아웃해요':'폰과 PC의 학습 기록을 같은 계정으로 맞춰요'}
+document.addEventListener('click',async e=>{if(e.target.id!=='sync-btn')return;try{if(syncUserNow){if(confirm('로그아웃할까요? 이 기기의 기록은 그대로 남아요.')){await signOutUser();toast('로그아웃했어요.')}}else await signIn()}catch(err){console.warn(err);toast('로그인하지 못했어요. 잠시 뒤 다시 시도해 주세요.')}});
+initSync({
+ getRaw:()=>{try{return storage.getItem(STATE_KEY)}catch{return null}},
+ applyRemote:raw=>{const remote=loadState({getItem:()=>raw});if(remote.storageIssue)return;state=mergeStates(state,remote);saveState(storage,state);render()},
+ onUser:u=>{const first=!syncUserNow&&u;syncUserNow=u;syncStatus='';syncButton();if(first)toast((u.displayName||'계정')+' 님 기록을 맞추는 중이에요.')},
+ onStatus:st=>{syncStatus=st;syncButton()}
+}).catch(err=>{console.warn('동기화 준비 실패',err)});
+syncButton();

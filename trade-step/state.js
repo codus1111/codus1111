@@ -108,3 +108,13 @@ export function validateExam(x){
 }
 export function gradeExam(e,answers){let correct=0,unanswered=0;const perSubject=Object.create(null);for(const q of e.questions){const selected=Object.hasOwn(answers,q.id)?answers[q.id]:undefined;if(selected===undefined)unanswered++;if(isCorrect(q,selected))correct++;perSubject[q.subject]??={total:0,correct:0};perSubject[q.subject].total++;if(isCorrect(q,selected))perSubject[q.subject].correct++;}return{correct,unanswered,total:e.questions.length,percent:Math.round(correct/e.questions.length*100),perSubject}}
 export function remainingSeconds(session,now=Date.now()){return Math.max(0,Math.ceil((session.deadline-now)/1000))}
+// 두 기기의 기록을 합친다 (로그인 동기화용). 풀이 기록은 id 기준으로 모두 모으고, 나머지는 더 새로운 쪽을 고른다.
+export function mergeStates(a,b){
+ const attempts=[...new Map([...b.attempts,...a.attempts].map(x=>[x.id,x])).values()].sort((x,y)=>x.time-y.time);
+ const completed=[...new Set([...b.completed,...a.completed])];
+ const pick=(x,y,key)=>{const out=Object.create(null);for(const [k,v] of Object.entries(y||{}))out[k]=v;for(const [k,v] of Object.entries(x||{}))if(!out[k]||(v[key]||0)>=(out[k][key]||0))out[k]=v;return out};
+ let daily=a.daily||b.daily;
+ if(a.daily&&b.daily)daily=a.daily.dayKey===b.daily.dayKey?{dayKey:a.daily.dayKey,answers:{...b.daily.answers,...a.daily.answers}}:(a.daily.dayKey>b.daily.dayKey?a.daily:b.daily);
+ return{...base(),completed,attempts,reviewedWrongs:pick(a.reviewedWrongs,b.reviewedWrongs,'savedRevision'),savedReviews:pick(a.savedReviews,b.savedReviews,'revision'),daily,lastLesson:a.lastLesson||b.lastLesson,exam:a.exam||b.exam,storageIssue:a.storageIssue};
+}
+export const STATE_KEY=KEY;

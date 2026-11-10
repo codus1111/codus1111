@@ -54,7 +54,7 @@
 
 <a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-report.svg" width="164" height="38" alt="타슈 분석 과정 보기" /></a>
 &nbsp;
-<a href="https://htmlpreview.github.io/?https://github.com/codus1111/codus1111/blob/main/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
 
 <sub>Python · DuckDB · numpy · xgboost · Gemini</sub>
 

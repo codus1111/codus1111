@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>페르소나 카드</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#fff; --text:#1f2430; --muted:#6b7280; --accent:#4f46e5; --line:#e5e7eb; --good:#16a34a; --mid:#d97706; --low:#9ca3af; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12141a; --card:#1c1f28; --text:#e8eaf0; --muted:#9aa3b2; --accent:#818cf8; --line:#2c303c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--text); font-family:-apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif; line-height:1.55; }
+  h1 { font-size:22px; margin:0 auto 4px; max-width:1100px; }
+  .sub { color:var(--muted); margin:0 auto 20px; max-width:1100px; font-size:14px; }
+  .grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); max-width:1100px; margin:0 auto; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .head { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+  .avatar { width:48px; height:48px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex:none; }
+  .name { font-weight:700; font-size:17px; }
+  .meta { color:var(--muted); font-size:13px; }
+  .nick { color:var(--accent); font-weight:600; font-size:14px; margin-bottom:10px; }
+  .quote { border-left:3px solid var(--accent); padding:2px 0 2px 10px; margin:10px 0; font-style:italic; font-size:14px; }
+  h3 { font-size:12px; letter-spacing:.04em; color:var(--muted); margin:14px 0 4px; text-transform:uppercase; }
+  ul { margin:0; padding-left:18px; font-size:14px; }
+  .fit { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:700; color:#fff; }
+  .role { display:inline-block; margin-left:6px; padding:2px 10px; border-radius:999px; font-size:12px; border:1px solid var(--accent); color:var(--accent); }
+  .fit.high { background:var(--good); } .fit.mid { background:var(--mid); } .fit.low { background:var(--low); }
+</style>
+</head>
+<body>
+<h1>[프로젝트명] 페르소나 카드</h1>
+<p class="sub">가상의 페르소나(가설)입니다. 실제 조사로 검증이 필요합니다.</p>
+<div class="grid">
+
+  <!-- 페르소나 수만큼 이 article 블록을 복제하세요 -->
+  <article class="card">
+    <div class="head">
+      <div class="avatar">서</div>
+      <div>
+        <div class="name">김서연</div>
+        <div class="meta">29세 · 마케터 · 서울</div>
+      </div>
+    </div>
+    <div class="nick">"시간이 늘 부족한 실무자"</div>
+    <span class="fit high">적합도 상</span><span class="role">역할 태그(선택: 구매 결정권자, 안티 페르소나 등)</span>
+    <div class="quote">"하나 쓰려고 세 군데 열어야 하는 게 제일 짜증나요."</div>
+    <h3>목표</h3>
+    <ul><li>목표 1</li><li>목표 2</li></ul>
+    <h3>페인포인트</h3>
+    <ul><li>불편 1</li><li>불편 2</li></ul>
+    <h3>시사점</h3>
+    <ul><li>제품/마케팅 시사점</li></ul>
+  </article>
+
+</div>
+
+<!-- 대표 3개 외 나머지 후보 2개를 한 줄씩 -->
+<section class="others" style="max-width:1100px;margin:20px auto 0;font-size:14px;color:var(--muted)">
+  <strong>그 밖의 후보</strong>
+  <ul><li>이름 — 별명: 한 줄 요약 (적합도 / 제외 이유)</li></ul>
+</section>
+</body>
+</html>

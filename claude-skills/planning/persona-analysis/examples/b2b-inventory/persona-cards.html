@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>재고온 페르소나 카드</title>
+<style>
+  :root { --bg:#f6f7fb; --card:#fff; --text:#1f2430; --muted:#6b7280; --accent:#4f46e5; --line:#e5e7eb; --good:#16a34a; --mid:#d97706; --low:#9ca3af; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12141a; --card:#1c1f28; --text:#e8eaf0; --muted:#9aa3b2; --accent:#818cf8; --line:#2c303c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px 16px; background:var(--bg); color:var(--text); font-family:-apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif; line-height:1.55; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; font-size:14px; }
+  .grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); max-width:1100px; margin:0 auto; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .head { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+  .avatar { width:48px; height:48px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex:none; }
+  .name { font-weight:700; font-size:17px; }
+  .meta { color:var(--muted); font-size:13px; }
+  .nick { color:var(--accent); font-weight:600; font-size:14px; margin-bottom:10px; }
+  .quote { border-left:3px solid var(--accent); padding:2px 0 2px 10px; margin:10px 0; font-style:italic; font-size:14px; }
+  h3 { font-size:12px; letter-spacing:.04em; color:var(--muted); margin:14px 0 4px; text-transform:uppercase; }
+  ul { margin:0; padding-left:18px; font-size:14px; }
+  .fit { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:700; color:#fff; }
+  .role { display:inline-block; margin-left:6px; padding:2px 10px; border-radius:999px; font-size:12px; border:1px solid var(--accent); color:var(--accent); }
+  .fit.high { background:var(--good); } .fit.mid { background:var(--mid); } .fit.low { background:var(--low); }
+</style>
+</head>
+<body>
+<h1>재고온(가칭) 페르소나 카드</h1>
+<p class="sub">가상의 페르소나(가설)입니다. 실제 조사로 검증이 필요합니다.</p>
+<div class="grid">
+
+  <article class="card">
+    <div class="head">
+      <div class="avatar">정</div>
+      <div>
+        <div class="name">박정훈</div>
+        <div class="meta">43세 · 생산관리 과장 · 경기 안산</div>
+      </div>
+    </div>
+    <div class="nick">"엑셀 마스터인데 이제 한계다"</div>
+    <span class="fit high">적합도 상</span><span class="role">실사용자 · 도입 주도자</span>
+    <div class="quote">"엑셀이 나쁜 게 아니라, 저 혼자만 관리하는 게 문제예요."</div>
+    <h3>목표</h3>
+    <ul><li>재고 현황을 한 곳에서 보고 취합 업무를 없앤다</li><li>부족 자재를 생산 투입 전에 알아챈다</li><li>자신이 만든 엑셀 로직을 그대로 옮긴다</li></ul>
+    <h3>페인포인트</h3>
+    <ul><li>"진짜최종.xlsx"가 여러 개라 어느 게 맞는지 헷갈린다</li><li>현장 입력이 늦어 오전 보고 숫자가 실제와 다르다</li><li>휴가 가면 재고 파악이 안 된다</li></ul>
+    <h3>시사점</h3>
+    <ul><li>엑셀 업로드·내보내기와 엑셀 같은 표 뷰를 제공한다</li><li>첫 날 기존 데이터로 대시보드가 채워지게 설계한다</li></ul>
+  </article>
+
+  <article class="card">
+    <div class="head">
+      <div class="avatar">도</div>
+      <div>
+        <div class="name">최도현</div>
+        <div class="meta">49세 · 대표이사 · 인천</div>
+      </div>
+    </div>
+    <div class="nick">"숫자는 믿되 돈은 아끼고 싶은 사장"</div>
+    <span class="fit high">적합도 상</span><span class="role">구매 결정권자</span>
+    <div class="quote">"좋은 건 알겠는데, 우리 직원들이 실제로 쓸 수 있는지가 제일 걱정이에요."</div>
+    <h3>목표</h3>
+    <ul><li>재고에 묶인 현금과 결품 손실을 줄인다</li><li>담당자 한 명에게 의존하는 구조를 벗어난다</li><li>월 비용이 예측 가능하고 합리적이다</li></ul>
+    <h3>페인포인트</h3>
+    <ul><li>재고 숫자를 필요할 때 즉시 못 본다</li><li>자재 부족으로 긴급 구매하며 단가를 더 줬다</li><li>도입했다가 직원이 안 써서 돈만 날린 사례를 들었다</li></ul>
+    <h3>시사점</h3>
+    <ul><li>모바일에서 보는 대표용 요약 화면을 우선 제공한다</li><li>가격 공개, 무료 체험, 데이터 반출 보장을 메시지로 내세운다</li></ul>
+  </article>
+
+  <article class="card">
+    <div class="head">
+      <div class="avatar">미</div>
+      <div>
+        <div class="name">정미란</div>
+        <div class="meta">54세 · 자재창고 담당 · 경기 안산</div>
+      </div>
+    </div>
+    <div class="nick">"엑셀 말고 손에 익는 게 좋은 현장 베테랑"</div>
+    <span class="fit mid">적합도 중</span><span class="role">현장 입력자</span>
+    <div class="quote">"나는 숫자만 입력하면 되게 해 줘요. 복잡한 건 정훈 과장님이 보면 되죠."</div>
+    <h3>목표</h3>
+    <ul><li>입출고를 빠르고 틀리지 않게 기록한다</li><li>자재 위치와 수량 문의에 바로 답한다</li><li>입력 때문에 퇴근이 늦어지지 않는다</li></ul>
+    <h3>페인포인트</h3>
+    <ul><li>종이에 쓰고 나중에 엑셀에 옮기는 이중 작업</li><li>옮겨 적다 틀려 실사 때 차이가 나 혼난다</li><li>엑셀 수식을 잘못 건드려 깨뜨린 적이 있다</li></ul>
+    <h3>시사점</h3>
+    <ul><li>품목 선택과 수량만 입력하는 큰 버튼 화면, 모바일·태블릿 우선</li><li>이력과 되돌리기로 입력 실수 부담을 낮춘다</li></ul>
+  </article>
+
+</div>
+
+<section class="others" style="max-width:1100px;margin:20px auto 0;font-size:14px;color:var(--muted)">
+  <strong>그 밖의 후보</strong>
+  <ul>
+    <li>한수진 (32, 구매·자재 담당) — "발주 타이밍에 쫓기는 실무자": 안전재고 기준 발주 시점을 놓치지 않는 것이 목표 (적합도 상 / 박정훈 카드와 가까워 제외)</li>
+    <li>강성호 (52, 전산팀장) — "ERP는 이미 있고 이중 입력은 싫다": 안티 페르소나 (적합도 하 / ERP 도입 완료 회사는 초기 영업 대상에서 제외)</li>
+  </ul>
+</section>
+</body>
+</html>

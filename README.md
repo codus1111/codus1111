@@ -17,7 +17,7 @@
 &nbsp;
 <a href="https://github.com/codus1111/pension-salary#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-report-v2.svg" width="164" height="38" alt="연봉 AI 분석 과정 보기" /></a>
 
-<sub>Python · SQL · Streamlit · Gemini · MCP</sub>
+<img src="https://img.shields.io/badge/Python-5D4D83?style=flat-square&labelColor=302A43&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/SQL-5D4D83?style=flat-square&labelColor=302A43&logo=postgresql&logoColor=white" alt="SQL" /> <img src="https://img.shields.io/badge/Streamlit-5D4D83?style=flat-square&labelColor=302A43&logo=streamlit&logoColor=white" alt="Streamlit" /> <img src="https://img.shields.io/badge/Gemini-5D4D83?style=flat-square&labelColor=302A43&logo=googlegemini&logoColor=white" alt="Gemini" /> <img src="https://img.shields.io/badge/MCP-5D4D83?style=flat-square&labelColor=302A43&logo=anthropic&logoColor=white" alt="MCP" />
 
 ---
 
@@ -30,7 +30,7 @@
 &nbsp;
 <a href="https://github.com/codus1111/daejeon_01/blob/main/codus1111/zeroid-가로형/제로이드_무신사_입점제안서_가로형.pdf"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-landscape-v2.svg" width="164" height="38" alt="제로이드 제안서 가로형 PDF 보기" /></a>
 
-<sub>브랜드 분석 · 입점 기획 · 제안서 디자인</sub>
+<img src="https://img.shields.io/badge/%EB%B8%8C%EB%9E%9C%EB%93%9C%20%EB%B6%84%EC%84%9D-8D7BAB?style=flat-square&labelColor=302A43" alt="브랜드 분석" /> <img src="https://img.shields.io/badge/%EC%9E%85%EC%A0%90%20%EA%B8%B0%ED%9A%8D-8D7BAB?style=flat-square&labelColor=302A43" alt="입점 기획" /> <img src="https://img.shields.io/badge/%EC%A0%9C%EC%95%88%EC%84%9C%20%EB%94%94%EC%9E%90%EC%9D%B8-8D7BAB?style=flat-square&labelColor=302A43" alt="제안서 디자인" />
 
 ---
 
@@ -43,7 +43,7 @@
 &nbsp;
 <a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-html-v2.svg" width="164" height="38" alt="솔트웨어 블로그 화면 보기" /></a>
 
-<sub>콘텐츠 기획 · SEO · AI 에이전트</sub>
+<img src="https://img.shields.io/badge/%EC%BD%98%ED%85%90%EC%B8%A0%20%EA%B8%B0%ED%9A%8D-8D7BAB?style=flat-square&labelColor=302A43" alt="콘텐츠 기획" /> <img src="https://img.shields.io/badge/SEO-8D7BAB?style=flat-square&labelColor=302A43" alt="SEO" /> <img src="https://img.shields.io/badge/AI%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-8D7BAB?style=flat-square&labelColor=302A43" alt="AI 에이전트" />
 
 ---
 
@@ -56,7 +56,7 @@
 &nbsp;
 <a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
 
-<sub>Python · DuckDB · numpy · xgboost · Gemini</sub>
+<img src="https://img.shields.io/badge/Python-5D4D83?style=flat-square&labelColor=302A43&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-5D4D83?style=flat-square&labelColor=302A43&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-5D4D83?style=flat-square&labelColor=302A43&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-5D4D83?style=flat-square&labelColor=302A43&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-5D4D83?style=flat-square&labelColor=302A43&logo=googlegemini&logoColor=white" alt="Gemini" />
 
 ---
 
@@ -92,7 +92,8 @@
 
 </details>
 
-<sub>Claude Code · 스킬 · 훅 / 페르소나는 가상이며 실제 조사 데이터가 아닙니다. 법무 스킬은 법률 자문이 아닙니다.</sub>
+<img src="https://img.shields.io/badge/Claude%20Code-5D4D83?style=flat-square&labelColor=302A43&logo=anthropic&logoColor=white" alt="Claude Code" /> <img src="https://img.shields.io/badge/%EC%8A%A4%ED%82%AC-8D7BAB?style=flat-square&labelColor=302A43" alt="%EC%8A%A4%ED%82%AC" /> <img src="https://img.shields.io/badge/%ED%9B%85-8D7BAB?style=flat-square&labelColor=302A43" alt="%ED%9B%85" /><br>
+<sub>페르소나는 가상이며 실제 조사 데이터가 아닙니다. 법무 스킬은 법률 자문이 아닙니다.</sub>
 
 ---
 

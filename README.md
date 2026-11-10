@@ -21,6 +21,23 @@
 
 ---
 
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu.svg" width="360" height="28" alt="04 · DATA ANALYSIS / AI AGENT" />
+
+### 타슈 수급 불균형 분석
+대전 공영자전거 대여 기록으로 대여소가 언제 비고 넘치는지 찾고, 점검 우선순위와 질의응답 에이전트까지 만든 분석.
+
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-tashu-rides.svg" width="210" height="80" alt="분석한 대여 기록 801만 건" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-tashu-rain.svg" width="210" height="80" alt="비 1mm 이상일 때 수요 0.36배" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-tashu-eval.svg" width="210" height="80" alt="에이전트 평가 3차 반복, 총 36문항" />
+
+<a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-report.svg" width="164" height="38" alt="타슈 분석 과정 보기" /></a>
+&nbsp;
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
+
+<img src="https://img.shields.io/badge/Python-5D4D83?style=flat-square&labelColor=302A43&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-5D4D83?style=flat-square&labelColor=302A43&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-5D4D83?style=flat-square&labelColor=302A43&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-5D4D83?style=flat-square&labelColor=302A43&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-5D4D83?style=flat-square&labelColor=302A43&logo=googlegemini&logoColor=white" alt="Gemini" />
+
+---
+
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-brand.svg" width="360" height="28" alt="02 · BRAND STRATEGY / PROPOSAL" />
 
 ### 제로이드 × 무신사 뷰티
@@ -44,19 +61,6 @@
 <a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-html-v2.svg" width="164" height="38" alt="솔트웨어 블로그 화면 보기" /></a>
 
 <img src="https://img.shields.io/badge/%EC%BD%98%ED%85%90%EC%B8%A0%20%EA%B8%B0%ED%9A%8D-8D7BAB?style=flat-square&labelColor=302A43" alt="콘텐츠 기획" /> <img src="https://img.shields.io/badge/SEO-8D7BAB?style=flat-square&labelColor=302A43" alt="SEO" /> <img src="https://img.shields.io/badge/AI%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-8D7BAB?style=flat-square&labelColor=302A43" alt="AI 에이전트" />
-
----
-
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu.svg" width="360" height="28" alt="04 · DATA ANALYSIS / AI AGENT" />
-
-### 타슈 수급 불균형 분석
-대전 공영자전거 대여 기록으로 대여소가 언제 비고 넘치는지 찾고, 점검 우선순위와 질의응답 에이전트까지 만든 분석.
-
-<a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-report.svg" width="164" height="38" alt="타슈 분석 과정 보기" /></a>
-&nbsp;
-<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
-
-<img src="https://img.shields.io/badge/Python-5D4D83?style=flat-square&labelColor=302A43&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-5D4D83?style=flat-square&labelColor=302A43&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-5D4D83?style=flat-square&labelColor=302A43&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-5D4D83?style=flat-square&labelColor=302A43&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-5D4D83?style=flat-square&labelColor=302A43&logo=googlegemini&logoColor=white" alt="Gemini" />
 
 ---
 
@@ -97,5 +101,5 @@
 
 ---
 
-<sub>¹ 5겹 교차검증의 평균 절대 오차율이며, 서비스에는 별도 혼합 보정을 적용합니다. ² 28문항을 한 번씩 실행한 결과입니다.<br>
+<sub>¹ 5겹 교차검증의 평균 절대 오차율이며, 서비스에는 별도 혼합 보정을 적용합니다. ² 28문항을 한 번씩 실행한 결과입니다. ³ 질문 9·15·12개로 세 번 평가하며 2차에서 찾은 문제를 고쳤습니다. 각 1회 실행이고 3차는 고친 문제를 겨냥한 질문이라 일반화는 어렵습니다.<br>
 연봉 AI의 AI 기능은 비밀번호가 필요할 수 있습니다. 제안서·블로그는 학습용 비공식 시안입니다.<br>타슈 분석은 개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 타슈 대여이력(공공데이터포털), Weather data by Open-Meteo.com (CC BY 4.0). 대여소 재고는 알 수 없어 순유출 압력으로 추정했습니다.</sub>

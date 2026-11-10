@@ -1,0 +1,11 @@
+# 이 PC에서 실제로 동작을 확인한 패키지 (2026-11-10, .venv)
+# pandas, scikit-learn, lightgbm은 보안 정책(애플리케이션 제어)으로 차단되어 사용하지 않는다.
+anthropic==2.7.0
+duckdb==2.0.0
+matplotlib==3.11.2
+numpy==2.5.4
+polars==2.1.0
+python-dotenv==1.2.4
+scipy==1.18.1
+statsmodels==0.15.0
+xgboost==3.4.1

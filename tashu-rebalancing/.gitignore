@@ -1,0 +1,25 @@
+# 원문·가공 데이터는 전부 제외 (COMPLIANCE.md §2)
+data/*
+!data/**/.gitkeep
+
+# 비밀값
+.env
+.env.*
+!.env.example
+
+# 데이터 파일
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# 로컬 설정
+.claude/settings.local.json

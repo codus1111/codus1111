@@ -60,7 +60,7 @@ D["scale"] = {"raw": con.execute("SELECT count(*) FROM rentals").fetchall()[0][0
 
 
 def station_labels(D):
-    """대여소 이름을 '유형 + 번호'로 바꾼다. 예: 아파트 단지 3, A대학 구역 1. 같은 대여소는 어디서나 같은 라벨."""
+    """대여소 이름을 '유형 + 번호'로 바꾼다. 예: 아파트 단지 3, 카이스트 구역 1. 캠퍼스(대학) 이름은 공공기관이라 그대로 쓴다. 같은 대여소는 어디서나 같은 라벨."""
     import re
     names = []
     for b in D["tops"].values():
@@ -70,15 +70,17 @@ def station_labels(D):
         for m in b:
             names += [m["에서(과잉)"], m["으로(부족)"]]
 
-    campus = {"카이스트": "A", "KAIST": "A", "충남대": "B", "한남대": "C"}
-    extra = iter("DEFGHIJK")
+    campus = {"카이스트": "카이스트", "KAIST": "카이스트", "충남대": "충남대", "한남대": "한남대"}
 
     def kind(n):
         for k, v in campus.items():
             if k in n:
-                return f"{v}대학 구역"
+                return f"{v} 구역"
+        m = re.search(r"[가-힣]{2,6}대학교", n)
+        if m:
+            return f"{m.group(0)} 구역"
         if "대학" in n or "캠퍼스" in n or "학생회관" in n:
-            return f"{next(extra)}대학 구역"
+            return "대학 구역"
         if re.search(r"아파트|마을|더샵|하늘채|\d+동|단지|캐슬|푸르지오|자이|래미안|아이파크", n):
             return "아파트 단지"
         if re.search(r"연구|테크노|비즈|벤처|과학|싸이언스|사이언스|산업|협동", n):
@@ -94,8 +96,6 @@ def station_labels(D):
         if n in mp:
             continue
         k = kind(n)
-        if k.endswith("대학 구역") and k[0] not in "ABC":
-            k = memo.setdefault(re.sub(r"\s.*", "", n), k)
         cnt[k] = cnt.get(k, 0) + 1
         mp[n] = f"{k} {cnt[k]}"
     for b in D["tops"].values():
@@ -131,27 +131,6 @@ html = open(os.path.join(at.ROOT, "src", "dashboard_template.html"), encoding="u
 html = html.replace("__DATA__", json.dumps(D, ensure_ascii=False))
 
 
-def anonymize(text):
-    """캠퍼스(대학) 이름을 A, B, C...대학으로 바꾼다. 이름이 대여소 이름·본문·차트에 모두 들어 있어 최종 HTML 전체에 적용."""
-    import re
-    mapping = [("KAIST", "A대학"), ("카이스트", "A대학"), ("충남대학교", "B대학"), ("충남대", "B대학"),
-               ("한남대학교", "C대학"), ("한남대", "C대학")]
-    for a, b in mapping:
-        text = text.replace(a, b)
-    letters = iter("DEFGHIJKLMNOPQRSTUVWXYZ")
-    seen = {}
-    def sub(m):  # 그 밖의 'OO대학교' 이름
-        if m.group(0) not in seen:
-            seen[m.group(0)] = next(letters) + "대학"
-        return seen[m.group(0)]
-    text = re.sub(r"[가-힣]{1,6}대학교", sub, text)
-    # 조사 보정: "C대학는" -> "C대학은" 등
-    for a, b in [("대학는", "대학은"), ("대학를", "대학을"), ("대학가 ", "대학이 ")]:
-        text = text.replace(a, b)
-    return text
-
-
-html = anonymize(html)
 out = os.path.join(at.ROOT, "reports", "dashboard.html")
 open(out, "w", encoding="utf-8").write(html)
 print("저장:", out, f"({len(html) // 1024} KB), 산점도 점 {len(D['scatter'])}개")

@@ -13,6 +13,9 @@ import numpy as np
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 con = duckdb.connect(os.path.join(ROOT, "data", "processed", "tashu.duckdb"), read_only=True)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _clean import use_clean  # noqa: E402
+use_clean(con)
 
 # 한남대 캠퍼스 대여소 (대덕밸리캠퍼스 ST1081 제외)
 con.execute("""

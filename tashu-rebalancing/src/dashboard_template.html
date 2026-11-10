@@ -13,22 +13,22 @@ body{margin:0;background:var(--page);color:var(--ink);font:15px/1.7 var(--body)}
 h1,h2,h3,.tagline,.ps summary,.band b,.hourbadge,.eyebrow,.slidebar,.rec .no,nav a,.tg summary,.gl dt,.ps dt{font-family:var(--head)}
 .wrap{max-width:1000px;margin:0 auto;padding:0 14px}
 /* 표지 */
-.cover{margin:14px auto 36px;min-height:calc(100vh - 52px - 50px);display:flex;flex-direction:column;max-width:1000px;border-radius:20px;overflow:hidden;background:var(--slide);border:1px solid rgba(255,255,255,.7);box-shadow:0 10px 40px rgba(30,50,90,.12);position:relative}
-.cover .top{position:relative;flex:1;display:flex;align-items:center;padding:40px 40px 44px;min-height:330px}
+.cover{margin:14px auto 36px;min-height:calc(100vh - 62px - 40px);display:flex;flex-direction:column;max-width:1000px;border-radius:20px;overflow:hidden;background:var(--slide);border:1px solid rgba(255,255,255,.7);box-shadow:0 10px 40px rgba(30,50,90,.12);position:relative}
+.cover .top{position:relative;flex:1;display:flex;align-items:center;padding:32px 40px 36px;min-height:300px}
 .cover .blob{position:absolute;right:-140px;top:-80px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle at 40% 45%,#aebdf3 0%,rgba(174,189,243,.55) 38%,rgba(174,189,243,0) 70%);filter:blur(6px)}
 .cover .ring{position:absolute;right:-60px;top:-150px;width:680px;height:680px;border-radius:50%;border:1px solid rgba(70,90,140,.25)}
 .cover .ring.r2{right:70px;top:120px;width:320px;height:320px;border-color:rgba(70,90,140,.18)}
-.cover .in{position:relative;max-width:760px}
+.cover .in{position:relative;max-width:900px}
 .eyebrow{display:inline-block;font-size:12px;letter-spacing:.06em;color:var(--mute);margin-bottom:14px}
-.cover h1{font-size:clamp(26px,4.6vw,46px);line-height:1.25;margin:0 0 16px;color:var(--title);font-weight:800;word-break:keep-all}
+.cover h1{font-size:clamp(24px,3.4vw,40px);line-height:1.25;margin:0 0 16px;color:var(--title);font-weight:800;word-break:keep-all}
 .cover h1:before{content:"";display:block;width:34px;height:4px;background:var(--a);margin-bottom:18px}
 .tagline{font-size:clamp(17px,3vw,24px);font-weight:700;margin:0 0 14px;color:var(--a)}
 .desc{word-break:keep-all;font-size:clamp(14px,1.5vw,16px);line-height:1.85;color:#33414f;margin:0}
 .desc b{color:var(--title)}
 .cover .band{background:#0d0f12;color:#fff;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0}
-.band .kpi{padding:24px 28px;border-left:1px solid rgba(255,255,255,.12)}.band .kpi:first-child{border-left:0}
+.band .kpi{padding:20px 24px;border-left:1px solid rgba(255,255,255,.12)}.band .kpi:first-child{border-left:0}
 .band .kpi small{display:block;font-size:12px;color:#9fb3ff;font-weight:700;letter-spacing:.04em}
-.band .kpi b{display:block;white-space:nowrap;font-size:clamp(18px,2.2vw,26px);font-variant-numeric:tabular-nums;margin-top:2px}
+.band .kpi b{display:block;white-space:nowrap;font-size:clamp(17px,1.7vw,23px);font-variant-numeric:tabular-nums;margin-top:2px}
 .band .kpi span{font-size:11.5px;color:#aeb6c4;line-height:1.4;display:block;margin-top:2px}
 /* 메뉴 */
 nav{position:sticky;top:0;z-index:5;background:rgba(246,247,250,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(20,30,60,.08)}
@@ -179,14 +179,14 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <details class="card ps rv" open><summary>실험 01 · 시간대별로 빠진 자전거 수 세기<small>쏠림 확인</small></summary><dl>
 <dt>가설</dt><dd>대여소와 시간대에 따라 빌려 간 수와 반납된 수가 어긋나는 곳이 있을 것이다.</dd>
 <dt>한 일</dt><dd>이용 기록을 대여소 × 날짜 × 시간으로 묶어 빠진 수(빌려 간 수 − 반납된 수)를 계산했다. 관리자 이동 처리와 이용시간 0분 이하는 뺐다.</dd>
-<dt>결과</dt><dd>하루 전체로는 대여 7,651,529건, 반납 7,633,236건으로 0.24%밖에 차이 나지 않았다. 평일 시간대로 나누면 아침의 아파트 단지와 퇴근 때의 연구단지·A대학 대여소가 크게 한쪽으로 쏠렸다.</dd>
+<dt>결과</dt><dd>하루 전체로는 대여 7,651,529건, 반납 7,633,236건으로 0.24%밖에 차이 나지 않았다. 평일 시간대로 나누면 아침의 아파트 단지와 퇴근 때의 연구단지·카이스트 대여소가 크게 한쪽으로 쏠렸다.</dd>
 <dt class="bad">막힌 점</dt><dd>① 이 PC는 보안 정책으로 pandas가 막혀 있었다 → DuckDB·numpy 환경을 새로 만들었다. ② 월별 파일의 글자 인코딩이 섞여 있었다(UTF-8과 CP949) → 파일마다 감지해서 읽었다. ③ 내려받은 CSV가 사실은 zip 파일이었다 → 이름을 고쳐 풀었다.</dd>
 <dt>다음 가설</dt><dd>학교 근처에서도 같은 쏠림이 있을 것이다.</dd></dl></details>
 
 <details class="card ps rv"><summary>실험 02·03 · 캠퍼스 대여소 보기<small>학기와 방학</small></summary><dl>
 <dt>가설</dt><dd>학교 근처 대여소는 학기에 이용이 늘고, 아침에 쌓였다가 오후에 빠질 것이다.</dd>
-<dt>한 일</dt><dd>대여소 이름의 키워드로 대학별로 묶고 학기·방학, 시간대를 비교했다. C대학은 정문·후문 가까이 500m 안 대여소까지 넣어 따로 봤다.</dd>
-<dt>결과</dt><dd>평일 대여가 학기에 방학의 약 2배였다(A대학 1,106 대 655, B대학 675 대 337, C대학 163 대 80). 아침에 쌓이고 오후에 빠졌다. C대학은 오피스텔(아침에 빠짐)과 후문(아침에 쌓이고 오후 3~4시에 빠짐) 사이에 흐름이 있었고, 학교로 들어오는 수와 나가는 수는 비슷했다(14,296 대 14,261).</dd>
+<dt>한 일</dt><dd>대여소 이름의 키워드로 대학별로 묶고 학기·방학, 시간대를 비교했다. 한남대은 정문·후문 가까이 500m 안 대여소까지 넣어 따로 봤다.</dd>
+<dt>결과</dt><dd>평일 대여가 학기에 방학의 약 2배였다(카이스트 1,106 대 655, 충남대 675 대 337, 한남대 163 대 80). 아침에 쌓이고 오후에 빠졌다. 한남대은 오피스텔(아침에 빠짐)과 후문(아침에 쌓이고 오후 3~4시에 빠짐) 사이에 흐름이 있었고, 학교로 들어오는 수와 나가는 수는 비슷했다(14,296 대 14,261).</dd>
 <dt class="bad">막힌 점</dt><dd>같은 방학인데 여름(월 91~94건)과 겨울(월 31~52건)이 2~3배 달랐다. 학기만으로는 설명이 안 된다 → 날씨를 붙이기로 했다. 대학 구분을 이름 키워드로 해서 빠진 대여소가 있을 수 있다.</dd>
 <dt>다음 가설</dt><dd>방학 차이의 일부는 날씨 때문일 것이다.</dd></dl></details>
 
@@ -215,8 +215,22 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <dt>가설</dt><dd>분석 결과를 조회 기능으로 열어 두면 AI가 질문에 근거를 들어 답할 수 있다.</dd>
 <dt>한 일</dt><dd>조회 기능 4개를 만들고, AI가 필요한 기능을 골라 쓰게 했다. 질문 9개(답할 수 있는 6개, 거절해야 하는 3개)로 확인했다.</dd>
 <dt>결과</dt><dd>알맞은 기능 고르기, 한계 말하기, 출처, 나열 순서, 거절이 모두 9/9였다. 다만 점검 기준을 결과를 본 뒤에 고쳤고 질문마다 한 번만 돌려서, 점수가 후할 수 있다.</dd>
-<dt class="bad">막힌 점과 해결</dt><dd>① 유료 AI는 비용이 들어 무료 Gemini로 바꿨다. ② 모델 이름이 종료돼(404) 쓸 수 없었고, 다음 모델은 접속이 몰려(503) 가벼운 모델로 바꿨다. ③ "한남대 후문"으로 검색하면 실제 이름이 "한남대학교 후문"이라 못 찾았다 → 단어별로 찾게 고쳤다. ④ AI가 순서를 바꿔 놓고 "순서 유지"라고 썼다 → 결과에 순위 번호를 넣고 순서를 자동 점검했다. ⑤ 날씨 답에서 "C대학 기준" 한계를 빼먹었다 → 결과에 필수 문구를 넣었다. ⑥ 거절 답에 AI 지침 문장이 그대로 나왔다 → 인용하지 말라고 고쳤다.</dd>
+<dt class="bad">막힌 점과 해결</dt><dd>① 유료 AI는 비용이 들어 무료 Gemini로 바꿨다. ② 모델 이름이 종료돼(404) 쓸 수 없었고, 다음 모델은 접속이 몰려(503) 가벼운 모델로 바꿨다. ③ "한남대 후문"으로 검색하면 실제 이름이 "한남대학교 후문"이라 못 찾았다 → 단어별로 찾게 고쳤다. ④ AI가 순서를 바꿔 놓고 "순서 유지"라고 썼다 → 결과에 순위 번호를 넣고 순서를 자동 점검했다. ⑤ 날씨 답에서 "한남대 기준" 한계를 빼먹었다 → 결과에 필수 문구를 넣었다. ⑥ 거절 답에 AI 지침 문장이 그대로 나왔다 → 인용하지 말라고 고쳤다.</dd>
 <dt>남은 것</dt><dd>질문이 9개뿐이다. 새 질문 세트로, 기준을 고정한 채 다시 확인해야 한다.</dd></dl></details>
+
+<details class="card ps rv"><summary>실험 08 · 빼지 않은 건 빼고 다시 돌리기<small>결론은 그대로</small></summary><dl>
+<dt>가설</dt><dd>집계에서 빼지 않은 180분 이상 이용(26,286건)과 같은 대여소 이용(469,766건)을 빼도 결론은 거의 같다.</dd>
+<dt>한 일</dt><dd>두 건을 뺀 집계를 따로 만들고(대여 7,157,146건), 날씨 회귀분석·예측 모델·순위를 같은 방법으로 다시 돌렸다.</dd>
+<dt>결과</dt><dd>비 0.36배→0.35배, 5°C 미만 0.32배→0.32배, 학기 효과 1.62배→1.65배, 순위상관 그대로(0.80 / 0.68 / 0.71). 예측 모델의 개선 폭도 비슷했다. 바뀐 결론은 없다.</dd>
+<dt class="bad">새로 알게 된 것</dt><dd>하루 전체로 빌려 간 수와 반납된 수의 차이가 18,293건(0.24%)에서 595건(0.008%)으로 줄었다. 처음 본 0.24% 차이는 180분 이상 건 때문이었다. 왜 그런지는 확인하지 못했다. 실험 03(한남대 정문·후문)은 다시 돌리지 않았다.</dd>
+<dt>다음 가설</dt><dd>에이전트 점수가 후했는지 기준을 고정하고 다시 확인한다.</dd></dl></details>
+
+<details class="card ps rv"><summary>실험 09 · 에이전트 다시 확인하기<small>기준 고정, 새 질문 15개</small></summary><dl>
+<dt>가설</dt><dd>9/9는 점검 기준을 결과를 보고 고쳐서 후할 수 있다. 기준을 고정하고 새 질문으로 돌려도 비슷하게 나올 것이다.</dd>
+<dt>한 일</dt><dd>새 질문 15개(답할 수 있는 10개, 거절해야 하는 5개)를 질문마다 한 번씩 돌렸다. 거절 질문은 거치대 수, 정확한 부족 대수 예측, 주말, 다른 도시, 특정 이용자 추적이다.</dd>
+<dt>결과</dt><dd>자동 점검은 알맞은 기능 15/15, 한계 말하기 15/15, 출처 15/15, 순서 15/15, 지침 노출 0/15. 거절 5건은 모두 조회 없이 범위 밖이라고 답했다.</dd>
+<dt class="bad">읽어서 찾은 문제</dt><dd>"눈이 오고 영하 5도" 질문에 눈을 비로 가정해 계산하고 그 가정을 밝히지 않았다. "내일 몇 대가 모자랄지" 거절 답에 근거 없는 재배치 조언이 붙었다. 자동 점검은 이 둘을 못 잡았다.</dd>
+<dt>다음 가설</dt><dd>날씨 도구가 눈과 비를 구분하게 하고, 가정을 밝히는지를 점검 항목에 넣는다.</dd></dl></details>
 </div>
 
 <div class="card rv"><h3>막힌 것을 어떻게 풀었나</h3><table class="fix">
@@ -225,12 +239,12 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <tr><td>월별 파일 인코딩이 섞임</td><td>파일마다 UTF-8을 먼저 시도하고 실패하면 CP949로 읽었다.</td></tr>
 <tr><td>시간당 예측이 안 맞음</td><td>실패를 기록하고, 시간대를 묶어 하루 단위 순위로 문제를 다시 잡았다.</td></tr>
 <tr><td>유료 AI, 개인정보 우려</td><td>무료 모델로 바꾸고, AI에게는 집계 결과만 보내며 이용이 적은 대여소는 뺐다.</td></tr>
-<tr><td>문서와 실제 집계가 어긋남</td><td>CLAUDE.md의 "제외" 문구가 실제와 달라서, 실제 기준에 맞게 고쳤다. 두 건(180분 이상, 같은 대여소)을 뺀 재분석은 하지 않았다.</td></tr>
+<tr><td>문서와 실제 집계가 어긋남</td><td>CLAUDE.md의 "제외" 문구가 실제와 달라서, 실제 기준에 맞게 고쳤다. 두 건(180분 이상, 같은 대여소)을 빼고 다시 돌렸고(실험 08) 결론은 같았다.</td></tr>
 </table></div>
 </section>
 
 <section id="s2"><h2><small>02</small>하루의 움직임</h2>
-<p class="lead">하루 전체로 보면 빌려 간 수와 반납된 수는 0.24%밖에 차이 나지 않는다. 평일을 시간대별로 나누면 서로 반대 방향의 흐름이 보인다.</p>
+<p class="lead">하루 전체로 보면 빌려 간 수와 반납된 수는 0.24%밖에 차이 나지 않는다(180분 이상 건을 빼면 0.008%). 평일을 시간대별로 나누면 서로 반대 방향의 흐름이 보인다.</p>
 <div class="card rv"><h3>평일 하루 흐름</h3>
   <div id="flow"></div>
   <div class="ctl"><button id="play" class="on">일시정지</button><span class="hourbadge" id="hh"></span><input id="hr" type="range" min="0" max="23" value="7"><span class="note" id="hmsg"></span></div>
@@ -259,13 +273,14 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <div class="card dont rv"><h3>이렇게 쓰면 안 된다</h3><ul>
 <li>대여소 한 곳의 시간당 예측으로 실시간 배차를 짜는 것. 후문 시간당 빠진 수는 비교 기준과 비슷한 수준으로밖에 못 맞혔다 (실험 05).</li>
 <li>'모자란 날이 많다'를 바로 "자전거가 떨어졌다"로 읽는 것. 남은 자전거 수와 거치대 수로 먼저 확인해야 한다.</li>
-<li>C대학 날씨 계수를 다른 지역에 그대로 쓰는 것. 참고값이다.</li></ul></div></section>
+<li>한남대 날씨 계수를 다른 지역에 그대로 쓰는 것. 참고값이다.</li></ul></div></section>
 
 <section id="s6"><h2><small>06</small>에이전트</h2>
 <p class="lead">AI가 조회 기능 4개(상위 대여소, 대여소 하나 조회, 옮길 후보 짝, 날씨 배수)를 골라 쓰며 답한다. AI에게는 집계 결과만 넘긴다.</p>
 <div class="card rv"><h3>실제 대화 예시</h3><div id="chat"></div><p class="note">확인할 때 돌린 실제 응답이다. 대여소 이름은 이 페이지용 이름(아파트 단지 1 등)으로 바꿨고, 말투와 용어는 AI가 쓴 그대로이고, 괄호 안 설명만 이 페이지에서 덧붙였다.</p></div>
 <div class="card rv"><h3>질문 9개로 확인 (알맞은 기능 고름 · 한계 말함 · 출처 · 순서 · 거절)<span class="tag s2">점수 후할 수 있음</span></h3><div id="c_eval"></div>
-<p class="note">확인하면서 대여소 검색 오류와, AI가 나열 순서를 마음대로 바꾸는 문제를 찾아 고쳤다. 점검 기준을 결과를 본 뒤에 고쳤고 질문마다 한 번만 돌려서, 점수가 후하게 나왔을 수 있다.</p></div></section>
+<h3 style="margin-top:14px">2차: 기준을 고정하고 새 질문 15개 <span class="tag s2">읽어서 찾은 문제 있음</span></h3><div id="c_eval2"></div>
+<p class="note">확인하면서 대여소 검색 오류와, AI가 나열 순서를 마음대로 바꾸는 문제를 찾아 고쳤다. 점검 기준을 결과를 본 뒤에 고쳤고 질문마다 한 번만 돌려서, 점수가 후하게 나왔을 수 있다. 2차는 기준을 바꾸지 않고 새 질문으로 돌렸는데 자동 점검은 모두 통과했다. 다만 읽어 보니 눈을 비로 가정하고 밝히지 않은 답이 있었다(점검이 못 잡음).</p></div></section>
 
 <section id="s7"><h2><small>07</small>한계</h2>
 <div class="card rv"><ul>
@@ -286,17 +301,19 @@ function svg(w,h,inner){return `<svg viewBox="0 0 ${w} ${h}" role="img">${inner}
 /* KPI 카운트업 */
 function countUp(id,to,suffix){const el=$(id);if(RM){el.textContent=to.toLocaleString()+suffix;return}
   const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(f)})(t0)}
-countUp("k1",D.scale.used,"건");$("k1s").textContent="분석에 쓴 이용 건수 (원본 "+D.scale.raw.toLocaleString()+"건 중, 관리자 이동 처리와 이용시간 이상 기록 제외)";$("k4").textContent=D.scale.start.slice(0,7).replace("-",".")+" ~ "+D.scale.end.slice(0,7).replace("-",".");countUp("k2",D.scale.stations,"곳");countUp("k3",7,"개");
+countUp("k1",D.scale.used,"건");$("k1s").textContent="분석에 쓴 이용 건수 (원본 "+D.scale.raw.toLocaleString()+"건 중, 관리자 이동 처리와 이용시간 이상 기록 제외)";$("k4").textContent=D.scale.start.slice(0,7).replace("-",".")+" ~ "+D.scale.end.slice(0,7).replace("-",".");countUp("k2",D.scale.stations,"곳");countUp("k3",9,"개");
 
 const STEPS=[
 ["데이터 확정","YouTube 댓글, 카카오 바이크, 청주는 약관이나 데이터가 없어 빼고, 대전 타슈 공식 데이터로 정했다","",""],
 ["지킬 규칙과 자동 차단","원본은 올리지 않기, 키는 .env에만, 스크래핑 금지, 이용이 적은 곳은 숨기기를 자동으로 막게 했다 (테스트 13/13)","",""],
 ["실험 01 빠진 수 집계","하루 전체로는 거의 맞지만(0.24%) 평일 출근·퇴근 시간대에는 대여소에 따라 한쪽으로 크게 쏠린다 (−45~−84%)","",""],
-["실험 02~03 캠퍼스","A대학·B대학은 오전에 쌓이고 오후에 빠진다. C대학은 오피스텔과 후문 사이에 흐름이 있다","",""],
+["실험 02~03 캠퍼스","카이스트·충남대은 오전에 쌓이고 오후에 빠진다. 한남대은 오피스텔과 후문 사이에 흐름이 있다","",""],
 ["실험 04 날씨","비가 오면 0.36배, 5°C 미만이면 0.32배. 학기와 방학의 차이는 2.13배에서 1.62배로 줄었다 (계절 때문에 부풀려진 부분이 약 1/4)","",""],
 ["실험 05 예측 모델","총 대여는 3%, 비 오는 시간은 59% 더 맞혔다. 후문의 시간당 빠진 수는 못 맞혀서, 시간대 단위로 보는 쪽으로 바꿨다","fail","일부 실패"],
 ["실험 06 순위 만들기","시간대별 순위가 만든 기간과 맞춰 본 기간에서 비슷했다 (순위상관 0.6~0.8). 평균 빠진 수 순위보다 낫다고는 못 한다","warn","한계 있음"],
-["실험 07 에이전트","유료 AI를 무료 Gemini로 바꿨다. 확인하다가 검색 오류와 순서 바꾸는 문제를 찾아 고쳤다 (9/9)","warn","점수 후할 수 있음"]];
+["실험 07 에이전트","유료 AI를 무료 Gemini로 바꿨다. 확인하다가 검색 오류와 순서 바꾸는 문제를 찾아 고쳤다 (9/9)","warn","점수 후할 수 있음"],
+["실험 08 민감도 재분석","180분 이상·같은 대여소 건(6.5%)을 빼고 다시 돌렸다. 비 0.36→0.35, 학기 1.62→1.65, 순위상관은 같다. 결론은 안 바뀌었다","",""],
+["실험 09 에이전트 재평가","기준을 고정하고 새 질문 15개로 다시 확인했다. 자동 점검은 모두 통과했지만 '눈'을 비로 가정하고 밝히지 않은 답을 읽어서 찾았다","warn","읽어서 찾은 문제 있음"]];
 $("steps").innerHTML=STEPS.map((s,i)=>`<div class="step ${s[2]}" style="transition-delay:${i*70}ms"><b>${s[0]}</b>${s[3]?`<span class="tag">${s[3]}</span>`:""}<div class="note" style="font-size:14px">${s[1]}</div></div>`).join("");
 
 /* 차트 */
@@ -341,6 +358,7 @@ showBand();
   g+=`<text x="${W/2}" y="${H-6}" text-anchor="middle">학습 기간(~8월) 부족일 비율</text><text transform="translate(12 ${H/2}) rotate(-90)" text-anchor="middle">검증 기간(9~10월)</text>`;
   $("c_scatter").innerHTML=svg(W,H,g)})();
 
+hbar("c_eval2",[["알맞은 기능 고름",15,null,null,A],["한계를 말함",15,null,null,A],["출처 표기",15,null,null,A],["순서 지킴",15,null,null,A],["지침 문구 노출(0이 좋음)",0,null,null,B]],v=>v+" / 15",false);
 hbar("c_eval",[["알맞은 기능 고름",9,null,null,A],["한계를 말함",9,null,null,A],["출처 표기",9,null,null,A],["순서 지킴",9,null,null,A],["지침 문구 노출(0이 좋음)",0,null,null,B]],v=>v+" / 9",false);
 
 /* 제안 */
@@ -353,8 +371,8 @@ const RECS=[
   ["퇴근 시간에 자주 모자란 곳 상위: "+top3("퇴근","shortage")+".","아침에 쌓인 자전거가 오후에 빠지는 패턴은 캠퍼스 세 곳에서 확인했다 (실험 02). 다른 지역도 그런지는 보지 않았다."]],
  ["가까운 대여소끼리 짝지어 옮기기","s2","근거 보통",
   ["출근: "+mv("출근").join(" / "),"퇴근: "+mv("퇴근").join(" / "),"거리만 본 단순한 짝짓기다. 실제로 옮길 수 있는지와 몇 대인지는 현장에서 정해야 한다."]],
- ["비 오는 날과 추운 날은 물량 줄이기","s2","근거 보통 (C대학 기준)",
-  ["비 1mm 이상이면 0.36배, 5°C 미만이면 0.32배. 비와 5°C 미만이 겹치면 0.12배, 비와 5~15°C면 0.25배.","C대학 캠퍼스에서 구한 값이라 다른 지역은 참고용이다."]],
+ ["비 오는 날과 추운 날은 물량 줄이기","s2","근거 보통 (한남대 기준)",
+  ["비 1mm 이상이면 0.36배, 5°C 미만이면 0.32배. 비와 5°C 미만이 겹치면 0.12배, 비와 5~15°C면 0.25배.","한남대 캠퍼스에서 구한 값이라 다른 지역은 참고용이다."]],
  ["방학에는 캠퍼스 물량을 학기의 60% 정도로","s2","근거 보통",
   ["날씨를 같이 따졌을 때 학기가 방학의 1.62배라서, 방학은 학기의 약 0.62배다.","시험과 휴강은 반영하지 못했다. 학기는 달력으로 나눴다."]],
  ["먼저 할 일: 거치대 수 확보, 2~4주 시범 운영","s3","다음 단계",
@@ -401,7 +419,7 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
     <text class="pop" x="${ml+w+8}" y="${y+31}" style="fill:var(--ink)">${r[1].toLocaleString()}건 (${(r[1]/F.raw*100).toFixed(1)}%)</text>`;
     if(r[3])g+=`<text class="pop" x="${W-4}" y="${y+14}" text-anchor="end">${r[3]}</text>`});
   $("c_funnel").innerHTML=svg(W,H,g);
-  $("funnel_note").textContent="분석에 남긴 건 중에 이용시간 180분 이상이 "+F.long.toLocaleString()+"건, 같은 대여소에서 빌리고 반납한 건이 "+F.same.toLocaleString()+"건("+(F.same/F.used*100).toFixed(1)+"%) 있다. 둘 다 빠진 수 계산에서는 빼지 않았다. 같은 대여소 건은 빌림과 반납이 서로 상쇄돼 빠진 수에는 영향이 없고, 대여 건수를 직접 센 분석(캠퍼스 회귀분석)에는 포함돼 있다."})();
+  $("funnel_note").textContent="분석에 남긴 건 중에 이용시간 180분 이상이 "+F.long.toLocaleString()+"건, 같은 대여소에서 빌리고 반납한 건이 "+F.same.toLocaleString()+"건("+(F.same/F.used*100).toFixed(1)+"%) 있다. 둘 다 빠진 수 계산에서는 빼지 않았다. 빼고 다시 분석해 봤는데 결론은 같았다(실험 08). 같은 대여소 건은 빌림과 반납이 서로 상쇄돼 빠진 수에는 영향이 없고, 대여 건수를 직접 센 분석(캠퍼스 회귀분석)에는 포함돼 있다."})();
 
 /* 대화 예시 */
 (function(){const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");

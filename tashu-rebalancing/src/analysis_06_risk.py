@@ -30,6 +30,9 @@ def spearmanr(a, b):
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 con = duckdb.connect(os.path.join(ROOT, "data", "processed", "tashu.duckdb"), read_only=True)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _clean import use_clean  # noqa: E402
+use_clean(con)
 
 T = 5          # 구간 순유출 임계(대)
 K = 20         # 상위 K

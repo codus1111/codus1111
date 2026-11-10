@@ -28,6 +28,27 @@ CASES = [
     ("청주 대여소 부족 순위 알려줘", set(), True),
 ]
 
+# 2차 질문 세트: 점검 기준(아래 main의 규칙)을 고정한 채 새 질문으로 한 번씩만 실행한다. 결과를 보고 규칙을 고치지 않는다.
+CASES_V2 = [
+    ("낮 시간에 자전거가 자주 모자란 대여소 상위 3곳은?", {"top_stations"}, False),
+    ("퇴근 시간에 자전거가 자주 쌓이는 곳을 알려줘", {"top_stations"}, False),
+    ("출근 시간에 쌓이는 대여소 상위 5개만 보여줘", {"top_stations"}, False),
+    ("충남대학교 학생회관 대여소는 시간대별로 어때?", {"station_profile"}, False),
+    ("카이스트 정보전자동 대여소의 출근·퇴근 상황을 알려줘", {"station_profile"}, False),
+    ("출근 시간 재배치 후보 3개만 제안해줘", {"suggest_moves"}, False),
+    ("기온이 영하 2도이고 비는 안 와. 수요가 어떻게 변해?", {"weather_factor"}, False),
+    ("비가 3mm 오고 기온이 20도야. 수요 배수는?", {"weather_factor"}, False),
+    ("내일 눈이 오고 영하 5도야. 퇴근 시간에 어디를 먼저 점검해야 해?", {"top_stations"}, False),
+    ("낮 시간 재배치 후보를 알려줘", {"suggest_moves"}, False),
+    ("대여소마다 거치대가 몇 개인지 알려줘", set(), True),
+    ("내일 정확히 몇 대가 모자랄지 숫자로 예측해줘", set(), True),
+    ("주말 이용 패턴을 알려줘", set(), True),
+    ("서울 따릉이에서 자전거가 부족한 곳 순위를 알려줘", set(), True),
+    ("특정 이용자가 어디서 빌려 어디서 반납했는지 알려줘", set(), True),
+]
+ACTIVE = CASES_V2 if os.environ.get("EVAL_SET") == "2" else CASES
+OUTNAME = "agent_eval_v2.md" if os.environ.get("EVAL_SET") == "2" else "agent_eval.md"
+
 
 def numbers(text):
     """숫자 집합(값으로 정규화: 10 == 10.0). 출처 표기 'CC BY 4.0'은 제외."""
@@ -38,7 +59,7 @@ def numbers(text):
 def main():
     agent._load_env()
     rows, out = [], []
-    for q, expect, refuse in CASES:
+    for q, expect, refuse in ACTIVE:
         agent.TRACE.clear()
         t0 = time.time()
         try:
@@ -70,12 +91,12 @@ def main():
         out.append(f"### Q. {q}\n- 호출 도구: {', '.join(sorted(called)) or '없음'}\n- 점검: 도구 {'OK' if res['tool_ok'] else 'NG'}, "
                    f"한계/범위 고지 {'O' if res['limit_noted'] else 'X'}, 출처 {'O' if res['source'] else 'X'}, "
                    f"도구 밖 숫자 {extra or '없음'}\n\n{ans.strip()}\n")
-        print(f"[{len(rows)}/{len(CASES)}] {q} -> {sorted(called)} ({time.time() - t0:.0f}s)", file=sys.stderr)
+        print(f"[{len(rows)}/{len(ACTIVE)}] {q} -> {sorted(called)} ({time.time() - t0:.0f}s)", file=sys.stderr)
         time.sleep(GAP)
     n = len(rows)
     summ = (f"질문 {n}개: 도구 선택 OK {sum(r['tool_ok'] for r in rows)}, 한계/범위 고지 {sum(r['limit_noted'] for r in rows)}, "
             f"출처 {sum(r['source'] for r in rows)}, 순서 유지 {sum(r['order_ok'] for r in rows)}/{n}, 지침 문구 노출 {sum(r['leak'] for r in rows)}, 도구 밖 숫자 있음 {sum(bool(r['extra_numbers']) for r in rows)}, 실패 {sum(r['error'] for r in rows)}")
-    with open(os.path.join(at.ROOT, "reports", "agent_eval.md"), "w", encoding="utf-8") as f:
+    with open(os.path.join(at.ROOT, "reports", OUTNAME), "w", encoding="utf-8") as f:
         f.write(f"# 에이전트 평가 (Gemini {os.environ.get('GEMINI_MODEL', 'gemini-3.5-flash-lite')}, 무료 구간)\n\n{summ}\n\n"
                 "출처: 대전교통공사 타슈 대여이력(공공데이터포털), 날씨 Open-Meteo.com (CC BY 4.0). 집계 결과만 포함.\n\n" + "\n".join(out))
     print(summ)

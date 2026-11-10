@@ -114,11 +114,19 @@ def suggest_moves(band: str, n: int = 5, max_km: float = 3.0):
             "후보": moves}
 
 
-def weather_factor(rain_mm: float = 0.0, temp_c: float = 20.0):
-    """한남대 캠퍼스 시간당 대여에 대한 날씨 배수(실험 04 회귀 계수). 캠퍼스 한 곳 기준이라 다른 지역엔 참고용."""
-    f = 0.36 if rain_mm >= 1 else 1.0
+def weather_factor(precip_mm: float = 0.0, temp_c: float = 20.0, rain_mm=None):
+    """한남대 캠퍼스 시간당 대여에 대한 날씨 배수(실험 04 회귀 계수). 캠퍼스 한 곳 기준이라 다른 지역엔 참고용.
+
+    precip_mm는 강수량(mm)이다. 계산에 쓴 날씨 자료의 강수량은 눈도 물로 환산해 포함하므로 비와 눈을 구분하지 않는다.
+    rain_mm는 예전 이름(호환용).
+    """
+    if rain_mm is not None:
+        precip_mm = rain_mm
+    f = 0.36 if precip_mm >= 1 else 1.0
     f *= 0.32 if temp_c < 5 else 0.69 if temp_c < 15 else 1.04 if temp_c >= 25 else 1.0
-    return {"배수": round(f, 2), "필수고지": "한남대 캠퍼스 기준 추정", "근거": "한남대 캠퍼스 8곳 포아송 회귀(기준 15~25°C, 비 없음). 재분석 날씨, 대전 한 지점. 압력 점수에 곱해 물량을 가늠하는 참고값."}
+    return {"배수": round(f, 2), "필수고지": "한남대 캠퍼스 기준 추정",
+            "가정": "비와 눈을 구분하지 않고 강수량(눈은 물로 환산한 mm) 1mm 이상이면 같은 배수(0.36)를 적용했다. 눈만의 계수는 따로 구하지 않았다.",
+            "근거": "한남대 캠퍼스 8곳 포아송 회귀(기준 15~25°C, 강수 없음). 재분석 날씨, 대전 한 지점. 압력 점수에 곱해 물량을 가늠하는 참고값."}
 
 
 TOOLS = {"top_stations": top_stations, "station_profile": station_profile,
@@ -135,6 +143,6 @@ SCHEMAS = [
      "input_schema": {"type": "object", "properties": {
          "band": {"type": "string", "enum": list(BANDS)}, "n": {"type": "integer", "minimum": 1, "maximum": MAX_N},
          "max_km": {"type": "number"}}, "required": ["band"]}},
-    {"name": "weather_factor", "description": "예보 강수(mm)·기온(°C)에 따른 수요 배수(한남대 캠퍼스 기준 추정).",
-     "input_schema": {"type": "object", "properties": {"rain_mm": {"type": "number"}, "temp_c": {"type": "number"}}}},
+    {"name": "weather_factor", "description": "예보 강수량(mm, 비와 눈 모두 물로 환산한 값)과 기온(°C)에 따른 수요 배수(한남대 캠퍼스 기준 추정). 결과의 '가정'을 답에 밝힌다.",
+     "input_schema": {"type": "object", "properties": {"precip_mm": {"type": "number", "description": "강수량(mm). 비·눈 구분 없음"}, "temp_c": {"type": "number"}}}},
 ]

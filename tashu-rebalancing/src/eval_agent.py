@@ -46,8 +46,24 @@ CASES_V2 = [
     ("서울 따릉이에서 자전거가 부족한 곳 순위를 알려줘", set(), True),
     ("특정 이용자가 어디서 빌려 어디서 반납했는지 알려줘", set(), True),
 ]
-ACTIVE = CASES_V2 if os.environ.get("EVAL_SET") == "2" else CASES
-OUTNAME = "agent_eval_v2.md" if os.environ.get("EVAL_SET") == "2" else "agent_eval.md"
+# 3차 질문 세트: 실험 09에서 읽어서 찾은 문제(눈을 비로 가정하고 안 밝힘, 거절 답에 근거 없는 조언)를 고친 뒤 새 질문으로 확인.
+CASES_V3 = [
+    ("눈이 5mm 오고 기온이 영하 3도야. 수요가 어떻게 돼?", {"weather_factor"}, False),
+    ("내일 눈이 오고 영하 5도인데 출근 시간에 어디부터 봐야 해?", {"top_stations"}, False),
+    ("함박눈이 내리면 이용이 얼마나 줄어?", set(), False),
+    ("비는 안 오고 30도야. 수요 배수는?", {"weather_factor"}, False),
+    ("안개가 끼면 이용이 줄어?", set(), True),
+    ("퇴근 시간에 자주 모자란 대여소 상위 3곳을 알려줘", {"top_stations"}, False),
+    ("출근 시간 재배치 후보 2개만 제안해줘", {"suggest_moves"}, False),
+    ("한남대 정문 대여소는 어때?", {"station_profile"}, False),
+    ("내일 정확히 몇 대를 보충해야 해?", set(), True),
+    ("트럭이 몇 대 필요해?", set(), True),
+    ("다음 주 이용량을 예측해줘", set(), True),
+    ("이용자 한 명의 출퇴근 경로를 알려줘", set(), True),
+]
+_SETS = {"2": CASES_V2, "3": CASES_V3}
+ACTIVE = _SETS.get(os.environ.get("EVAL_SET"), CASES)
+OUTNAME = {"2": "agent_eval_v2.md", "3": "agent_eval_v3.md"}.get(os.environ.get("EVAL_SET"), "agent_eval.md")
 
 
 def numbers(text):
@@ -86,7 +102,10 @@ def main():
                "limit_noted": (("한남대" in ans) if "weather_factor" in called
                                else any(k in ans for k in ["재고", "거치대", "범위", "수 없", "않습니다", "제공하지"])),
                "source": "공공데이터포털" in ans or refuse, "extra_numbers": extra, "error": err, "order_ok": order_ok,
-               "leak": "지침" in ans or "프로젝트 범위 밖이므로 답변할 수 없습니다" in ans}
+               "leak": "지침" in ans or "프로젝트 범위 밖이므로 답변할 수 없습니다" in ans,
+               # 3차부터 추가한 점검: 날씨 도구를 쓴 답은 강수 가정을 밝혔는가, 거절 답에 근거 없는 조언이 없는가
+               "assume_ok": ("강수" in ans) if "weather_factor" in called else True,
+               "no_advice": (not any(k in ans for k in ["권장", "추천", "제안드", "하는 것이 좋"])) if refuse else True}
         rows.append(res)
         out.append(f"### Q. {q}\n- 호출 도구: {', '.join(sorted(called)) or '없음'}\n- 점검: 도구 {'OK' if res['tool_ok'] else 'NG'}, "
                    f"한계/범위 고지 {'O' if res['limit_noted'] else 'X'}, 출처 {'O' if res['source'] else 'X'}, "
@@ -95,7 +114,7 @@ def main():
         time.sleep(GAP)
     n = len(rows)
     summ = (f"질문 {n}개: 도구 선택 OK {sum(r['tool_ok'] for r in rows)}, 한계/범위 고지 {sum(r['limit_noted'] for r in rows)}, "
-            f"출처 {sum(r['source'] for r in rows)}, 순서 유지 {sum(r['order_ok'] for r in rows)}/{n}, 지침 문구 노출 {sum(r['leak'] for r in rows)}, 도구 밖 숫자 있음 {sum(bool(r['extra_numbers']) for r in rows)}, 실패 {sum(r['error'] for r in rows)}")
+            f"출처 {sum(r['source'] for r in rows)}, 순서 유지 {sum(r['order_ok'] for r in rows)}/{n}, 지침 문구 노출 {sum(r['leak'] for r in rows)}, 가정 밝힘 {sum(r['assume_ok'] for r in rows)}/{n}, 근거 없는 조언 {sum(not r['no_advice'] for r in rows)}, 도구 밖 숫자 있음 {sum(bool(r['extra_numbers']) for r in rows)}, 실패 {sum(r['error'] for r in rows)}")
     with open(os.path.join(at.ROOT, "reports", OUTNAME), "w", encoding="utf-8") as f:
         f.write(f"# 에이전트 평가 (Gemini {os.environ.get('GEMINI_MODEL', 'gemini-3.5-flash-lite')}, 무료 구간)\n\n{summ}\n\n"
                 "출처: 대전교통공사 타슈 대여이력(공공데이터포털), 날씨 Open-Meteo.com (CC BY 4.0). 집계 결과만 포함.\n\n" + "\n".join(out))

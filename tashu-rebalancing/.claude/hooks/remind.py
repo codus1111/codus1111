@@ -3,6 +3,8 @@
 stdout of these hooks is added to Claude's context, so the rules are
 re-injected at the start of the session and on every user prompt.
 """
+import os
+import re
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -16,3 +18,17 @@ print(
 - 출처 표기(대전교통공사, 공공데이터포털)와 비제휴 고지 유지. 운영기관 비방·과장 금지.
 - 이 PC는 pandas(numpy DLL)가 차단돼 있음 → 다른 도구는 실제 동작 확인 후 사용. 애매하면 진행하지 말고 사용자에게 질문."""
 )
+
+
+# 견본 파일(.env.example 등)에 실제 비밀값이 섞였는지 매번 점검해 경고한다(값은 출력하지 않음).
+root = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+assign = re.compile(r"(?im)^\s*(?:export\s+)?([A-Z0-9_]*(?:KEY|TOKEN|SECRET|PASSWORD|PASSWD)[A-Z0-9_]*)\s*=\s*(.+?)\s*$")
+placeholder = re.compile(r"(?i)^[\"']?(<.*>|your[-_ ].*|x{3,}.*|changeme|example.*|\.\.\.)[\"']?$")
+for name in (".env.example", ".env.sample", ".env.template"):
+    path = os.path.join(root, name)
+    if not os.path.exists(path):
+        continue
+    for i, line in enumerate(open(path, encoding="utf-8", errors="ignore").read().splitlines(), 1):
+        m = assign.match(line)
+        if m and not placeholder.match(m.group(2).strip()):
+            print(f"[경고] {name} {i}번째 줄({m.group(1)})에 실제 값이 있습니다. 올리기 전에 비우고 키는 .env에만 두세요. (값은 표시하지 않음)")

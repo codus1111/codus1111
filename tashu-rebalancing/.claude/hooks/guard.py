@@ -5,6 +5,7 @@ Checks are deliberately simple pattern checks; they are a safety net,
 not a replacement for following CLAUDE.md.
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -27,6 +28,40 @@ FORBIDDEN_PATH = re.compile(
 )
 
 
+ENV_ASSIGN = re.compile(r"(?im)^\s*(?:export\s+)?([A-Z0-9_]*(?:KEY|TOKEN|SECRET|PASSWORD|PASSWD)[A-Z0-9_]*)\s*=\s*(.+?)\s*$")
+PLACEHOLDER = re.compile(r"(?i)^[\"']?(<.*>|your[-_ ].*|x{3,}.*|changeme|example.*|\.\.\.)[\"']?$")
+SAMPLE_NAME = re.compile(r"(?i)(\.env[^/]*\.(example|sample|template)|\.(example|sample)$)")
+
+
+def filled_secrets(text: str):
+    """NAME=값 형태에서 비밀 이름에 실제 값이 들어 있는 줄 번호와 이름(값은 반환하지 않음)."""
+    out = []
+    for i, line in enumerate(text.splitlines(), 1):
+        m = ENV_ASSIGN.match(line)
+        if m and not PLACEHOLDER.match(m.group(2).strip()):
+            out.append((i, m.group(1)))
+    return out
+
+
+def scan_sample_files(root: str):
+    """프로젝트 루트(와 한 단계 아래)의 견본 파일(.env.example 등)에 실제 값이 있는지 검사."""
+    found = []
+    for base, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in (".git", ".venv", "node_modules", "data", "__pycache__")]
+        if base[len(root):].count(os.sep) > 1:
+            dirs[:] = []
+            continue
+        for f in files:
+            if SAMPLE_NAME.search(f):
+                try:
+                    text = open(os.path.join(base, f), encoding="utf-8", errors="ignore").read()
+                except OSError:
+                    continue
+                if API_KEY.search(text) or filled_secrets(text):
+                    found.append(os.path.relpath(os.path.join(base, f), root))
+    return found
+
+
 def block(msg: str) -> None:
     print(f"[준수 규칙 위반으로 차단] {msg}\n자세한 내용: docs/COMPLIANCE.md, CLAUDE.md", file=sys.stderr)
     sys.exit(2)
@@ -40,6 +75,8 @@ def check_content(path: str, text: str) -> None:
     p = norm(path)
     if API_KEY.search(text) or SECRET_ASSIGN.search(text):
         block("API 키/비밀값으로 보이는 문자열이 포함돼 있습니다. 키는 .env에만 두고 코드·문서에 넣지 마세요.")
+    if (SAMPLE_NAME.search(os.path.basename(p)) or os.path.basename(p).startswith(".env")) and filled_secrets(text):
+        block("견본(.env.example 등)이나 .env 계열 파일에 비밀값을 쓰려 합니다. 값은 .env에만 두고 견본은 비워 두세요.")
     if "/.claude/hooks/" in p:
         return  # 훅 스크립트는 금지 패턴 목록 자체를 담고 있으므로 아래 검사에서 제외
     if p.endswith(CODE_EXT) and SCRAPERS.search(text):
@@ -70,8 +107,16 @@ def check_bash(cmd: str, cwd: str) -> None:
         if re.search(r"(^|[\s/])data(/|\s|$)|\.env\b|\.(db|sqlite3?|parquet|csv)\b", cmd):
             block("data/, .env, 데이터 파일은 커밋 대상이 아닙니다.")
 
+    # 견본 파일(.env.example 등)에 실제 값이 섞인 채로 올리거나 복사하는 사고를 막는다.
+    if re.search(r"\bgit\s+(add|commit|push)\b", cmd) or re.search(r"(?i)\b(cp|copy|robocopy|rsync|Copy-Item)\b.*\.env", cmd):
+        root = os.environ.get("CLAUDE_PROJECT_DIR") or cwd
+        bad = scan_sample_files(root)
+        if bad:
+            block("견본 파일에 실제 비밀값이 들어 있어 커밋·푸시·복사를 막았습니다: " + ", ".join(bad)
+                  + " (값은 표시하지 않음). .env.example의 값을 비우고 키는 .env에만 두세요.")
+
     if re.search(r"\bgit\s+(commit|push)\b", cmd):
-        staged = git(["diff", "--cached", "--name-only"], cwd).splitlines()
+        staged =git(["diff", "--cached", "--name-only"], cwd).splitlines()
         tracked = git(["ls-files"], cwd).splitlines() if "push" in cmd else []
         for f in staged + tracked:
             if FORBIDDEN_PATH.search(norm(f)):

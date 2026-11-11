@@ -8,7 +8,7 @@
 |---|---|---|---|
 | [타슈 대여이력 정보](https://www.data.go.kr/data/15137219/fileData.do) | 대전교통공사 | CSV(월별), 연 1회 갱신 | 무료, **이용허락범위 제한 없음** |
 | [타슈 대여소 현황 API](https://www.data.go.kr/data/15119663/openapi.do) | 대전교통공사 | JSON, 실시간 | 무료, 이용허락범위 제한 없음, 키는 타슈 앱 [자전거정보 > Open API]에서 신청, 트래픽은 기관 정책에 따름 |
-| [타슈정보 API](https://www.data.go.kr/data/15109253/openapi.do) | 대전광역시 | JSON | 활용신청 방식 |
+| [타슈정보 API](https://www.data.go.kr/data/15109253/openapi.do) | 대전광역시 | JSON, 실시간 | 무료, 이용허락범위 제한 없음(2026-11-11 확인). 공공데이터포털 **활용신청**으로 인증키(serviceKey) 발급. 호출 주소 `https://apis.data.go.kr/6300000/openapi2022/tasuInfo`, 요청변수 serviceKey·pageNo·numOfRows. 개요에 대여소 명칭·주소·위도·경도·**거치대 수·이용 가능한 자전거 수**가 포함된다고 적혀 있으나 응답 필드명과 호출 한도는 신청 후 확인 필요 |
 | [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) | Open-Meteo | JSON, 시간별 | **비상업적 이용만 무료**(개인·교육·비영리), 일 10,000회·시간 5,000회·분 600회 미만, 데이터는 **CC BY 4.0**(출처 표기 필수). 키 불필요 |
 | [Anthropic API](https://www.anthropic.com/legal/commercial-terms) | Anthropic | 에이전트의 LLM 호출 | 상업 약관 B절: 고객 콘텐츠(입력·출력)로 모델을 학습하지 않음(2026-11-10 확인). 입력 권한 보증(L.1), 사용 정책 준수(D.2). 일반 API 입력의 보관 기간은 확인하지 못함 |
 | [Gemini API 무료 구간](https://aistudio.google.com/docs/terms) | Google | 에이전트의 LLM 호출 | **무료 구간(Unpaid Services)은 입력·출력이 제품 개선에 쓰이고 사람이 읽을 수 있음**(약관, 2026-11-10 확인). "민감·기밀·개인정보를 넣지 말 것". 18세 이상. EEA·스위스·영국 사용자 대상 서비스로 공개하면 유료만 가능. 속도 한도는 공식 페이지에서 찾지 못해 AI Studio 화면에서 확인 |

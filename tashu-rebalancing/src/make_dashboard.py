@@ -122,39 +122,6 @@ D["funnel"] = {
     "same": q1("SELECT count(*) FROM rentals WHERE NOT ctrl_rent AND minutes > 0 AND rent_id = ret_id"),
 }
 
-# 6) 지도용 동 단위 집계: 개별 대여소는 노출하지 않고, 대여소 3곳 이상·이용 200건 이상인 동만 남긴다(규칙 9).
-import math  # noqa: E402
-
-D["map"] = {}
-for bname, (h0, h1) in at.BANDS.items():
-    rows = con.execute(f"""
-        SELECT s.gu, s.dong, count(DISTINCT s.id) n_st, avg(s.lat) lat, avg(s.lon) lon,
-               sum(f.rentals - f.returns) net, sum(f.rentals + f.returns) vol
-        FROM flows f JOIN stations s ON s.id = f.sid
-        WHERE f.h BETWEEN {h0} AND {h1} AND dayofweek(f.d) BETWEEN 1 AND 5
-        GROUP BY s.gu, s.dong HAVING count(DISTINCT s.id) >= 3 AND sum(f.rentals + f.returns) >= 200
-        ORDER BY s.gu, s.dong""").fetchall()
-    D["map"][bname] = [{"gu": r[0], "dong": r[1], "n": r[2], "x": round((r[4] - 127.385) * math.cos(math.radians(36.35)), 5),
-                        "y": round(r[3] - 36.35, 5), "net": round(r[5] / n_days, 1), "vol": int(r[6])} for r in rows]
-D["map_note"] = {"n_days": n_days, "dongs": len({d["dong"] for b in D["map"].values() for d in b})}
-
-# 7) 지도 배경: 대전 5개 구 경계(geoBoundaries, CC BY 3.0). 파일이 없으면 윤곽 없이 점만 그린다.
-GEO = os.path.join(at.ROOT, "data", "raw", "geo", "geoBoundaries-KOR-ADM2.geojson")
-GU_KO = {"Dong-gu": "동구", "Jung-gu": "중구", "Seo-gu": "서구", "Daedeok-gu": "대덕구", "Yuseong-gu": "유성구"}
-D["geo"] = []
-if os.path.exists(GEO):
-    gj = json.load(open(GEO, encoding="utf-8"))
-    for f in gj["features"]:
-        name = f["properties"].get("shapeName")
-        g = f["geometry"]
-        rings = [g["coordinates"][0]] if g["type"] == "Polygon" else [p[0] for p in g["coordinates"]]
-        pts = [pt for r_ in rings for pt in r_]
-        lon = sum(p[0] for p in pts) / len(pts)
-        lat = sum(p[1] for p in pts) / len(pts)
-        if name in GU_KO and 36.15 < lat < 36.55 and 127.2 < lon < 127.6:  # 이름이 같은 다른 도시의 구와 구분
-            D["geo"].append({"gu": GU_KO[name], "rings": [[[round((p[0] - 127.385) * math.cos(math.radians(36.35)), 5),
-                                                             round(p[1] - 36.35, 5)] for p in r_] for r_ in rings]})
-print("지도 구 경계:", [g["gu"] for g in D["geo"]])
 
 from dashboard_dialog import load_dialog  # noqa: E402
 

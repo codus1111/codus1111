@@ -9,7 +9,6 @@
 | [타슈 대여이력 정보](https://www.data.go.kr/data/15137219/fileData.do) | 대전교통공사 | CSV(월별), 연 1회 갱신 | 무료, **이용허락범위 제한 없음** |
 | [타슈 대여소 현황 API](https://www.data.go.kr/data/15119663/openapi.do) | 대전교통공사 | JSON, 실시간 | 무료, 이용허락범위 제한 없음, 키는 타슈 앱 [자전거정보 > Open API]에서 신청, 트래픽은 기관 정책에 따름 |
 | [타슈정보 API](https://www.data.go.kr/data/15109253/openapi.do) | 대전광역시 | JSON, 실시간 | 무료, 이용허락범위 제한 없음(2026-11-11 확인). 공공데이터포털 **활용신청**으로 인증키(serviceKey) 발급. 호출 주소 `https://apis.data.go.kr/6300000/openapi2022/tasuInfo`, 요청변수 serviceKey·pageNo·numOfRows. 2026-11-11 실제 호출 1회: 주소는 `.../tasuInfo/gettasuInfo`, 응답은 키오스크 202행(거치대 수 `dfrCo`, 좌표, 자치구, 개설 연도). 남은 자전거 수는 없고 호출 한도는 확인하지 못함. 응답 원본은 `data/raw/tashu_api/`(gitignore)에만 둔다 |
-| [geoBoundaries 한국 시군구(ADM2) 경계](https://www.geoboundaries.org/api/current/gbOpen/KOR/ADM2/) | geoBoundaries(wmgeolab), 원자료 citypopulation.de | GeoJSON 1개, 1회 내려받음 | **CC BY 3.0**(출처 표기 필수, 2026-11-11 메타데이터 확인). 지도 배경(대전 5개 구 경계)에만 쓰고 대시보드에 출처를 표기한다. 단순화된 자료라 실제 경계와 다르다 |
 | [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) | Open-Meteo | JSON, 시간별 | **비상업적 이용만 무료**(개인·교육·비영리), 일 10,000회·시간 5,000회·분 600회 미만, 데이터는 **CC BY 4.0**(출처 표기 필수). 키 불필요 |
 | [Anthropic API](https://www.anthropic.com/legal/commercial-terms) | Anthropic | 에이전트의 LLM 호출 | 상업 약관 B절: 고객 콘텐츠(입력·출력)로 모델을 학습하지 않음(2026-11-10 확인). 입력 권한 보증(L.1), 사용 정책 준수(D.2). 일반 API 입력의 보관 기간은 확인하지 못함 |
 | [Gemini API 무료 구간](https://aistudio.google.com/docs/terms) | Google | 에이전트의 LLM 호출 | **무료 구간(Unpaid Services)은 입력·출력이 제품 개선에 쓰이고 사람이 읽을 수 있음**(약관, 2026-11-10 확인). "민감·기밀·개인정보를 넣지 말 것". 18세 이상. EEA·스위스·영국 사용자 대상 서비스로 공개하면 유료만 가능. 속도 한도는 공식 페이지에서 찾지 못해 AI Studio 화면에서 확인 |
@@ -63,11 +62,9 @@
 - 에이전트를 외부에 공개 서비스로 배포하지 않는다(로컬 데모만). 한도(429)는 한 번 재시도하고 우회하지 않는다.
 - 모델 ID는 `.env`의 `GEMINI_MODEL`로 바꾼다. 무료 지원 모델 목록은 가격 페이지를 따른다.
 
-### 지도 시각화 점검 (2026-11-11)
-- 대시보드의 동네 지도는 **동(洞) 단위 합계**만 그린다. 개별 대여소 위치·이름과 이동 경로는 그리지 않는다.
-- 소수 셀 억제: 대여소가 3곳 미만이거나 평일 시간대 이용이 200건 미만인 동은 뺀다. 시간은 출근·낮·퇴근 구간으로만 나눈다.
-- 지도 타일 같은 외부 지도 서비스는 쓰지 않는다(약관·저장 제한 회피). 배경은 geoBoundaries 구 경계(CC BY 3.0) 파일 하나를 직접 그린 것이고, 점의 위치는 대여소 좌표의 동별 평균이다.
-- 타슈 실시간 대여소 API(거치대 수·재고)는 키 신청 전이라 사용하지 않았다. 도입할 때는 응답 필드와 호출 제한을 확인하고 이 문서를 갱신한다.
+### 지도 시각화 (2026-11-11, 제거)
+- 동 단위 지도를 시도했으나 대시보드에서 뺐다. 지도에 쓰던 외부 경계 자료(geoBoundaries)는 더 이상 쓰지 않는다.
+- 지도를 다시 넣으면 소수 셀 억제(동 단위 합계, 대여소 3곳 미만·이용 200건 미만 제외)와 외부 지도 서비스 약관·출처 표기를 먼저 점검한다.
 
 ### 재점검 트리거
 새 데이터 소스 추가 / 위치 보강 데이터 도입 / 외부 서비스(LLM 포함)로 전송 / 데이터 결합 / 결과·지도 공개 / 목적 변경

@@ -20,8 +20,8 @@ D = {}
 # 1) 시간대별 평균 순유출: 출근 부족 상위 20곳(주로 아파트) vs 출근 과잉 상위 20곳(연구·업무·캠퍼스)
 n_days = con.execute("SELECT count(DISTINCT d) FROM flows WHERE dayofweek(d) BETWEEN 1 AND 5").fetchall()[0][0]
 rows = at._band("출근")
-groups = {"출근 때 비는 곳(상위 20, 주로 아파트)": sorted(rows, key=lambda r: -r["short_rate"])[:20],
-          "출근 때 쌓이는 곳(상위 20, 연구·업무·캠퍼스)": sorted(rows, key=lambda r: -r["over_rate"])[:20]}
+groups = {"출근 때 비는 곳(상위 20, 주로 아파트)": sorted(rows, key=lambda r: (-r["short_rate"], r["id"]))[:20],
+          "출근 때 쌓이는 곳(상위 20, 연구·업무·캠퍼스)": sorted(rows, key=lambda r: (-r["over_rate"], r["id"]))[:20]}
 D["hourly"] = {}
 for name, g in groups.items():
     ids = ",".join(f"'{r['id']}'" for r in g)

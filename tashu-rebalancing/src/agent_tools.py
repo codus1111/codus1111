@@ -64,7 +64,7 @@ def top_stations(band: str, kind: str, n: int = 10):
     key = "short_rate" if kind == "shortage" else "over_rate"
     if kind not in ("shortage", "overflow"):
         raise ValueError("kind는 shortage 또는 overflow")
-    rows = sorted(_band(band), key=lambda r: -r[key])[: min(int(n), MAX_N)]
+    rows = sorted(_band(band), key=lambda r: (-r[key], r["id"]))[: min(int(n), MAX_N)]
     return {"구간": band, "종류": kind, "기준": f"평일 구간 순유출 {T}대 이상(부족)/-{T}대 이하(과잉)인 날의 비율, 이 비율이 높은 순서가 순위",
             "결과": [{"순위": i + 1, **_pub(r)} for i, r in enumerate(rows)]}
 
@@ -92,8 +92,8 @@ def _km(a, b):
 def suggest_moves(band: str, n: int = 5, max_km: float = 3.0):
     """과잉 대여소에서 부족 대여소로 옮기는 후보 짝을 거리순 탐욕 매칭으로 제안."""
     rows = _band(band)
-    short = sorted(rows, key=lambda r: -r["short_rate"])[:30]
-    over = sorted(rows, key=lambda r: -r["over_rate"])[:30]
+    short = sorted(rows, key=lambda r: (-r["short_rate"], r["id"]))[:30]
+    over = sorted(rows, key=lambda r: (-r["over_rate"], r["id"]))[:30]
     used, moves = set(), []
     for s in short:
         best = None

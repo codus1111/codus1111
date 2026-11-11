@@ -273,7 +273,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <div class="card rv tabs"><span class="note">시간대</span> <span id="mtabs"></span>
 <div id="map"></div>
 <div class="legend" id="mlegend"></div>
-<p class="note">점 하나가 동 하나다(그 동에 있는 대여소 위치의 평균). 연한 큰 글자는 구(서구·유성구·동구·중구·대덕구)의 대략적인 위치다(그 구 동들의 평균 위치이고 행정 경계는 아니다). 값은 평일 하루 평균으로 빠진 자전거 수다. 점에 마우스를 올리면 이름과 값이 나온다.</p>
+<p class="note">점 하나가 동 하나다(그 동에 있는 대여소 위치의 평균). 배경은 대전 5개 구(서구·유성구·동구·중구·대덕구)의 대략적인 경계이고, 단순화된 자료라 실제 경계와 조금 다르다. 구 경계 출처: geoBoundaries(CC BY 3.0, 원자료 citypopulation.de). 값은 평일 하루 평균으로 빠진 자전거 수다. 점에 마우스를 올리면 이름과 값이 나온다.</p>
 <p class="note">개인정보 점검: 개별 대여소와 이동 경로는 그리지 않았다. 대여소가 3곳 미만이거나 이용이 200건 미만인 동은 뺐다. 배경 지도(타일)는 외부 지도 서비스의 약관을 피하려고 쓰지 않았다.</p>
 <div id="mtip" class="note" style="min-height:1.6em;color:var(--title);font-weight:700"></div></div></section>
 
@@ -301,7 +301,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <li>맞춰 본 기간은 2개월, AI 확인 질문은 9개뿐이다.</li>
 </ul></div></section>
 
-<footer>개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 「타슈 대여이력 정보」(공공데이터포털). Weather data by Open-Meteo.com (CC BY 4.0). 대여소·시간대 집계만 보여 주고 개별 이동은 다루지 않는다.</footer>
+<footer>개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 「타슈 대여이력 정보」(공공데이터포털). Weather data by Open-Meteo.com (CC BY 4.0). 지도 구 경계: geoBoundaries (CC BY 3.0, 원자료 citypopulation.de). 대여소·시간대 집계만 보여 주고 개별 이동은 다루지 않는다.</footer>
 </main>
 <script>
 const D=__DATA__;
@@ -438,33 +438,28 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
   $("chat").className="chat";
   $("chat").innerHTML=D.dialog.map(d=>`<div class="bub u">${esc(d.q)}</div>${d.tools.length?`<div class="tl">에이전트가 고른 조회 기능: ${d.tools.map(t=>`<span class="chip">${t}</span>`).join("")}</div>`:`<div class="tl">조회 없이 거절 (이 프로젝트 범위 밖 질문)</div>`}<div class="bub m">${esc(d.a)}</div>`).join("")})();
 
-/* 동 단위 지도 (배경 지도 없이 위치만 그림. 구 이름은 그 구 동 점들의 평균 위치에 표시) */
-(function(){const W=640,H=600,m=34;const mb=Object.keys(D.map);let cur=mb[0];
-  const all=mb.flatMap(b=>D.map[b]);const xs=all.map(d=>d.x),ys=all.map(d=>d.y);
+/* 동 단위 지도: 대전 구 경계(geoBoundaries, CC BY 3.0) 위에 동 점을 그린다 */
+(function(){const W=640,H=600,m=30;const mb=Object.keys(D.map);let cur=mb[0];
+  const all=mb.flatMap(b=>D.map[b]);const gp=(D.geo||[]).flatMap(g=>g.rings.flat());
+  const xs=all.map(d=>d.x).concat(gp.map(p=>p[0])),ys=all.map(d=>d.y).concat(gp.map(p=>p[1]));
   const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
-  const sc=Math.min((W-2*m)/(x1-x0),(H-2*m-20)/(y1-y0));
-  const X=v=>m+(v-x0)*sc+((W-2*m)-(x1-x0)*sc)/2,Y=v=>H-m-10-(v-y0)*sc-((H-2*m-20)-(y1-y0)*sc)/2;
+  const sc=Math.min((W-2*m)/(x1-x0),(H-2*m-14)/(y1-y0));
+  const X=v=>m+(v-x0)*sc+((W-2*m)-(x1-x0)*sc)/2,Y=v=>H-m-8-(v-y0)*sc-((H-2*m-14)-(y1-y0)*sc)/2;
   const OR="#d9822b",BL=css("--a");
-  const GU={"서구":"#8fa3d9","유성구":"#7fc4b0","동구":"#e3b07a","중구":"#c59ad6","대덕구":"#d98f9a"};
-  function hull(pts){pts=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);if(pts.length<3)return pts;
-    const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[],up=[];
-    for(const p of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
-    for(const p of pts.slice().reverse()){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}
-    return lo.slice(0,-1).concat(up.slice(0,-1))}
-  // 구별 윤곽: 모든 시간대에서 나온 동 점들 기준(탭을 바꿔도 같은 모양)
-  const byGu={};all.forEach(d=>{const k=d.gu;(byGu[k]=byGu[k]||{}) [d.dong]=[X(d.x),Y(d.y)]});
-  let base="";Object.keys(byGu).forEach(gu=>{const pts=Object.values(byGu[gu]);if(pts.length<3)return;const h=hull(pts),c=GU[gu]||"#aaa";
-    const d="M"+h.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")+"Z";
-    const cx=pts.reduce((s,p)=>s+p[0],0)/pts.length,cy=pts.reduce((s,p)=>s+p[1],0)/pts.length;
-    base+=`<text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" text-anchor="middle" style="fill:${c};font-size:22px;font-weight:800;opacity:.75;letter-spacing:.08em;paint-order:stroke;stroke:#f3f5fa;stroke-width:4px">${gu}</text>`});
+  const TINT={"서구":"#e8edf9","유성구":"#e4f2ee","동구":"#f8eddc","중구":"#efe6f4","대덕구":"#f6e4e7"};
+  let base=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#dfe6f1"/>`;
+  (D.geo||[]).forEach(g=>{const d=g.rings.map(r=>"M"+r.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join("L")+"Z").join("");
+    base+=`<path d="${d}" fill="${TINT[g.gu]||"#f1f1f1"}" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>`});
+  (D.geo||[]).forEach(g=>{const r=g.rings[0],cx=r.reduce((s,p)=>s+p[0],0)/r.length,cy=r.reduce((s,p)=>s+p[1],0)/r.length;
+    base+=`<text x="${X(cx).toFixed(1)}" y="${Y(cy).toFixed(1)}" text-anchor="middle" style="fill:#6a7a90;font-size:20px;font-weight:800;opacity:.55;letter-spacing:.08em">${g.gu}</text>`});
   function draw(){const rows=D.map[cur],mx=Math.max(...rows.map(r=>Math.abs(r.net)))||1,mv=Math.max(...rows.map(r=>r.vol));
-    let g=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#f3f5fa"/>`+base;
-    const km=5/111.0*sc; g+=`<line x1="${m}" y1="${H-16}" x2="${m+km}" y2="${H-16}" stroke="${css("--mute")}" stroke-width="2"/><text x="${m}" y="${H-22}">약 5km</text><text x="${W-m}" y="${m-8}" text-anchor="end">북 ↑</text>`;
-    rows.slice().sort((a,b)=>b.vol-a.vol).forEach(r=>{const c=r.net>=0?OR:BL,rad=4+14*Math.sqrt(r.vol/mv),op=.3+.6*Math.min(1,Math.abs(r.net)/mx);
+    let g=base;
+    const km=5/111.0*sc; g+=`<line x1="${m}" y1="${H-14}" x2="${m+km}" y2="${H-14}" stroke="${css("--mute")}" stroke-width="2"/><text x="${m}" y="${H-20}">약 5km</text><text x="${W-m}" y="${m-8}" text-anchor="end">북 ↑</text>`;
+    rows.slice().sort((a,b)=>b.vol-a.vol).forEach(r=>{const c=r.net>=0?OR:BL,rad=4+14*Math.sqrt(r.vol/mv),op=.35+.55*Math.min(1,Math.abs(r.net)/mx);
       g+=`<circle class="mc" data-i="${rows.indexOf(r)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="${rad.toFixed(1)}" fill="${c}" fill-opacity="${op.toFixed(2)}" stroke="#fff" stroke-width="1.2"><title>${r.gu} ${r.dong}: ${r.net>0?"하루 평균 "+r.net+"대 빠짐":"하루 평균 "+(-r.net)+"대 쌓임"} (대여소 ${r.n}곳)</title></circle>`});
     const shown=[];rows.slice().sort((a,b)=>Math.abs(b.net)-Math.abs(a.net)).forEach(r=>{if(shown.length>=6)return;const px=X(r.x),py=Y(r.y);
       if(shown.some(q=>Math.hypot(q[0]-px,q[1]-py)<46))return;shown.push([px,py]);
-      g+=`<text x="${(px+9).toFixed(1)}" y="${(py-9).toFixed(1)}" style="fill:var(--ink);font-size:12px;font-weight:700;paint-order:stroke;stroke:#f3f5fa;stroke-width:3px">${r.dong}</text>`});
+      g+=`<text x="${(px+9).toFixed(1)}" y="${(py-9).toFixed(1)}" style="fill:var(--ink);font-size:12px;font-weight:700;paint-order:stroke;stroke:#fff;stroke-width:3px">${r.dong}</text>`});
     $("map").innerHTML=svg(W,H,g);
     document.querySelectorAll(".mc").forEach(c=>{c.onmouseenter=()=>{const r=rows[+c.dataset.i];$("mtip").textContent=`${r.gu} ${r.dong} · ${r.net>0?"하루 평균 "+r.net+"대 빠짐":"하루 평균 "+(-r.net)+"대 쌓임"} · 대여소 ${r.n}곳`}});
     $("mlegend").innerHTML=`<span><i style="background:${OR}"></i>빠지는 동 (자전거가 모자라기 쉬움)</span><span><i style="background:${BL}"></i>쌓이는 동</span><span>색이 진할수록 값이 크고, 점이 클수록 이용이 많다 · 동 ${rows.length}곳</span>`}

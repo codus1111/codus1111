@@ -25,7 +25,7 @@
 | 시간 단위로 예측되는가 | 캠퍼스 총 대여는 기준선 대비 오차 3% 개선(비 오는 시간 59%). **후문 시간당 순유출은 거의 예측 못 함**(기준선과 동률) | 실험 05 |
 | 반복되는 부족·과잉을 가릴 수 있는가 | 평일 구간(출근/낮/퇴근) 순유출 압력 순위가 학습→검증 기간에서 유지(상위 20 적중 0.50~0.75, 순위상관 0.6~0.8). 단 단순 평균 순위와 큰 차이는 없음 | 실험 06, 순위표(공개본 제외, 대시보드에 익명화해 반영) |
 
-**지도(동 단위)**: 대시보드에 출근·낮·퇴근별 동네 지도를 넣었다. 대여소가 아니라 동 단위로 합쳐(대여소 3곳 미만·이용 200건 미만 동은 제외) 그렸고, 배경 지도 서비스는 쓰지 않았다.
+**지도(동 단위)**: 대시보드에 출근·낮·퇴근별 동네 지도를 넣었다. 대여소가 아니라 동 단위로 합쳐(대여소 3곳 미만·이용 200건 미만 동은 제외) 그렸고, 배경은 대전 5개 구 경계([geoBoundaries](https://www.geoboundaries.org/), CC BY 3.0)를 직접 그렸고 외부 지도 서비스는 쓰지 않았다.
 
 실패와 한계도 [reports/experiments.md](reports/experiments.md)에 가설 → 실험 → 결과 → 오류 분석으로 남겼습니다.
 
@@ -83,6 +83,7 @@ data/       원본·가공 데이터 (gitignore)
 | 2026-11-10 | 에이전트 LLM을 Anthropic(유료) → Gemini 무료 구간으로 변경 | 무료 데이터·API만 쓴다는 원칙. 무료 구간은 입력이 제품 개선에 쓰일 수 있어 집계만 전송 |
 
 ## 참고
+- 지도 배경: [geoBoundaries](https://www.geoboundaries.org/) 한국 시군구 경계 (CC BY 3.0, 원자료 citypopulation.de)
 - [대전교통공사 타슈 대여이력 정보](https://www.data.go.kr/data/15137219/fileData.do)
 - [대전교통공사 타슈 대여소 현황 API](https://www.data.go.kr/data/15119663/openapi.do)
 - [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) (CC BY 4.0, 비상업적 이용)

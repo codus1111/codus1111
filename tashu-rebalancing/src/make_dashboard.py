@@ -138,6 +138,24 @@ for bname, (h0, h1) in at.BANDS.items():
                         "y": round(r[3] - 36.35, 5), "net": round(r[5] / n_days, 1), "vol": int(r[6])} for r in rows]
 D["map_note"] = {"n_days": n_days, "dongs": len({d["dong"] for b in D["map"].values() for d in b})}
 
+# 7) 지도 배경: 대전 5개 구 경계(geoBoundaries, CC BY 3.0). 파일이 없으면 윤곽 없이 점만 그린다.
+GEO = os.path.join(at.ROOT, "data", "raw", "geo", "geoBoundaries-KOR-ADM2.geojson")
+GU_KO = {"Dong-gu": "동구", "Jung-gu": "중구", "Seo-gu": "서구", "Daedeok-gu": "대덕구", "Yuseong-gu": "유성구"}
+D["geo"] = []
+if os.path.exists(GEO):
+    gj = json.load(open(GEO, encoding="utf-8"))
+    for f in gj["features"]:
+        name = f["properties"].get("shapeName")
+        g = f["geometry"]
+        rings = [g["coordinates"][0]] if g["type"] == "Polygon" else [p[0] for p in g["coordinates"]]
+        pts = [pt for r_ in rings for pt in r_]
+        lon = sum(p[0] for p in pts) / len(pts)
+        lat = sum(p[1] for p in pts) / len(pts)
+        if name in GU_KO and 36.15 < lat < 36.55 and 127.2 < lon < 127.6:  # 이름이 같은 다른 도시의 구와 구분
+            D["geo"].append({"gu": GU_KO[name], "rings": [[[round((p[0] - 127.385) * math.cos(math.radians(36.35)), 5),
+                                                             round(p[1] - 36.35, 5)] for p in r_] for r_ in rings]})
+print("지도 구 경계:", [g["gu"] for g in D["geo"]])
+
 from dashboard_dialog import load_dialog  # noqa: E402
 
 D["dialog"] = load_dialog(os.path.join(at.ROOT, "reports", "agent_eval.md"),

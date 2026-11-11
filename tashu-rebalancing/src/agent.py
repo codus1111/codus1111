@@ -20,6 +20,7 @@ import urllib.request
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import agent_tools as at  # noqa: E402
+from agent_trace import Tracer  # noqa: E402
 
 MAX_TURNS = 6
 GAP_SEC = 4  # 무료 한도를 아끼기 위한 호출 간격
@@ -84,23 +85,43 @@ def ask_gemini(question):
     model = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
     decls = [{"name": s["name"], "description": s["description"], "parameters": s["input_schema"]} for s in at.SCHEMAS]
     contents = [{"role": "user", "parts": [{"text": question}]}]
-    for _ in range(MAX_TURNS):
-        body = {"systemInstruction": {"parts": [{"text": SYSTEM}]}, "contents": contents,
-                "tools": [{"functionDeclarations": decls}]}
-        data = _gemini_call(model, key, body)
-        cands = data.get("candidates") or []
-        if not cands or "content" not in cands[0]:
-            return f"(응답이 비었습니다: {json.dumps(data, ensure_ascii=False)[:300]})"
-        content = cands[0]["content"]
-        contents.append(content)  # 원문 그대로 보존(사고 서명 등)
-        calls = [p["functionCall"] for p in content.get("parts", []) if "functionCall" in p]
-        if not calls:
-            return "".join(p.get("text", "") for p in content.get("parts", []))
-        parts = [{"functionResponse": {"name": c["name"], "response": {"result": _run_tool(c["name"], c.get("args"))}}}
-                 for c in calls]
-        contents.append({"role": "user", "parts": parts})
-        time.sleep(GAP_SEC)
-    return "(최대 턴 수에 도달했습니다.)"
+    tr = Tracer()  # 실행 기록(관제 대시보드용). 질문 본문은 남기지 않고 길이만 남긴다.
+    tr.emit("prompt", len=len(question), model=model)
+    why, answer = "error", ""
+    try:
+        for turn in range(1, MAX_TURNS + 1):
+            body = {"systemInstruction": {"parts": [{"text": SYSTEM}]}, "contents": contents,
+                    "tools": [{"functionDeclarations": decls}]}
+            t0, c0 = tr.now(), time.time()
+            data = _gemini_call(model, key, body)
+            cands = data.get("candidates") or []
+            if not cands or "content" not in cands[0]:
+                tr.llm(t0, turn, (time.time() - c0) * 1000, data.get("usageMetadata"), 0)
+                answer = f"(응답이 비었습니다: {json.dumps(data, ensure_ascii=False)[:300]})"
+                why = "empty"
+                return answer
+            content = cands[0]["content"]
+            contents.append(content)  # 원문 그대로 보존(사고 서명 등)
+            calls = [p["functionCall"] for p in content.get("parts", []) if "functionCall" in p]
+            tr.llm(t0, turn, (time.time() - c0) * 1000, data.get("usageMetadata"), len(calls))
+            if not calls:
+                answer = "".join(p.get("text", "") for p in content.get("parts", []))
+                why = "answer"
+                return answer
+            parts = []
+            for c in calls:
+                t1, c1 = tr.now(), time.time()
+                res = _run_tool(c["name"], c.get("args"))
+                tr.tool(t1, c["name"], c.get("args"), (time.time() - c1) * 1000, "오류" not in res)
+                parts.append({"functionResponse": {"name": c["name"], "response": {"result": res}}})
+            contents.append({"role": "user", "parts": parts})
+            tr.emit("wait", dur=int(GAP_SEC * 1000))  # 호출 간격(규칙 6): 무료 한도를 지키려고 쉰다
+            time.sleep(GAP_SEC)
+        why = "max_turns"
+        answer = "(최대 턴 수에 도달했습니다.)"
+        return answer
+    finally:
+        tr.finish(why, len(answer))
 
 
 # ---------------------------------------------------------------- Anthropic (유료, 선택)

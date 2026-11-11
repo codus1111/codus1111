@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tashu Agent Switchboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+/* Layout: 교환대(switchboard) 콘솔 — 상단 상태 바, 데이터 출처 줄, 탭 4개, 각 탭은 "요약 → 상세" 순서의 패널 */
+:root{
+  color-scheme: dark;
+  --bg:#0a0a12;          /* 콘솔 바탕: 보랏빛이 살짝 도는 먹색 */
+  --panel:#11111d;
+  --panel-2:#171727;
+  --line:#25243a;
+  --line-2:#34324f;
+  --fg:#e9e7f5;
+  --muted:#8f8ba8;
+  --violet:#9b8cff;      /* 에이전트 작업(생성) */
+  --violet-dim:rgba(155,140,255,.16);
+  --teal:#2fd6c0;        /* 검증·결과 반환 · 실제 기록 */
+  --teal-dim:rgba(47,214,192,.14);
+  --amber:#f2b45a;       /* 사람 결정 지점 · 시연용 표시 */
+  --amber-dim:rgba(242,180,90,.13);
+  --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.label{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{text-wrap:balance}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.grid-bg{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:40px 40px;background-position:-1px -1px}
+.grid-fade{position:relative}
+.grid-fade::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,var(--panel) 85%);pointer-events:none;border-radius:inherit}
+
+/* 칩: 실제 기록 vs 시연용 */
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;padding:2px 8px;border-radius:999px;white-space:nowrap;line-height:1.6}
+.chip-real{color:var(--teal);background:var(--teal-dim);border:1px solid rgba(47,214,192,.35)}
+.chip-demo{color:var(--amber);background:var(--amber-dim);border:1px dashed rgba(242,180,90,.6)}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* 탭 */
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;display:flex;align-items:center;gap:8px;padding:12px 14px;font-size:14px;color:var(--muted);background:none;border:0;cursor:pointer;white-space:nowrap;border-radius:10px 10px 0 0}
+.tab .k{font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{color:var(--fg)}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--violet),var(--teal))}
+.tab:focus-visible,.btn:focus-visible,.seg button:focus-visible,.bar:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;padding:7px 12px;border-radius:9px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--fg);cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--violet)}
+.seg{display:inline-flex;padding:3px;border:1px solid var(--line-2);border-radius:10px;background:var(--panel-2)}
+.seg button{font-size:13px;padding:6px 12px;border-radius:7px;border:0;background:none;color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--violet-dim);color:var(--fg);box-shadow:inset 0 0 0 1px rgba(155,140,255,.45)}
+.seg button:disabled{opacity:.45;cursor:not-allowed}
+
+/* 워크플로 SVG */
+#flow{display:block;width:100%;height:auto}
+#flow text{font-family:var(--font-body);fill:var(--fg)}
+#flow .t-en{font-family:var(--font-mono);fill:var(--muted);letter-spacing:.08em}
+#flow .spoke{fill:none;stroke:var(--line-2);stroke-width:1.4}
+#flow .spoke.on{stroke:var(--violet);stroke-opacity:.7}
+#flow .ring{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:3 6}
+#flow .node rect{fill:var(--panel-2);stroke:var(--line-2);stroke-width:1.2;transition:stroke .3s,fill .3s}
+#flow .node.active rect{stroke:var(--violet);fill:#1d1a36}
+#flow .node.human rect{stroke:rgba(242,180,90,.55)}
+#flow .node.human.active rect{stroke:var(--amber);fill:#2a2216}
+#flow .node .dot{fill:var(--line-2);transition:fill .3s}
+#flow .node.done .dot{fill:var(--teal)}
+#flow .node.active .dot{fill:var(--violet)}
+#flow .node.human.active .dot{fill:var(--amber)}
+#flow .center rect{fill:#181530;stroke:var(--violet);stroke-width:1.5}
+#flow .halo{fill:none;stroke:var(--violet);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:halo 2.8s ease-out infinite}
+#flow .halo.h2{animation-delay:1.4s}
+@keyframes halo{from{transform:scale(1);opacity:.55}to{transform:scale(1.5);opacity:0}}
+#flow .pk{transition:opacity .2s}
+#flow .amb{fill:var(--violet);opacity:.35}
+.glow-v{fill:var(--violet)} .glow-t{fill:var(--teal)} .glow-a{fill:var(--amber)}
+
+.log{font-family:var(--font-mono);font-size:12px;line-height:1.55}
+.log li{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);animation:logIn .35s ease-out}
+.log li > span:last-child{min-width:0;overflow-wrap:anywhere}
+.log li:last-child{border-bottom:0}
+.log .ts{color:var(--muted)}
+@keyframes logIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+/* 간트 */
+.gantt-row{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:12px;min-height:40px}
+.track{position:relative;height:26px;border-radius:6px;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/6 - 1px),var(--line) calc(100%/6 - 1px),var(--line) calc(100%/6))}
+.bar{position:absolute;top:3px;bottom:3px;border-radius:5px;border:0;cursor:pointer;padding:0 8px;display:flex;align-items:center;justify-content:flex-end;font-family:var(--font-mono);font-size:11px;color:#0a0a12;font-weight:700;overflow:hidden;white-space:nowrap;min-width:2px}
+.bar.v{background:linear-gradient(90deg,#7b6cf0,var(--violet));box-shadow:0 0 18px rgba(155,140,255,.35)}
+.bar.t{background:linear-gradient(90deg,#20b5a2,var(--teal));box-shadow:0 0 18px rgba(47,214,192,.3)}
+.bar.a{background:repeating-linear-gradient(135deg,rgba(242,180,90,.55) 0 6px,rgba(242,180,90,.3) 6px 12px);box-shadow:none}
+.bar:hover,.bar.sel{filter:brightness(1.18)}
+.playhead{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--fg);box-shadow:0 0 10px var(--fg);border-radius:2px;pointer-events:none}
+@media (max-width:560px){.gantt-row{grid-template-columns:76px 1fr;gap:8px}.bar span{display:none}.ax-odd{display:none}}
+.topbar{border-color:var(--line);padding-block:16px 0;background:rgba(10,10,18,.92);backdrop-filter:blur(10px)}
+@media (min-width:768px){.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}}
+
+/* 게이지 */
+.gauge-track{fill:none;stroke:var(--line);stroke-width:12;stroke-linecap:round}
+.gauge-val{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dasharray 1.4s cubic-bezier(.2,.8,.2,1)}
+.hbar{height:8px;border-radius:4px;background:var(--line)}
+.hbar > i{display:block;height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+
+.vbar{width:100%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--teal),#1a8f80)}
+
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(47,214,192,.6);animation:live 1.8s infinite;flex:none}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(47,214,192,.55)}100%{box-shadow:0 0 0 10px rgba(47,214,192,0)}}
+.dropping{outline:2px dashed var(--teal);outline-offset:-8px}
+
+.view{animation:viewIn .45s ease-out}
+@keyframes viewIn{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="gutter border-b topbar">
+  <div class="mx-auto max-w-6xl">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+          <rect x="1" y="1" width="32" height="32" rx="9" fill="none" stroke="var(--line-2)"/>
+          <circle cx="11" cy="11" r="3" fill="var(--violet)"/><circle cx="23" cy="11" r="3" fill="var(--line-2)"/>
+          <circle cx="11" cy="23" r="3" fill="var(--line-2)"/><circle cx="23" cy="23" r="3" fill="var(--teal)"/>
+          <path d="M11 11 C 17 11, 17 23, 23 23" stroke="var(--violet)" stroke-width="1.6" fill="none"/>
+        </svg>
+        <div class="min-w-0">
+          <div class="label" style="letter-spacing:.18em">tashu · Agent Switchboard</div>
+          <h1 class="text-[17px] sm:text-[19px] font-bold leading-tight">타슈 대여소 질의응답 에이전트 관제 화면</h1>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip chip-real"><span class="chip-dot"></span>구조·단계 = 실제 저장소 구성</span>
+        <span class="chip chip-demo" id="headDataChip"><span class="chip-dot"></span>초·토큰·시간 = 시연용 수치</span>
+        <span class="hidden md:inline-flex items-center gap-2 mono num text-[12px] muted"><span class="live-dot"></span><span id="clock">--:--:--</span></span>
+      </div>
+    </div>
+    <nav class="tabs mt-3" role="tablist" aria-label="화면 전환">
+      <button class="tab" role="tab" id="tab-workflows" aria-controls="view-workflows" data-view="workflows"><span class="k">01</span>Workflows<span class="muted text-[12px]">업무 흐름</span></button>
+      <button class="tab" role="tab" id="tab-traces" aria-controls="view-traces" data-view="traces"><span class="k">02</span>Traces<span class="muted text-[12px]">단계별 시간</span></button>
+      <button class="tab" role="tab" id="tab-usage" aria-controls="view-usage" data-view="usage"><span class="k">03</span>Usage<span class="muted text-[12px]">시간·토큰</span></button>
+      <button class="tab" role="tab" id="tab-agents" aria-controls="view-agents" data-view="agents"><span class="k">04</span>Agents<span class="muted text-[12px]">역할 목록</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="gutter" style="padding-block:18px 48px">
+<div class="mx-auto max-w-6xl">
+
+<!-- 데이터 출처 -->
+<div class="panel flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 mb-5" id="dataBar">
+  <span class="label">데이터</span>
+  <span id="modeChip" class="chip chip-demo"><span class="chip-dot"></span>시연 재생</span>
+  <span id="modeDesc" class="text-[13px] muted min-w-0" style="flex:1 1 260px">코드에 적힌 순서대로 미리 짠 재생입니다.</span>
+  <div class="flex flex-wrap gap-2">
+    <button class="btn" id="toLive" hidden><span class="live-dot"></span>실시간 보기</button>
+    <button class="btn" id="sampleBtn">실제 기록 샘플 보기</button>
+    <label class="btn" for="fileIn">실행 기록 열기</label>
+    <input id="fileIn" type="file" accept=".jsonl,.json,.txt" hidden>
+    <button class="btn" id="toDemo" hidden>시연으로 보기</button>
+  </div>
+</div>
+
+<!-- 01 WORKFLOWS -->
+<section id="view-workflows" class="view" role="tabpanel" aria-labelledby="tab-workflows">
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+    <div class="min-w-0">
+      <h2 class="text-[22px] font-bold">에이전트 루프가 질문을 도구에 나눠 맡깁니다</h2>
+      <p class="muted text-[14px] mt-1" style="max-width:62ch">가운데의 <span class="mono">src/agent.py</span>가 모델(Gemini)에게 질문을 보내고, 모델이 고른 조회 도구를 실행해 결과를 돌려줍니다. 보라색 점은 지시, 청록색 점은 결과, 주황색 점은 사람이 확인하거나 결정하는 곳입니다.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="seg max-w-full" role="group" aria-label="시연 트랙 선택">
+        <button id="trk-ask" aria-pressed="true" data-track="ask">질문 답하기 <span class="mono muted text-[11px] hidden sm:inline">agent.py</span></button>
+        <button id="trk-check" aria-pressed="false" data-track="check">자동 점검 <span class="mono muted text-[11px] hidden sm:inline">eval_agent.py</span></button>
+        <button id="trk-work" aria-pressed="false" data-track="work">작업 규칙 <span class="mono muted text-[11px] hidden sm:inline">CLAUDE.md</span></button>
+      </div>
+      <button class="btn" id="playBtn" aria-pressed="true"><span id="playIcon">❚❚</span><span id="playTxt">일시정지</span></button>
+    </div>
+  </div>
+
+  <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div class="panel grid-bg grid-fade overflow-hidden min-w-0" style="padding:8px">
+      <div class="flex items-center justify-between gap-2 px-2 pt-1 relative" style="z-index:1">
+        <span class="label min-w-0 truncate" id="flowLabel">demo replay · ask</span>
+        <span class="mono num text-[12px] muted whitespace-nowrap"><span id="simLabel">T+</span><span id="simClock">00:00.0</span></span>
+      </div>
+      <svg id="flow" role="img" aria-label="에이전트 루프와 7개 역할·사용자 노드가 연결된 업무 흐름도" style="position:relative;z-index:1"></svg>
+    </div>
+
+    <aside class="flex flex-col gap-4 min-w-0">
+      <div class="panel p-4">
+        <div class="flex items-center justify-between gap-2">
+          <span class="label">지금 단계</span>
+          <span class="mono num text-[12px] muted"><span id="stepNo">1</span> / <span id="stepTotal">7</span></span>
+        </div>
+        <div class="mt-2 flex items-center gap-2 min-w-0">
+          <span id="stepRole" class="chip" style="color:var(--violet);background:var(--violet-dim);border:1px solid rgba(155,140,255,.4)">모델 판단</span>
+          <h3 id="stepTitle" class="text-[17px] font-bold min-w-0 truncate">질문 입력</h3>
+        </div>
+        <p id="stepDesc" class="text-[13.5px] mt-2" style="color:#cfcbe4;overflow-wrap:anywhere">—</p>
+        <div class="mt-3 text-[12px]">
+          <div class="label" style="font-size:10px">주고받는 것</div>
+          <div id="stepOut" class="mono mt-1 break-all" style="color:var(--teal)">—</div>
+        </div>
+        <div id="stepGate" class="mt-3 text-[12px]" style="color:var(--amber)"></div>
+      </div>
+      <div class="panel p-4 flex-1 min-h-0">
+        <div class="flex items-center justify-between gap-2">
+          <span class="label">이벤트 로그</span>
+          <span class="chip chip-demo" id="logChip">재생 화면</span>
+        </div>
+        <ol id="log" class="log mt-2" aria-live="polite"></ol>
+      </div>
+    </aside>
+  </div>
+  <p class="muted text-[12.5px] mt-3" id="flowNote">단계 이름과 순서는 <span class="mono">src/agent.py</span>(질문 답하기), <span class="mono">src/eval_agent.py</span>(자동 점검), <span class="mono">CLAUDE.md</span>(작업 규칙)에 적힌 대로 옮겼습니다. 이 프로젝트에는 스킬이나 서브에이전트가 없어서 코드와 규칙 문서를 기준으로 삼았습니다. 화면 속 이동 속도와 T+ 시간은 보기 좋게 줄인 재생 속도입니다.</p>
+</section>
+
+<!-- 02 TRACES -->
+<section id="view-traces" class="view" role="tabpanel" aria-labelledby="tab-traces" hidden>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+    <div class="min-w-0">
+      <h2 class="text-[22px] font-bold" id="traceTitle">질문 한 개, 단계별로 몇 초 걸렸나</h2>
+      <p class="muted text-[14px] mt-1" style="max-width:62ch" id="traceSub">모델 판단, 도구 조회, 호출 간격 대기를 시간 순서대로 이어 붙였습니다.</p>
+    </div>
+    <button class="btn" id="replayTrace">↻ 다시 재생</button>
+  </div>
+
+  <div class="panel p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div class="flex flex-wrap items-center gap-3 text-[12.5px]">
+        <span class="inline-flex items-center gap-2"><i style="width:14px;height:8px;border-radius:3px;background:var(--violet);display:inline-block"></i>모델 판단</span>
+        <span class="inline-flex items-center gap-2"><i style="width:14px;height:8px;border-radius:3px;background:var(--teal);display:inline-block"></i>도구 조회·대기</span>
+        <span class="inline-flex items-center gap-2" id="legendHuman" hidden><i style="width:14px;height:8px;border-radius:3px;background:var(--amber);opacity:.7;display:inline-block"></i>사용자 차례 (합계에서 뺌)</span>
+      </div>
+      <span class="chip chip-demo" id="traceChip"><span class="chip-dot"></span>시연용 예시 · 실제 측정값 아님</span>
+    </div>
+    <div id="gantt" class="flex flex-col gap-1"></div>
+    <div class="gantt-row mt-1" aria-hidden="true">
+      <span></span>
+      <div class="relative h-5 mono num text-[11px] muted" id="axis"></div>
+    </div>
+    <div class="mt-4 flex flex-wrap items-baseline justify-between gap-3 border-t pt-4" style="border-color:var(--line)">
+      <p id="traceDetail" class="text-[13.5px] min-w-0" style="max-width:62ch">막대를 누르면 그 단계에서 무엇을 했는지 보여 줍니다.</p>
+      <div class="mono num"><span class="muted text-[12px]" id="traceTotalLabel">합계 </span><span id="traceTotal" class="text-[22px] font-bold" style="color:var(--teal)">0</span><span class="muted text-[12px]" id="traceTotalUnit"> 초 (예시)</span></div>
+    </div>
+  </div>
+
+  <div class="panel p-4 sm:p-5 mt-4">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h3 class="text-[17px] font-bold">실제 기록: 에이전트를 세 번 확인하며 문제를 찾아 고쳤습니다</h3>
+        <p class="muted text-[13px] mt-1">평가 파일의 질문 수와, 실험 기록에 적힌 "찾아 고친 문제"를 센 값입니다.</p>
+      </div>
+      <span class="chip chip-real"><span class="chip-dot"></span>실제 기록 · reports/</span>
+    </div>
+    <div id="realReview" class="grid gap-6 sm:grid-cols-2 mt-5"></div>
+    <p class="muted text-[12.5px] mt-4">자동 점검을 모두 통과해도 사람이 읽어서 찾은 문제(눈을 비로 가정하고 밝히지 않음, 근거 없는 조언)가 있었습니다. 그래서 점검 항목을 늘렸습니다. <span class="mono">reports/experiments.md</span> 실험 07·09</p>
+  </div>
+</section>
+
+<!-- 03 USAGE -->
+<section id="view-usage" class="view" role="tabpanel" aria-labelledby="tab-usage" hidden>
+  <div class="mb-4">
+    <h2 class="text-[22px] font-bold" id="usageTitle">질문 한 개에 걸리는 시간과 토큰</h2>
+    <p class="muted text-[14px] mt-1" style="max-width:62ch" id="usageSub">시간과 토큰은 실행 기록이 없으면 시연용 예시로 채웁니다. 아래 "저장소에 남은 기록"의 숫자만 저장소 파일에 근거가 있습니다.</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-3">
+    <div class="panel p-5 md:col-span-2 min-w-0">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="label">시간 쓰임 · 질문 1개</span>
+        <span class="chip chip-demo" id="chipTime"><span class="chip-dot"></span>시연용 수치</span>
+      </div>
+      <div class="mt-5 flex flex-col gap-5">
+        <div>
+          <div class="flex items-baseline justify-between gap-3"><span class="text-[14px]">모델 응답 기다림 (Gemini 호출)</span><span class="mono num text-[20px] font-bold whitespace-nowrap" style="color:var(--violet)" id="vLlm">—</span></div>
+          <div class="hbar mt-2" style="height:14px;border-radius:7px"><i id="hLlm" style="width:0;background:var(--violet);border-radius:7px"></i></div>
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between gap-3"><span class="text-[14px]">도구 실행 (DuckDB 조회)</span><span class="mono num text-[20px] font-bold whitespace-nowrap" style="color:var(--teal)" id="vTool">—</span></div>
+          <div class="hbar mt-2" style="height:14px;border-radius:7px"><i id="hTool" style="width:0;background:var(--teal);border-radius:7px"></i></div>
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between gap-3"><span class="text-[14px]">호출 간격 쉬기 (무료 한도 지키기)</span><span class="mono num text-[20px] font-bold whitespace-nowrap" id="vWait">—</span></div>
+          <div class="hbar mt-2" style="height:14px;border-radius:7px"><i id="hWait" style="width:0;background:#6d6a92;border-radius:7px"></i></div>
+        </div>
+      </div>
+      <p class="text-[13px] mt-5" style="color:#cfcbe4" id="usageNote">시간 대부분은 모델 응답과 일부러 둔 호출 간격이고, 데이터 조회는 아주 짧습니다.</p>
+    </div>
+
+    <div class="panel p-5 min-w-0 flex flex-col items-center">
+      <div class="w-full flex items-center justify-between gap-2">
+        <span class="label">모델 기다림 비중</span>
+        <span class="chip chip-demo" id="chipG1">시연용</span>
+      </div>
+      <svg viewBox="0 0 200 170" class="w-full mt-2" style="max-width:220px" role="img" aria-label="모델 기다림 비중 게이지">
+        <path id="g1track" class="gauge-track"/>
+        <path id="g1val" class="gauge-val" style="stroke:var(--violet)"/>
+        <text x="100" y="104" text-anchor="middle" class="mono num" style="font-size:30px;font-weight:700;fill:var(--fg)" id="g1txt">0%</text>
+        <text x="100" y="128" text-anchor="middle" style="font-size:11px;fill:var(--muted)" id="g1sub">전체 시간 중</text>
+      </svg>
+    </div>
+
+    <div class="panel p-5 min-w-0 flex flex-col items-center">
+      <div class="w-full flex items-center justify-between gap-2">
+        <span class="label">토큰 · 1회 실행</span>
+        <span class="chip chip-demo" id="chipG2">시연용</span>
+      </div>
+      <svg viewBox="0 0 200 170" class="w-full mt-2" style="max-width:220px" role="img" aria-label="토큰 사용 게이지">
+        <path id="g2track" class="gauge-track"/>
+        <path id="g2val" class="gauge-val" style="stroke:var(--teal)"/>
+        <text x="100" y="100" text-anchor="middle" class="mono num" style="font-size:24px;font-weight:700;fill:var(--fg)" id="g2txt">0</text>
+        <text x="100" y="124" text-anchor="middle" style="font-size:11px;fill:var(--muted)" id="g2sub">호 길이 = 출력 토큰 비율</text>
+      </svg>
+    </div>
+
+    <div class="panel p-5 md:col-span-2 min-w-0">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="label">모델 호출별 토큰</span>
+        <span class="chip chip-demo" id="chipTok"><span class="chip-dot"></span>시연용 수치</span>
+      </div>
+      <div id="tokBars" class="mt-4 grid gap-3"></div>
+      <p class="muted text-[12.5px] mt-4" id="tokNote">첫 호출은 질문과 도구 설명을 읽고 도구를 고르고, 두 번째 호출은 도구 결과를 받아 답을 씁니다. 도구 결과가 들어가서 두 번째 입력이 더 큽니다.</p>
+    </div>
+  </div>
+
+  <div class="panel p-5 mt-4">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <h3 class="text-[17px] font-bold">저장소에 남은 기록</h3>
+      <span class="chip chip-real"><span class="chip-dot"></span>저장소 파일 기준</span>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-5 mt-4" id="realKpi"></div>
+  </div>
+</section>
+
+<!-- 04 AGENTS -->
+<section id="view-agents" class="view" role="tabpanel" aria-labelledby="tab-agents" hidden>
+  <div class="mb-4">
+    <h2 class="text-[22px] font-bold">누가 무엇을 맡나</h2>
+    <p class="muted text-[14px] mt-1" style="max-width:66ch">역할 이름은 이해를 돕기 위해 붙였습니다. 실제로는 Python 파일 하나(<span class="mono">src/agent.py</span>)가 Gemini에게 질문하고, 모델이 고른 함수 4개(<span class="mono">src/agent_tools.py</span>)를 실행합니다. 스킬이나 서브에이전트는 이 프로젝트에 없습니다.</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="panel p-5 min-w-0">
+      <div class="flex items-center justify-between gap-2"><span class="mono text-[15px] font-bold" style="color:var(--violet)">python src/agent.py "질문"</span><span class="chip chip-real">사람 확인 없이 끝까지</span></div>
+      <p class="text-[14px] mt-2">질문 → 모델이 도구 선택 → 도구 실행(집계 조회) → 결과 전달 → 답. 최대 6번 반복하고 호출 사이에 4초 쉽니다.</p>
+    </div>
+    <div class="panel p-5 min-w-0">
+      <div class="flex items-center justify-between gap-2"><span class="mono text-[15px] font-bold" style="color:var(--teal)">python src/eval_agent.py</span><span class="chip" style="color:var(--amber);background:var(--amber-dim);border:1px solid rgba(242,180,90,.4)">읽어서 사람이 확인</span></div>
+      <p class="text-[14px] mt-2">질문 세트를 한 번씩 돌려 도구 선택, 한계 고지, 출처, 순서 등을 자동으로 셉니다. 자동 점검이 못 잡는 것은 사람이 답을 읽어 찾습니다.</p>
+    </div>
+  </div>
+
+  <div class="panel mt-4 overflow-x-auto">
+    <table class="w-full text-left text-[13.5px]" style="min-width:720px;border-collapse:collapse">
+      <thead>
+        <tr class="label" style="font-size:10.5px">
+          <th class="p-3 pl-5 font-normal">역할</th><th class="p-3 font-normal">하는 일</th><th class="p-3 font-normal">읽는 것</th><th class="p-3 pr-5 font-normal">남기는 것</th>
+        </tr>
+      </thead>
+      <tbody id="roster"></tbody>
+    </table>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2 mt-4">
+    <div class="panel p-5 min-w-0">
+      <h3 class="text-[17px] font-bold">지키는 규칙</h3>
+      <ul class="grid gap-3 mt-3 text-[14px]">
+        <li class="flex gap-3"><span class="mono" style="color:var(--teal)">✓</span><span>모델에는 대여소·시간대 집계 결과만 보냅니다. 원본 행과 자전거번호는 보내지 않습니다.</span></li>
+        <li class="flex gap-3"><span class="mono" style="color:var(--teal)">✓</span><span>이용이 적은 대여소는 숨기고, 개별 이동 경로는 다루지 않습니다.</span></li>
+        <li class="flex gap-3"><span class="mono" style="color:var(--amber)">!</span><span>API 키는 <span class="mono">.env</span>에만 두고 사용자가 직접 넣습니다. 새 데이터·서비스는 약관을 확인하고 쓰기 전에 문서에 적습니다.</span></li>
+        <li class="flex gap-3"><span class="mono" style="color:var(--amber)">!</span><span>커밋과 푸시는 사용자가 요청할 때만 합니다. 규칙이 애매하면 멈추고 사용자에게 묻습니다.</span></li>
+      </ul>
+    </div>
+    <div class="panel p-5 min-w-0">
+      <h3 class="text-[17px] font-bold">실제 실행 기록 연결하기</h3>
+      <ol class="grid gap-3 mt-3 text-[14px]">
+        <li class="flex gap-3"><span class="mono" style="color:var(--violet)">1</span><span><span class="mono">python src/agent.py "질문"</span>을 실행하면 <span class="mono">agent-dashboard/traces/</span>에 시각·도구 이름·짧은 인자·걸린 시간·토큰을 한 줄씩 남깁니다. 질문과 답의 내용은 남기지 않고 길이만 남깁니다.</span></li>
+        <li class="flex gap-3"><span class="mono" style="color:var(--violet)">2</span><span>실시간: <span class="mono">python agent-dashboard/serve.py</span>를 켜고 <span class="mono">localhost:4173</span>을 엽니다.</span></li>
+        <li class="flex gap-3"><span class="mono" style="color:var(--violet)">3</span><span>나중에 보기: 위쪽 "실행 기록 열기"로 <span class="mono">.jsonl</span> 파일을 고르면 그 실행을 그대로 재생합니다.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer class="mt-10 flex flex-wrap items-center justify-between gap-3 text-[12px] muted border-t pt-4" style="border-color:var(--line)">
+  <span>개인 학습·실습용 비공식 프로젝트 · 대전교통공사·대전광역시와 무관 · 데이터 출처: 대전교통공사 타슈 대여이력(공공데이터포털), 날씨 Open-Meteo.com (CC BY 4.0)</span>
+  <span class="mono">화면 구조는 JIHOSW/jiho-agent의 관제 대시보드를 참고해 고쳤습니다</span>
+</footer>
+</div>
+</main>
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const NS = 'http://www.w3.org/2000/svg';
+
+/* ───────── 실제 구성: 역할 노드 ───────── */
+const NODES = [
+  {id:'model',   ko:'모델 판단',   en:'MODEL',   sub:'Gemini · 도구 고르기·답'},
+  {id:'top',     ko:'목록 조회',   en:'TOP',     sub:'top_stations'},
+  {id:'profile', ko:'대여소 조회', en:'PROFILE', sub:'station_profile'},
+  {id:'moves',   ko:'옮길 후보',   en:'MOVES',   sub:'suggest_moves'},
+  {id:'weather', ko:'날씨 배수',   en:'WEATHER', sub:'weather_factor'},
+  {id:'rules',   ko:'규칙 · 한도', en:'RULES',   sub:'호출 간격 · 훅'},
+  {id:'check',   ko:'점검 · 기록', en:'CHECK',   sub:'eval_agent · 실험 기록'},
+  {id:'human',   ko:'사용자',      en:'HUMAN',   sub:'질문·약관·커밋 결정', human:true}
+];
+const NODE = Object.fromEntries(NODES.map(n=>[n.id,n]));
+
+// 단계 순서는 src/agent.py, src/eval_agent.py, CLAUDE.md에 적힌 대로 옮긴 것입니다.
+const TRACKS = {
+  ask:{name:'ask (agent.py)', steps:[
+    {node:'human',   title:'질문 입력', desc:'사용자가 python src/agent.py "질문" 으로 묻습니다. 예: 비 오는 날 출근 시간에 어디를 먼저 채울지.', out:'— (명령줄 입력)'},
+    {node:'model',   title:'질문 읽고 도구 고르기', desc:'Gemini(gemini-3.5-flash-lite)가 질문, 시스템 지침, 도구 4개의 설명을 받고 어떤 도구를 부를지 정합니다.', out:'도구 호출 요청'},
+    {node:'weather', title:'날씨 배수', desc:'weather_factor가 강수·기온으로 한남대 기준 수요 배수와 "가정" 문구를 돌려줍니다. (질문에 날씨가 있을 때)', out:'배수 · 가정 (JSON)'},
+    {node:'top',     title:'부족·과잉 상위 대여소', desc:'top_stations가 DuckDB를 읽기 전용으로 조회해 구간별 상위 대여소를 돌려줍니다. 대여소·구간 단위 집계만 나갑니다.', out:'상위 대여소 집계 (JSON)'},
+    {node:'rules',   title:'호출 간격 쉬기', desc:'무료 한도를 지키려고 다음 모델 호출 전에 4초 쉽니다. 429·503은 한 번만 재시도합니다.', out:'—'},
+    {node:'model',   title:'결과로 답 쓰기', desc:'도구 결과만으로 답하고, 출처와 한계(재고·거치대 수를 모름)를 붙이고, 도구가 준 순서를 지킵니다.', out:'최종 답 (내용은 기록하지 않음)'},
+    {node:'human',   title:'답 읽기', desc:'사용자가 답을 읽습니다. 에이전트는 사람 확인을 기다리지 않고 여기서 끝납니다.', out:'—'}
+  ]},
+  check:{name:'check (eval_agent.py)', steps:[
+    {node:'human', title:'질문 세트와 점검 기준', desc:'평가 질문(1·2·3차)과 점검 규칙을 코드에 적어 둡니다. 점검 규칙은 결과를 보기 전에 정해 고정합니다.', out:'src/eval_agent.py'},
+    {node:'model', title:'질문마다 에이전트 실행', desc:'질문마다 agent.ask_gemini를 한 번씩 실행합니다(8초 간격). 평가 중에는 실행 기록 파일을 만들지 않습니다.', out:'질문별 답 · 호출한 도구'},
+    {node:'check', title:'자동 점검', desc:'알맞은 도구, 한계 고지, 출처, 나열 순서, 지침 문구 노출, 도구 밖 숫자, 가정 밝힘, 근거 없는 조언을 규칙으로 셉니다.', out:'reports/agent_eval.md · _v2 · _v3'},
+    {node:'human', title:'읽어서 확인', desc:'자동 점검이 못 잡는 문제(눈을 비로 가정하고 안 밝힘, 근거 없는 조언)는 사람이 답을 읽어 찾습니다.', out:'—', gate:true},
+    {node:'check', title:'실험 기록에 남기기', desc:'가설, 실험, 결과, 오류 분석을 적습니다. 고친 것과 못 고친 것(점검 키워드 한계)도 함께 적습니다.', out:'reports/experiments.md 실험 07 · 09'}
+  ]},
+  work:{name:'work (CLAUDE.md)', steps:[
+    {node:'rules', title:'규칙 상기', desc:'세션을 열 때와 입력할 때마다 remind.py가 데이터·키·스크래핑·집계 규칙을 다시 알려 줍니다.', out:'.claude/hooks/remind.py'},
+    {node:'human', title:'새 데이터·서비스 약관 확인', desc:'새 데이터 소스나 외부 서비스를 쓰기 전에 약관을 읽고 COMPLIANCE.md를 갱신합니다. 필요한 키는 사용자가 .env에 직접 넣습니다.', out:'docs/COMPLIANCE.md', gate:true},
+    {node:'rules', title:'위반 차단', desc:'guard.py가 파일 쓰기·명령 실행 직전에 키 문자열, 데이터 파일 커밋, 스크래핑 도구, 견본 파일의 비밀값을 막습니다.', out:'.claude/hooks/guard.py'},
+    {node:'check', title:'결과를 기록으로 남기기', desc:'가설 → 실험 → 결과 → 오류 분석을 실패한 시도까지 reports/experiments.md에 적습니다.', out:'reports/experiments.md'},
+    {node:'human', title:'공개 전 점검과 커밋·푸시', desc:'대여소 이름·키가 없는지 점검한 뒤, 커밋과 푸시는 사용자가 요청할 때만 합니다.', out:'—', gate:true}
+  ]}
+};
+
+/* ───────── 데이터 모드: demo(시연) · replay(기록 파일) · live(로컬 서버) ───────── */
+let MODE = 'demo';
+let REAL = null;      // {name, evs, usage, track, segs}
+let liveAvail = false, livePaused = false, liveName = null, liveLen = -1;
+
+const pad2 = n => String(n).padStart(2,'0');
+const clockOf = ms => { const d = new Date(ms); return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; };
+function fmtDur(sec){
+  sec = Math.max(0, Math.round(sec));
+  if (sec < 60) return `${sec}초`;
+  if (sec < 3600){ const m = Math.floor(sec/60), s = sec%60; return s ? `${m}분 ${s}초` : `${m}분`; }
+  const h = Math.floor(sec/3600), m = Math.round((sec%3600)/60); return m ? `${h}시간 ${m}분` : `${h}시간`;
+}
+const fmtTick = s => s < 60 ? `${s}s` : s < 3600 ? `${+(s/60).toFixed(1)}m` : `${+(s/3600).toFixed(1)}h`;
+const host = u => { try { return new URL(u).hostname.replace(/^www\./,''); } catch(e){ return u || ''; } };
+
+// 실행 기록 → 역할 단계로 분류 (이벤트 종류와 도구 이름 기준)
+function classify(evs){
+  const TOOLNODE = {top_stations:'top', station_profile:'profile', suggest_moves:'moves', weather_factor:'weather'};
+  const argText = a => a ? Object.entries(a).map(([k,v])=>`${k}=${v}`).join(' · ') : '';
+  for (const ev of evs){
+    let st = 'model', title = ev.e, detail = '', out = null;
+    if (ev.e === 'prompt'){ st = 'human'; title = '사용자 질문'; detail = `질문 ${ev.len||0}자${ev.model ? ' · 모델 ' + ev.model : ''} (질문 내용은 기록하지 않음)`; }
+    else if (ev.e === 'llm'){ st = 'model'; title = `모델 판단 ${ev.turn||''}회`; detail = (ev.calls ? `도구 ${ev.calls}개를 골랐습니다` : '답을 썼습니다') + ` · 토큰 입력 ${ev.in||0} / 출력 ${(ev.out||0)+(ev.think||0)} · ${((ev.dur||0)/1000).toFixed(1)}초`; out = ev.calls ? '도구 호출 요청' : '최종 답'; }
+    else if (ev.e === 'tool'){ st = TOOLNODE[ev.tool] || 'model'; title = ev.tool || '도구'; detail = (argText(ev.args) || '인자 없음') + ` · ${ev.dur||0}ms${ev.ok === false ? ' · 오류' : ''}`; out = '집계 결과 (JSON)'; }
+    else if (ev.e === 'wait'){ st = 'rules'; title = '호출 간격'; detail = `${Math.round((ev.dur||0)/1000)}초 쉼 (무료 한도 지키기, 규칙 6)`; }
+    else if (ev.e === 'answer'){ st = 'model'; title = '답 전달'; detail = `답 ${ev.len||0}자 (내용은 기록하지 않음)`; }
+    else if (ev.e === 'stop'){ st = 'human'; title = '사용자 차례'; detail = ev.why === 'answer' ? '에이전트가 답을 마쳤습니다. 사용자가 읽습니다.' : `끝난 이유: ${ev.why||''}`; }
+    ev.stage = st; ev.title = title; ev.detail = detail; ev.outText = out;  // ev.out은 토큰 필드라 겹치지 않게 다른 이름을 쓴다
+  }
+  return 'ask';
+}
+function segments(evs){
+  const segs = [];
+  evs.forEach((ev,i)=>{
+    const next = evs[i+1] ? evs[i+1].ms : ev.ms + 1000;
+    const cap = ev.stage === 'human' ? 30*60e3 : 5*60e3;
+    const b = ev.ms + Math.max(0, Math.min(next - ev.ms, cap));
+    const last = segs[segs.length-1];
+    if (last && last.stage === ev.stage && ev.ms - last.b < 1000){ last.b = Math.max(last.b, b); last.n++; }
+    else segs.push({stage:ev.stage, a:ev.ms, b, n:1});
+  });
+  return segs;
+}
+function parseTrace(text, name){
+  const evs = []; let usage = null;
+  for (const line of String(text).split(/\r?\n/)){
+    if (!line.trim()) continue;
+    let j; try { j = JSON.parse(line); } catch(e){ continue; }
+    if (!j || !j.t || !j.e) continue;
+    j.ms = Date.parse(j.t); if (isNaN(j.ms)) continue;
+    if (j.e === 'usage'){ usage = j; continue; }
+    evs.push(j);
+  }
+  evs.sort((a,b)=>a.ms-b.ms);
+  const track = classify(evs);
+  return {name, evs, usage, track, segs: segments(evs)};
+}
+function realStats(R){
+  const agentMs = R.segs.filter(s=>s.stage!=='human').reduce((a,s)=>a+(s.b-s.a), 0);
+  let llm = 0, tool = 0, wait = 0;
+  R.evs.forEach(ev=>{ if (ev.e === 'llm') llm += ev.dur||0; else if (ev.e === 'tool') tool += ev.dur||0; else if (ev.e === 'wait') wait += ev.dur||0; });
+  const calls = R.evs.filter(e=>e.e==='llm').map(e=>({turn:e.turn, i:e.in||0, o:(e.out||0)+(e.think||0), ms:e.dur||0, n:e.calls||0}));
+  let tin = 0, tout = 0; calls.forEach(c=>{ tin += c.i; tout += c.o; });
+  return {agentSec: agentMs/1000, llm, tool, wait, calls, total: tin + tout, tin, tout, hasUsage: calls.length > 0};
+}
+
+/* ───────── Workflows: SVG 그리기 ───────── */
+const svg = $('#flow');
+let mobile = null, P = {}, spokes = {}, nodeEls = {}, pk = null, amb = [];
+let track = 'ask';
+
+function el(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+
+function computeLayout(){
+  P = {};
+  if (!mobile){
+    P.center = {x:500, y:300, w:206, h:88};
+    NODES.forEach((n,i)=>{ const a = (-135 + 45*i) * Math.PI/180; P[n.id] = {x:500 + 388*Math.cos(a), y:300 + 232*Math.sin(a), w:176, h:60}; });
+  } else {
+    P.center = {x:180, y:320, w:90, h:140};
+    const rows = [72, 232, 408, 568];
+    NODES.forEach((n,i)=>{ P[n.id] = i < 4 ? {x:60, y:rows[i], w:112, h:56} : {x:300, y:rows[7-i], w:112, h:56}; });
+  }
+}
+function curve(a, b){
+  const mx=(a.x+b.x)/2, my=(a.y+b.y)/2, dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy)||1, k = mobile ? 12 : 26;
+  return `M${a.x.toFixed(1)},${a.y.toFixed(1)} Q${(mx-dy/L*k).toFixed(1)},${(my+dx/L*k).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+}
+function build(){
+  const m = svg.parentElement.clientWidth < 640;
+  if (m === mobile && svg.childNodes.length) return;
+  mobile = m;
+  svg.innerHTML = '';
+  svg.setAttribute('viewBox', mobile ? '0 0 360 640' : '0 0 1000 600');
+  computeLayout();
+  const defs = el('defs', {}, svg);
+  const f = el('filter', {id:'blur', x:'-200%', y:'-200%', width:'500%', height:'500%'}, defs);
+  el('feGaussianBlur', {stdDeviation: 4}, f);
+
+  const ring = NODES.map(n=>`${P[n.id].x.toFixed(1)},${P[n.id].y.toFixed(1)}`);
+  el('path', {class:'ring', d:'M' + ring.join(' L') + ' Z'}, svg);
+
+  spokes = {};
+  NODES.forEach(n=>{ spokes[n.id] = el('path', {class:'spoke', d:curve(P.center, P[n.id])}, svg); });
+
+  amb = [];
+  if (!reduce) NODES.forEach((n,i)=>{ amb.push({id:n.id, off:i/NODES.length, c: el('circle', {r: mobile?1.8:2.2, class:'amb'}, svg)}); });
+
+  nodeEls = {};
+  NODES.forEach(n=>{
+    const p = P[n.id];
+    const g = el('g', {class:'node' + (n.human?' human':''), transform:`translate(${(p.x-p.w/2).toFixed(1)},${(p.y-p.h/2).toFixed(1)})`}, svg);
+    el('rect', {width:p.w, height:p.h, rx:12}, g);
+    el('circle', {class:'dot', cx:p.w-12, cy:12, r:3.5}, g);
+    el('text', {x:14, y: mobile ? 25 : 27, style:`font-size:${mobile?13:15}px;font-weight:700`}, g).textContent = n.ko;
+    if (mobile){
+      el('text', {x:14, y:42, class:'t-en', style:'font-size:9.5px'}, g).textContent = n.en;
+    } else {
+      el('text', {x:p.w-24, y:27, 'text-anchor':'end', class:'t-en', style:'font-size:10px'}, g).textContent = n.en;
+      el('text', {x:14, y:46, style:'font-size:11.5px;fill:var(--muted)'}, g).textContent = n.sub;
+    }
+    nodeEls[n.id] = g;
+  });
+
+  const c = P.center;
+  const cg = el('g', {class:'center'}, svg);
+  if (!reduce){ ['','h2'].forEach(cls=> el('rect', {class:'halo ' + cls, x:c.x-c.w/2, y:c.y-c.h/2, width:c.w, height:c.h, rx:16}, cg)); }
+  el('rect', {x:c.x-c.w/2, y:c.y-c.h/2, width:c.w, height:c.h, rx:16}, cg);
+  if (!mobile){
+    el('text', {x:c.x, y:c.y-16, 'text-anchor':'middle', class:'t-en', style:'font-size:10.5px;fill:var(--violet)'}, cg).textContent = 'ORCHESTRATOR';
+    el('text', {x:c.x, y:c.y+8, 'text-anchor':'middle', style:'font-size:18px;font-weight:700'}, cg).textContent = '에이전트 루프';
+    el('text', {x:c.x, y:c.y+29, 'text-anchor':'middle', style:'font-size:11.5px;fill:var(--muted)'}, cg).textContent = 'src/agent.py';
+  } else {
+    el('text', {x:c.x, y:c.y-34, 'text-anchor':'middle', class:'t-en', style:'font-size:8.5px;fill:var(--violet)'}, cg).textContent = 'ORCH.';
+    [['에이전트',-6],['루프',14]].forEach(([s,dy])=> el('text', {x:c.x, y:c.y+dy, 'text-anchor':'middle', style:'font-size:14px;font-weight:700'}, cg).textContent = s);
+    el('text', {x:c.x, y:c.y+40, 'text-anchor':'middle', style:'font-size:9.5px;fill:var(--muted)'}, cg).textContent = 'agent.py';
+  }
+
+  const pg = el('g', {class:'pk', opacity:0}, svg);
+  const halo = el('circle', {r: mobile?7:10, filter:'url(#blur)', class:'glow-v'}, pg);
+  const core = el('circle', {r: mobile?3.6:4.6, class:'glow-v'}, pg);
+  pk = {g:pg, halo, core};
+  paintState();
+}
+
+/* ───────── Workflows: 재생 엔진 ───────── */
+let steps = TRACKS[track].steps, stepIdx = 0, phases = [], phaseIdx = 0, phaseT = 0, sim = 0, playing = true, done = new Set(), active = null;
+let rIdx = 0, lastStage = null;
+const SPEED = {move: 700, work: 1500, gateWork: 900, end: 2200};
+
+function fmt(ms){ const s = ms/1000; const m = Math.floor(s/60); return String(m).padStart(2,'0') + ':' + (s%60).toFixed(1).padStart(4,'0'); }
+function log(text, color, ts){
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="ts num"></span><span></span>`;
+  li.firstChild.textContent = ts || fmt(sim);
+  li.lastChild.textContent = text;
+  if (color) li.lastChild.style.color = color;
+  const ol = $('#log'); ol.prepend(li);
+  while (ol.children.length > 7) ol.lastChild.remove();
+}
+function setRole(n){
+  const role = $('#stepRole');
+  role.textContent = n.ko;
+  role.style.color = n.human ? 'var(--amber)' : 'var(--violet)';
+  role.style.background = n.human ? 'var(--amber-dim)' : 'var(--violet-dim)';
+  role.style.borderColor = n.human ? 'rgba(242,180,90,.4)' : 'rgba(155,140,255,.4)';
+}
+function setOut(text){ const o = $('#stepOut'); o.innerHTML = ''; String(text).split('\n').forEach(line=>{ const d = document.createElement('div'); d.textContent = line; o.appendChild(d); }); }
+
+// 시연 모드
+function planStep(){
+  const s = steps[stepIdx];
+  phases = [];
+  if (s.node === 'human'){
+    phases.push({t:'move', from:'center', to:'human', c:'a', dur:SPEED.move, log:[`에이전트 → 사용자: ${s.title} 요청`, 'var(--amber)']});
+    phases.push({t:'work', node:'human', dur:SPEED.work});
+    phases.push({t:'move', from:'human', to:'center', c:'t', dur:SPEED.move, log:[`사용자 → 에이전트: 결정 완료`, 'var(--teal)']});
+  } else {
+    const first = s.out.split('\n')[0];
+    phases.push({t:'move', from:'center', to:s.node, c:'v', dur:SPEED.move, log:[`에이전트 → ${NODE[s.node].ko}: ${s.title}`, 'var(--violet)']});
+    phases.push({t:'work', node:s.node, dur:SPEED.work, mark:true});
+    phases.push({t:'move', from:s.node, to:'center', c:'t', dur:SPEED.move, log:[`${NODE[s.node].ko} → 에이전트: ${first.startsWith('—') ? '결과 보고' : (/\.(md|py|jsonl|json)$/.test(first) || /\.(md|py|jsonl|json) /.test(first) ? first.split('/').pop() + ' 작성' : first + ' 전달')}`, 'var(--teal)']});
+    if (s.gate){
+      phases.push({t:'move', from:'center', to:'human', c:'a', dur:SPEED.move, log:['사용자 확인 요청', 'var(--amber)']});
+      phases.push({t:'work', node:'human', dur:SPEED.gateWork});
+      phases.push({t:'move', from:'human', to:'center', c:'t', dur:SPEED.move, log:['사용자 확인 → 다음 단계', 'var(--teal)']});
+    }
+  }
+  phaseIdx = 0; phaseT = 0;
+  $('#stepNo').textContent = stepIdx + 1;
+  $('#stepTotal').textContent = steps.length;
+  setRole(NODE[s.node]);
+  $('#stepTitle').textContent = s.title;
+  $('#stepDesc').textContent = s.desc;
+  setOut(s.out);
+  $('#stepGate').textContent = s.gate ? '■ 이 단계가 끝나면 사용자 확인을 받고 넘어갑니다.' : '';
+  startPhase();
+}
+function resetRun(){
+  steps = TRACKS[track].steps; stepIdx = 0; sim = 0; done = new Set(); active = null;
+  Object.values(spokes).forEach(s=>s.classList.remove('on'));
+  $('#log').innerHTML = '';
+  $('#flowLabel').textContent = 'demo replay · ' + TRACKS[track].name;
+  $('#simLabel').textContent = 'T+';
+  log(`/${TRACKS[track].name} 실행 시작`, 'var(--fg)');
+  planStep();
+}
+
+// 실제 기록 모드
+function startReal(){
+  done = new Set(); lastStage = null; rIdx = 0; active = null;
+  Object.values(spokes).forEach(s=>s.classList.remove('on'));
+  $('#log').innerHTML = '';
+  $('#flowLabel').textContent = (MODE === 'live' ? 'live · ' : 'recorded · ') + 'agent.py';
+  $('#simLabel').textContent = '기록 시각 ';
+  const first = REAL.evs[0];
+  log(MODE === 'live' ? `실시간 연결: ${REAL.name}` : `기록 재생 시작: ${REAL.name}`, 'var(--fg)', first ? clockOf(first.ms) : '--:--:--');
+  realNext();
+}
+function realNext(){
+  phaseIdx = 0; phaseT = 0;
+  if (rIdx >= REAL.evs.length){
+    if (MODE === 'live'){ phases = [{t:'idle', dur:500}]; startPhase(); return; }
+    phases = [{t:'end', dur:2800, log:['기록 끝 · 처음부터 다시 재생', 'var(--fg)']}]; startPhase(); return;
+  }
+  const backlog = REAL.evs.length - rIdx;
+  const k = MODE === 'live' ? (backlog > 30 ? .12 : backlog > 6 ? .45 : 1) : (REAL.evs.length > 200 ? .45 : 1);
+  const ev = REAL.evs[rIdx++];
+  const st = ev.stage;
+  const color = st === 'human' ? 'var(--amber)' : (st === 'review' || st === 'source') ? 'var(--teal)' : 'var(--violet)';
+  phases = [];
+  if (st !== lastStage){
+    if (lastStage && lastStage !== 'human'){ phases.push({t:'move', from:lastStage, to:'center', c:'t', dur:SPEED.move*.7*k}); done.add(lastStage); }
+    phases.push({t:'move', from:'center', to:st, c: st === 'human' ? 'a' : 'v', dur:SPEED.move*.8*k});
+  }
+  phases.push({t:'work', node:st, dur:(st !== lastStage ? 650 : 260)*k});
+  phases[0].log = [`${NODE[st].ko} · ${ev.title}${ev.detail && ev.title !== ev.detail ? ': ' + ev.detail : ''}`, color, clockOf(ev.ms)];
+  phases[0].ev = ev;
+  lastStage = st;
+  startPhase();
+}
+function showReal(ev){
+  $('#stepNo').textContent = rIdx;
+  $('#stepTotal').textContent = REAL.evs.length;
+  setRole(NODE[ev.stage]);
+  $('#stepTitle').textContent = ev.title;
+  $('#stepDesc').textContent = ev.detail || NODE[ev.stage].sub;
+  setOut(ev.outText || '—');
+  $('#stepGate').textContent = ev.stage === 'human' ? '■ 사용자 차례입니다. 확인하거나 다음 지시를 내립니다.' : '';
+  $('#simClock').textContent = clockOf(ev.ms);
+}
+
+function startPhase(){
+  const p = phases[phaseIdx];
+  if (p.log) log(p.log[0], p.log[1], p.log[2]);
+  if (p.ev) showReal(p.ev);
+  if (p.t === 'work'){ active = p.node; }
+  else if (p.t === 'move'){
+    if (MODE === 'demo') active = null;
+    spokes[p.from === 'center' ? p.to : p.from].classList.add('on');
+    const cls = {v:'glow-v', t:'glow-t', a:'glow-a'}[p.c]; pk.halo.setAttribute('class', cls); pk.core.setAttribute('class', cls);
+  }
+  paintState();
+}
+function endPhase(){
+  const p = phases[phaseIdx];
+  if (p.t === 'move') spokes[p.from === 'center' ? p.to : p.from].classList.remove('on');
+  if (p.t === 'end'){ if (MODE === 'demo') resetRun(); else startReal(); return; }
+  if (MODE !== 'demo'){
+    phaseIdx++;
+    if (phaseIdx < phases.length){ startPhase(); return; }
+    realNext(); return;
+  }
+  if (p.mark) done.add(p.node);
+  phaseIdx++;
+  if (phaseIdx < phases.length){ startPhase(); return; }
+  stepIdx++;
+  if (stepIdx < steps.length){ planStep(); return; }
+  phases = [{t:'end', dur:SPEED.end}]; phaseIdx = 0; active = null;
+  log('실행 완료 · 처음부터 다시 재생', 'var(--fg)');
+  pk.g.setAttribute('opacity', 0); paintState();
+}
+function paintState(){
+  NODES.forEach(n=>{ const g = nodeEls[n.id]; if (!g) return; g.classList.toggle('active', active === n.id); g.classList.toggle('done', done.has(n.id) && active !== n.id); });
+}
+
+let last = 0, ambT = 0;
+function frame(ts){
+  const dt = last ? Math.min(ts - last, 60) : 16; last = ts;
+  if (currentView === 'workflows' && playing && phases.length){
+    ambT += dt;
+    if (MODE === 'demo'){ sim += dt; $('#simClock').textContent = fmt(sim); }
+    const p = phases[phaseIdx];
+    phaseT += dt;
+    if (p.t === 'move'){
+      if (reduce){ pk.g.setAttribute('opacity', 0); }
+      else {
+        const path = spokes[p.from === 'center' ? p.to : p.from];
+        const L = path.getTotalLength();
+        const k = Math.min(phaseT / Math.max(p.dur,1), 1);
+        const e = k < .5 ? 2*k*k : 1 - Math.pow(-2*k+2, 2)/2;
+        const pt = path.getPointAtLength((p.from === 'center' ? e : 1 - e) * L);
+        pk.g.setAttribute('opacity', 1);
+        pk.halo.setAttribute('cx', pt.x); pk.halo.setAttribute('cy', pt.y);
+        pk.core.setAttribute('cx', pt.x); pk.core.setAttribute('cy', pt.y);
+      }
+    } else { pk.g.setAttribute('opacity', 0); }
+    if (phaseT >= p.dur){ phaseT = 0; endPhase(); }
+    amb.forEach(a=>{
+      const path = spokes[a.id]; const L = path.getTotalLength();
+      const k = ((ambT/5200) + a.off) % 1;
+      const pt = path.getPointAtLength(k * L);
+      a.c.setAttribute('cx', pt.x); a.c.setAttribute('cy', pt.y);
+      a.c.setAttribute('opacity', (Math.sin(k*Math.PI) * .45).toFixed(2));
+    });
+  }
+  requestAnimationFrame(frame);
+}
+
+document.querySelectorAll('[data-track]').forEach(b=> b.addEventListener('click', ()=>{
+  track = b.dataset.track;
+  document.querySelectorAll('[data-track]').forEach(x=> x.setAttribute('aria-pressed', x === b));
+  if (MODE !== 'demo'){ livePaused = true; setMode('demo'); }
+  resetRun();
+}));
+$('#playBtn').addEventListener('click', ()=>{
+  playing = !playing;
+  $('#playBtn').setAttribute('aria-pressed', playing);
+  $('#playIcon').textContent = playing ? '❚❚' : '▶';
+  $('#playTxt').textContent = playing ? '일시정지' : '재생';
+});
+
+/* ───────── Traces ───────── */
+// 시연용 예시: 실제 측정값이 아닙니다. 실제 기록을 열면 이 값 대신 기록의 시각으로 계산합니다.
+const TRACE = [
+  {k:'모델 판단 1회', en:'model',          s:0,   e:1.6,  c:'v', d:'질문과 도구 설명을 읽고 날씨 배수와 상위 대여소, 두 도구를 골랐습니다.'},
+  {k:'날씨 배수',     en:'weather_factor', s:1.6, e:2.0,  c:'t', d:'강수·기온으로 한남대 기준 배수와 "가정" 문구를 계산했습니다.'},
+  {k:'목록 조회',     en:'top_stations',   s:2.0, e:2.8,  c:'t', d:'DuckDB에서 출근 시간 부족 상위 대여소 집계를 읽었습니다.'},
+  {k:'호출 간격',     en:'wait',           s:2.8, e:6.8,  c:'t', d:'무료 한도를 지키려고 다음 모델 호출 전에 4초 쉽니다.'},
+  {k:'모델 판단 2회', en:'model',          s:6.8, e:13.0, c:'v', d:'도구 결과만으로 답을 쓰고 출처와 한계를 붙였습니다.'}
+];
+const ROWS = [['human','사용자','user'],['model','모델 판단','model'],['top','목록 조회','top_stations'],['profile','대여소 조회','station_profile'],['moves','옮길 후보','suggest_moves'],['weather','날씨 배수','weather_factor'],['rules','규칙 · 한도','wait'],['check','점검 · 기록','eval']];
+function ganttDemo(){
+  return {rows: TRACE.map(r=>({k:r.k, en:r.en})), bars: TRACE.map((r,i)=>({row:i, s:r.s, e:r.e, c:r.c, title:r.k, info:`${r.s.toFixed(1)}s → ${r.e.toFixed(1)}s · ${(r.e-r.s).toFixed(1)}초 (예시)`, d:r.d, label:`${(r.e-r.s).toFixed(1)}s`})), tmax:14, step:2, end:13, total:13, totalFmt:v=>v.toFixed(1), unit:' 초 (예시)'};
+}
+function ganttReal(R){
+  const present = new Set(R.segs.map(s=>s.stage));
+  const used = ROWS.filter(r=>present.has(r[0]));
+  const rows = used.map(r=>({k:r[1], en:r[2]}));
+  if (!R.segs.length) return {rows, bars:[], tmax:10, step:2, end:0, total:0, totalFmt:v=>fmtDur(v), unit:''};
+  const t0 = R.segs[0].a, endSec = (R.segs[R.segs.length-1].b - t0)/1000;
+  const steps = [1,2,5,10,15,30,60,120,300,600];
+  const step = steps.find(s => endSec/s <= 7) || 600;
+  const tmax = Math.max(step, Math.ceil(endSec/step)*step);
+  const bars = R.segs.map(s=>{
+    const row = used.findIndex(r=>r[0]===s.stage);
+    const sec = (s.b-s.a)/1000;
+    return {row, s:(s.a-t0)/1000, e:(s.b-t0)/1000, c: s.stage==='human' ? 'a' : s.stage==='model' ? 'v' : 't', title:used[row][1], info:`${clockOf(s.a)} → ${clockOf(s.b)} · ${sec.toFixed(1)}초`, d:`기록된 이벤트 ${s.n}개${s.stage==='human' ? ' · 사용자 차례라 합계에서 뺐습니다.' : ''}`, label: sec.toFixed(1) + 's'};
+  });
+  return {rows, bars, tmax, step, end:endSec, total: realStats(R).agentSec, totalFmt:v=>v.toFixed(1), unit:' 초'};
+}
+let G = null;
+function buildGantt(g){
+  G = g;
+  const box = $('#gantt'); box.innerHTML = '';
+  const rowsEl = g.rows.map(r=>{
+    const row = document.createElement('div'); row.className = 'gantt-row';
+    row.innerHTML = `<div class="min-w-0"><div class="text-[13px] font-bold leading-tight"></div><div class="mono text-[10.5px] muted"></div></div><div class="track"></div>`;
+    row.querySelector('.font-bold').textContent = r.k;
+    row.querySelector('.mono').textContent = r.en;
+    box.appendChild(row);
+    return row.querySelector('.track');
+  });
+  g.bars.forEach((b,i)=>{
+    const bar = document.createElement('button');
+    bar.className = 'bar ' + b.c;
+    bar.style.left = (b.s/g.tmax*100) + '%'; bar.style.width = '0';
+    bar.dataset.w = ((b.e-b.s)/g.tmax*100);
+    bar.setAttribute('aria-label', `${b.title} ${b.info}`);
+    if ((b.e-b.s)/g.tmax > .07){ const sp = document.createElement('span'); sp.className = 'num'; sp.textContent = b.label; bar.appendChild(sp); }
+    ['click','mouseenter','focus'].forEach(evn=> bar.addEventListener(evn, ()=> pickBar(i)));
+    rowsEl[b.row].appendChild(bar);
+  });
+  const ax = $('#axis'); ax.innerHTML = '';
+  for (let t=0, i=0; t<=g.tmax; t+=g.step, i++){
+    const s = document.createElement('span'); if (i % 2) s.className = 'ax-odd';
+    s.style.position='absolute'; s.style.left = (t/g.tmax*100)+'%';
+    s.style.transform = t===0 ? 'none' : (t>=g.tmax ? 'translateX(-100%)' : 'translateX(-50%)');
+    s.textContent = fmtTick(t); ax.appendChild(s);
+  }
+  const holder = document.createElement('div'); holder.id = 'phHolder'; holder.style.cssText = 'position:absolute;top:0;bottom:0;right:0;pointer-events:none';
+  const ph = document.createElement('div'); ph.className = 'playhead'; ph.id = 'playhead'; ph.style.left = '0%';
+  holder.appendChild(ph); box.style.position = 'relative'; box.appendChild(holder);
+  if (!g.bars.length){ const p = document.createElement('p'); p.className = 'muted text-[13px] py-3'; p.textContent = '아직 기록된 단계가 없습니다.'; box.prepend(p); }
+  sizePlayhead();
+}
+function sizePlayhead(){ const tr = document.querySelector('#gantt .track'); const h = $('#phHolder'); if (!tr || !h) return; const gr = $('#gantt').getBoundingClientRect(), r = tr.getBoundingClientRect(); h.style.left = (r.left - gr.left) + 'px'; }
+function pickBar(i){
+  const b = G.bars[i];
+  document.querySelectorAll('#gantt .bar').forEach(x=> x.classList.remove('sel'));
+  const bars = document.querySelectorAll('#gantt .bar'); if (bars[i]) bars[i].classList.add('sel');
+  const d = $('#traceDetail');
+  d.innerHTML = `<b></b> <span class="mono num muted"></span><br><span></span>`;
+  d.querySelector('b').textContent = b.title;
+  d.querySelector('.mono').textContent = b.info;
+  d.lastChild.textContent = b.d;
+}
+let traceRAF = 0;
+function finishTrace(){
+  document.querySelectorAll('#gantt .bar').forEach(b=> b.style.width = b.dataset.w + '%');
+  $('#playhead').style.left = (G.end/G.tmax*100) + '%';
+  $('#traceTotal').textContent = G.totalFmt(G.total);
+}
+function playTrace(){
+  cancelAnimationFrame(traceRAF);
+  if (reduce || !G.bars.length){ finishTrace(); return; }
+  const bars = document.querySelectorAll('#gantt .bar');
+  const ph = $('#playhead'), total = $('#traceTotal');
+  const t0 = performance.now(), D = 3200;
+  const tick = now=>{
+    const k = Math.min((now - t0)/D, 1); const sec = k * G.end;
+    ph.style.left = (sec/G.tmax*100) + '%';
+    total.textContent = G.totalFmt(G.total * k);
+    G.bars.forEach((b,i)=>{ const w = Math.max(0, Math.min(sec, b.e) - b.s); bars[i].style.width = (w/G.tmax*100) + '%'; });
+    if (k < 1) traceRAF = requestAnimationFrame(tick); else finishTrace();
+  };
+  traceRAF = requestAnimationFrame(tick);
+}
+function renderTraces(anim){
+  const real = MODE !== 'demo' && REAL;
+  buildGantt(real ? ganttReal(REAL) : ganttDemo());
+  $('#legendHuman').hidden = !real;
+  const chip = $('#traceChip');
+  if (real){
+    $('#traceTitle').textContent = '실제 실행, 단계별로 얼마나 걸렸나';
+    $('#traceSub').textContent = 'agent.py가 남긴 이벤트 시각으로 계산했습니다. 질문 입력과 답을 읽는 사용자 차례는 합계에서 뺐습니다.';
+    chip.className = 'chip chip-real'; chip.innerHTML = '<span class="chip-dot"></span>'; chip.append('실제 측정값 · ' + REAL.name);
+    $('#traceTotalLabel').textContent = '에이전트 작업 '; $('#traceTotalUnit').textContent = ' 초';
+    $('#traceDetail').textContent = '막대를 누르면 그 구간의 시각과 이벤트 수를 보여 줍니다.';
+  } else {
+    $('#traceTitle').textContent = '질문 한 개, 단계별로 몇 초 걸렸나';
+    $('#traceSub').textContent = '모델 판단, 도구 조회, 호출 간격 대기를 시간 순서대로 이어 붙인 시연용 예시입니다.';
+    chip.className = 'chip chip-demo'; chip.innerHTML = '<span class="chip-dot"></span>시연용 예시 · 실제 측정값 아님';
+    $('#traceTotalLabel').textContent = '합계 '; $('#traceTotalUnit').textContent = ' 초 (예시)';
+    $('#traceDetail').textContent = '막대를 누르면 그 단계에서 무엇을 했는지 보여 줍니다.';
+  }
+  if (anim) playTrace(); else finishTrace();
+}
+$('#replayTrace').addEventListener('click', ()=> renderTraces(true));
+
+// 저장소 실제 기록: 평가 질문 수와 실험 기록에 적힌 "찾아 고친 문제" 수
+const REAL_REVIEW = [
+  {title:'평가 질문 수', file:'reports/agent_eval.md · _v2 · _v3', vals:[9,15,12], max:15},
+  {title:'찾아 고친 문제 수', file:'reports/experiments.md 실험 07 · 09', vals:[5,2,0], max:5}
+];
+function buildRealReview(){
+  const box = $('#realReview'); box.innerHTML = '';
+  REAL_REVIEW.forEach(r=>{
+    const d = document.createElement('div'); d.className = 'min-w-0';
+    d.innerHTML = `<div class="text-[14px] font-bold"></div><div class="mono text-[11px] muted break-all"></div><div class="grid grid-cols-3 gap-3 items-end mt-3" style="height:140px"></div>`;
+    d.children[0].textContent = r.title; d.children[1].textContent = r.file;
+    r.vals.forEach((v,i)=>{
+      const c = document.createElement('div'); c.className = 'flex flex-col items-center justify-end h-full gap-1';
+      c.innerHTML = `<span class="mono num text-[15px] font-bold">${v}</span><div class="vbar" style="height:${Math.max(v/r.max*96, 3)}px;${v===0?'background:var(--line-2)':''}"></div><span class="mono text-[11px] muted">${i+1}차</span>`;
+      d.children[2].appendChild(c);
+    });
+    box.appendChild(d);
+  });
+}
+
+/* ───────── Usage ───────── */
+const TOK_DEMO = [{k:'모델 호출 1 · 도구 고르기', i:890, o:52}, {k:'모델 호출 2 · 답 쓰기', i:1450, o:410}];
+function arcPath(){
+  const r = 72, a0 = 150*Math.PI/180, a1 = 390*Math.PI/180;
+  const p = a => `${(100 + r*Math.cos(a)).toFixed(2)} ${(100 + r*Math.sin(a)).toFixed(2)}`;
+  return `M ${p(a0)} A ${r} ${r} 0 1 1 ${p(a1)}`;
+}
+const ARC_LEN = 72 * (240*Math.PI/180);
+['g1','g2'].forEach(id=>{ $('#'+id+'track').setAttribute('d', arcPath()); const v = $('#'+id+'val'); v.setAttribute('d', arcPath()); v.style.strokeDasharray = `0 ${ARC_LEN}`; });
+function setChip(id, real, text){ const c = $('#'+id); c.className = 'chip ' + (real ? 'chip-real' : 'chip-demo'); c.textContent = text; }
+function buildTok(list){
+  const box = $('#tokBars'); box.innerHTML = '';
+  if (!list.length){ const p = document.createElement('p'); p.className = 'muted text-[13px]'; p.textContent = '모델 호출 기록이 없습니다.'; box.appendChild(p); return; }
+  const max = Math.max(...list.map(t=>t.i + t.o));
+  list.forEach(t=>{
+    const r = document.createElement('div'); r.className = 'grid items-center gap-3'; r.style.gridTemplateColumns = 'minmax(96px,170px) 1fr 96px';
+    r.innerHTML = `<span class="text-[13px] truncate"></span><div class="hbar"><i style="width:0;background:var(--violet)" data-w="${(t.i + t.o)/max*100}"></i></div><span class="mono num text-[12px] text-right"></span>`;
+    r.firstChild.textContent = t.k;
+    r.lastChild.textContent = `${t.i.toLocaleString('ko-KR')} → ${t.o.toLocaleString('ko-KR')}`;
+    box.appendChild(r);
+  });
+}
+function countUp(node, to, fmtFn, D){
+  if (reduce){ node.textContent = fmtFn(to); return; }
+  const t0 = performance.now();
+  const tick = now=>{ const k = Math.min((now-t0)/D, 1); const e = 1 - Math.pow(1-k, 3); node.textContent = fmtFn(to*e); if (k<1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+function renderUsage(anim){
+  const real = MODE !== 'demo' && REAL;
+  let llm, tool, wait, tokList, tin, tout;
+  if (real){
+    const S = realStats(REAL);
+    llm = S.llm/1000; tool = S.tool/1000; wait = S.wait/1000; tin = S.tin; tout = S.tout;
+    tokList = S.calls.map(c=>({k:`모델 호출 ${c.turn} · ${c.n ? '도구 고르기' : '답 쓰기'}`, i:c.i, o:c.o}));
+    $('#usageTitle').textContent = `실제 실행: 에이전트 작업 ${fmtDur(S.agentSec)}, 토큰 ${S.total.toLocaleString('ko-KR')}`;
+    $('#usageSub').textContent = '시간과 토큰은 agent.py가 남긴 실행 기록에서 계산했습니다. 토큰은 Gemini 응답이 알려 준 값입니다.';
+    setChip('chipTime', true, '실제 기록'); setChip('chipG1', true, '실제 기록'); setChip('chipG2', true, '실제 기록'); setChip('chipTok', true, '실제 기록');
+    $('#usageNote').textContent = '모델 응답과 일부러 둔 호출 간격이 시간 대부분이고, 데이터 조회는 아주 짧습니다.';
+    $('#tokNote').textContent = '"입력 → 출력" 토큰입니다. 첫 호출은 질문과 도구 설명을 읽고 도구를 고르고, 다음 호출은 도구 결과를 받아 답을 씁니다.';
+  } else {
+    llm = TRACE.filter(r=>r.en==='model').reduce((a,r)=>a+(r.e-r.s),0); tool = TRACE.filter(r=>/_/.test(r.en)&&r.en!=='wait').reduce((a,r)=>a+(r.e-r.s),0); wait = 4.0;
+    tokList = TOK_DEMO; tin = TOK_DEMO.reduce((a,t)=>a+t.i,0); tout = TOK_DEMO.reduce((a,t)=>a+t.o,0);
+    $('#usageTitle').textContent = '질문 한 개에 걸리는 시간과 토큰';
+    $('#usageSub').textContent = '시간과 토큰은 실행 기록이 없어 시연용 예시로 채웠습니다. 아래 "저장소에 남은 기록"의 숫자만 저장소 파일에 근거가 있습니다.';
+    setChip('chipTime', false, '시연용 수치'); setChip('chipG1', false, '시연용'); setChip('chipG2', false, '시연용'); setChip('chipTok', false, '시연용 수치');
+    $('#usageNote').textContent = '시간 대부분은 모델 응답과 일부러 둔 호출 간격이고, 데이터 조회는 아주 짧다는 흐름만 보여 주는 예시입니다.';
+    $('#tokNote').textContent = '"입력 → 출력" 토큰입니다. 예시 값이며 실제 실행 기록을 열면 Gemini가 알려 준 값으로 바뀝니다.';
+  }
+  const tot = Math.max(llm + tool + wait, 0.001), mx = Math.max(llm, tool, wait, 0.001);
+  $('#vLlm').textContent = llm.toFixed(1) + '초'; $('#vTool').textContent = tool.toFixed(1) + '초'; $('#vWait').textContent = wait.toFixed(1) + '초';
+  const g1to = llm/tot*100, g2k = (tin+tout) ? tout/(tin+tout) : 0;
+  $('#g1sub').textContent = real ? '기록된 시간 중' : '예시 시간 중';
+  buildTok(tokList);
+  const set = (id, k)=> $('#'+id+'val').style.strokeDasharray = `${(ARC_LEN*Math.min(Math.max(k,0),1)).toFixed(1)} ${ARC_LEN}`;
+  const bw = v => Math.max(v/mx*100, v > 0 ? 2 : 0) + '%';
+  const apply = ()=>{
+    set('g1', g1to/100); set('g2', g2k);
+    document.querySelectorAll('#tokBars i').forEach(i=> i.style.width = i.dataset.w + '%');
+    $('#hLlm').style.width = bw(llm); $('#hTool').style.width = bw(tool); $('#hWait').style.width = bw(wait);
+  };
+  const fmtTok = v=> Math.round(v).toLocaleString('ko-KR');
+  if (anim){
+    ['g1','g2'].forEach(id=> $('#'+id+'val').style.strokeDasharray = `0 ${ARC_LEN}`);
+    ['hLlm','hTool','hWait'].forEach(id=> $('#'+id).style.width = '0');
+    requestAnimationFrame(()=> requestAnimationFrame(apply));
+    countUp($('#g1txt'), g1to, v=> v.toFixed(0) + '%', 1400);
+    countUp($('#g2txt'), tin + tout, fmtTok, 1400);
+  } else {
+    apply(); $('#g1txt').textContent = g1to.toFixed(0) + '%'; $('#g2txt').textContent = fmtTok(tin + tout);
+  }
+}
+const REAL_KPI = [
+  {v:'36', u:'개', k:'에이전트 평가 질문 (1·2·3차)', src:'reports/agent_eval.md · _v2 · _v3'},
+  {v:'10', u:'개', k:'실험 기록', src:'reports/experiments.md'},
+  {v:'4', u:'개', k:'조회 도구', src:'src/agent_tools.py'},
+  {v:'14', u:'/14', k:'훅 테스트 통과', src:'reports/experiments.md (사고 기록)'},
+  {v:'3', u:'차', k:'에이전트 평가 횟수', src:'agent_eval.md · _v2 · _v3'}
+];
+function buildKpi(){
+  const box = $('#realKpi'); box.innerHTML = '';
+  REAL_KPI.forEach(k=>{
+    const d = document.createElement('div'); d.className = 'min-w-0';
+    d.innerHTML = `<div class="mono num"><span class="text-[30px] font-bold" style="color:var(--teal)">${k.v}</span><span class="muted text-[13px] ml-1">${k.u}</span></div><div class="text-[13px] mt-1"></div><div class="mono text-[10.5px] muted mt-0.5 break-all"></div>`;
+    d.children[1].textContent = k.k; d.children[2].textContent = k.src;
+    box.appendChild(d);
+  });
+}
+
+/* ───────── Agents ───────── */
+const ROSTER = [
+  ['에이전트 루프', 'ORCHESTRATOR', '질문을 모델에 보내고, 모델이 고른 도구를 실행해 결과를 돌려줍니다. 최대 6번 반복합니다.', 'src/agent.py · 시스템 지침', 'agent-dashboard/traces/*.jsonl'],
+  ['모델 판단', 'MODEL', '도구를 고르고 답을 씁니다. 도구 결과에 없는 수치는 말하지 않고 출처와 한계를 붙입니다.', '질문 · 도구 설명 · 도구 결과', '답 (내용은 기록 안 함)'],
+  ['목록 조회', 'TOP', '구간별로 부족·과잉이 자주 생기는 대여소 상위 목록(최대 20곳)을 돌려줍니다.', 'DuckDB flows (읽기 전용)', '집계 JSON'],
+  ['대여소 조회', 'PROFILE', '대여소 이름 일부로 찾아 구간별 상태를 돌려줍니다(최대 3곳).', 'DuckDB flows', '집계 JSON'],
+  ['옮길 후보', 'MOVES', '과잉 대여소에서 부족 대여소로 옮길 후보 짝을 3km 안에서 거리순으로 제안합니다.', 'DuckDB flows · 대여소 좌표', '후보 짝 JSON'],
+  ['날씨 배수', 'WEATHER', '강수·기온에 따른 수요 배수와 "가정" 문구를 돌려줍니다(한남대 기준 추정).', '실험 04 회귀 계수', '배수 · 가정'],
+  ['규칙 · 한도', 'RULES', '호출 사이 4초를 쉬고 429·503은 한 번만 재시도합니다. 훅이 키·데이터 파일·스크래핑을 막습니다.', 'CLAUDE.md · COMPLIANCE.md', '—'],
+  ['점검 · 기록', 'CHECK', '질문 세트로 도구 선택·한계 고지·출처·순서·가정을 점검하고 결과를 실험 기록에 남깁니다.', 'src/eval_agent.py', 'reports/agent_eval*.md · experiments.md'],
+  ['사용자 (사람)', 'HUMAN', '질문하고, 키를 .env에 넣고, 새 데이터의 약관 확인과 커밋·푸시를 결정합니다.', '—', '—']
+];
+function buildRoster(){
+  const tb = $('#roster'); tb.innerHTML = '';
+  ROSTER.forEach((r,i)=>{
+    const tr = document.createElement('tr');
+    tr.style.borderTop = '1px solid var(--line)';
+    const col = i===0 ? 'var(--violet)' : (i===ROSTER.length-1 ? 'var(--amber)' : 'var(--fg)');
+    tr.innerHTML = `<td class="p-3 pl-5 align-top" style="min-width:130px"><div class="font-bold"></div><div class="mono text-[10.5px] muted"></div></td><td class="p-3 align-top"></td><td class="p-3 align-top mono text-[12px] muted"></td><td class="p-3 pr-5 align-top mono text-[12px]" style="color:var(--teal)"></td>`;
+    tr.children[0].children[0].textContent = r[0]; tr.children[0].children[0].style.color = col;
+    tr.children[0].children[1].textContent = r[1];
+    tr.children[1].textContent = r[2]; tr.children[2].textContent = r[3]; tr.children[3].textContent = r[4];
+    tb.appendChild(tr);
+  });
+}
+
+/* ───────── 모드 전환 · 기록 불러오기 · 실시간 ───────── */
+function setMode(m){
+  MODE = m;
+  const chip = $('#modeChip'), desc = $('#modeDesc'), head = $('#headDataChip');
+  chip.innerHTML = '';
+  if (m === 'demo'){
+    chip.className = 'chip chip-demo'; chip.innerHTML = '<span class="chip-dot"></span>시연 재생';
+    desc.textContent = liveAvail ? '실시간 서버에 연결됐지만 아직 실행 기록이 없습니다. python src/agent.py "질문"을 실행하면 바로 바뀝니다.' : '코드에 적힌 순서대로 미리 짠 재생입니다. 실행 기록 파일(agent-dashboard/traces/*.jsonl)을 열면 실제 기록으로 바뀝니다.';
+    head.className = 'chip chip-demo'; head.innerHTML = '<span class="chip-dot"></span>초·토큰·시간 = 시연용 수치';
+    $('#logChip').className = 'chip chip-demo'; $('#logChip').textContent = '재생 화면';
+  } else {
+    const S = realStats(REAL);
+    chip.className = 'chip chip-real';
+    chip.innerHTML = m === 'live' ? '<span class="live-dot" style="width:6px;height:6px"></span>' : '<span class="chip-dot"></span>';
+    chip.append(m === 'live' ? '실시간 연결' : '실제 기록 재생');
+    desc.textContent = `${REAL.name} · 이벤트 ${REAL.evs.length}개 · 에이전트 작업 ${fmtDur(S.agentSec)}${S.hasUsage ? ' · 토큰 ' + S.total.toLocaleString('ko-KR') : ''}`;
+    head.className = 'chip chip-real'; head.innerHTML = '<span class="chip-dot"></span>초·토큰·시간 = 실제 기록';
+    $('#logChip').className = 'chip chip-real'; $('#logChip').textContent = m === 'live' ? '실시간' : '기록 재생';
+  }
+  $('#toDemo').hidden = m === 'demo';
+  $('#toLive').hidden = !(liveAvail && m !== 'live');
+  $('#flowNote').hidden = m !== 'demo';
+}
+function rerender(anim){
+  if (currentView === 'traces') renderTraces(anim);
+  if (currentView === 'usage') renderUsage(anim);
+}
+function useReal(R, m){
+  REAL = R; setMode(m); startReal(); rerender(true);
+}
+function loadText(text, name){
+  const R = parseTrace(text, name);
+  if (!R.evs.length){ $('#modeDesc').textContent = '이 파일에서 실행 기록을 찾지 못했습니다. agent-dashboard/traces 폴더의 .jsonl 파일을 골라 주세요.'; return; }
+  livePaused = true;
+  useReal(R, 'replay');
+}
+$('#fileIn').addEventListener('change', e=>{ const f = e.target.files[0]; if (f) f.text().then(t=> loadText(t, f.name)); e.target.value = ''; });
+document.addEventListener('dragover', e=>{ if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ e.preventDefault(); document.body.classList.add('dropping'); } });
+document.addEventListener('dragleave', e=>{ if (e.target === document.documentElement || e.target === document.body) document.body.classList.remove('dropping'); });
+document.addEventListener('drop', e=>{ e.preventDefault(); document.body.classList.remove('dropping'); const f = e.dataTransfer.files[0]; if (f) f.text().then(t=> loadText(t, f.name)); });
+const SAMPLE_NAME = 'real-run-2026-11-11.jsonl';
+const SAMPLE_TRACE = "{\"t\": \"2026-11-11T01:12:58.532Z\", \"e\": \"prompt\", \"len\": 42, \"model\": \"gemini-3.5-flash-lite\"}\n{\"t\": \"2026-11-11T01:12:58.532Z\", \"e\": \"llm\", \"turn\": 1, \"dur\": 7149, \"in\": 897, \"out\": 51, \"think\": 0, \"calls\": 2}\n{\"t\": \"2026-11-11T01:13:05.682Z\", \"e\": \"tool\", \"tool\": \"weather_factor\", \"args\": {\"precip_mm\": 1, \"temp_c\": 8}, \"dur\": 0, \"ok\": true}\n{\"t\": \"2026-11-11T01:13:05.682Z\", \"e\": \"tool\", \"tool\": \"top_stations\", \"args\": {\"band\": \"출근\", \"kind\": \"shortage\", \"n\": 5}, \"dur\": 634, \"ok\": true}\n{\"t\": \"2026-11-11T01:13:06.317Z\", \"e\": \"wait\", \"dur\": 4000}\n{\"t\": \"2026-11-11T01:13:10.318Z\", \"e\": \"llm\", \"turn\": 2, \"dur\": 6267, \"in\": 1454, \"out\": 393, \"think\": 0, \"calls\": 0}\n{\"t\": \"2026-11-11T01:13:16.589Z\", \"e\": \"answer\", \"len\": 545}\n{\"t\": \"2026-11-11T01:13:16.589Z\", \"e\": \"stop\", \"why\": \"answer\"}\n{\"t\": \"2026-11-11T01:13:16.590Z\", \"e\": \"usage\", \"msgs\": [[\"2026-11-11T01:12:58.532Z\", 897, 51, 0, 0], [\"2026-11-11T01:13:10.318Z\", 1454, 393, 0, 0]]}\n";
+$('#sampleBtn').addEventListener('click', ()=> loadText(SAMPLE_TRACE, SAMPLE_NAME));
+$('#toDemo').addEventListener('click', ()=>{ livePaused = true; setMode('demo'); resetRun(); rerender(true); });
+$('#toLive').addEventListener('click', ()=>{ livePaused = false; liveName = null; liveLen = -1; poll(); });
+
+async function poll(){
+  if (livePaused) return;
+  try {
+    const r = await fetch('/api/trace', {cache:'no-store'});
+    if (!r.ok) throw new Error('no api');
+    const j = await r.json();
+    const first = !liveAvail; liveAvail = true;
+    if (!j.name){ if (MODE === 'demo' && first) setMode('demo'); return; }
+    if (j.name !== liveName || j.text.length < liveLen){
+      liveName = j.name; liveLen = j.text.length;
+      const R = parseTrace(j.text, j.name); if (!R.evs.length) return;
+      useReal(R, 'live');
+    } else if (j.text.length !== liveLen){
+      liveLen = j.text.length;
+      const R = parseTrace(j.text, j.name);
+      REAL.evs = R.evs; REAL.usage = R.usage; REAL.segs = R.segs; REAL.track = R.track;
+      setMode('live'); rerender(false);
+      if (phases.length && phases[phaseIdx].t === 'idle') { phaseT = 0; realNext(); }
+    }
+  } catch(e){
+    if (!liveAvail) clearInterval(liveTimer);
+  }
+}
+let liveTimer = null;
+if (/^https?:$/.test(location.protocol) && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)){
+  poll(); liveTimer = setInterval(poll, 1500);
+}
+
+/* ───────── 탭 라우팅 (#workflows 등) ───────── */
+const VIEWS = ['workflows','traces','usage','agents'];
+let currentView = null;
+function show(v){
+  if (!VIEWS.includes(v)) v = 'workflows';
+  if (v === currentView) return;
+  currentView = v;
+  VIEWS.forEach(x=>{
+    $('#view-'+x).hidden = x !== v;
+    const t = $('#tab-'+x); t.setAttribute('aria-selected', x === v); t.tabIndex = x === v ? 0 : -1;
+  });
+  if (v === 'workflows') build();
+  if (v === 'traces') renderTraces(true);
+  if (v === 'usage') renderUsage(true);
+}
+document.querySelectorAll('.tab').forEach((t,i,all)=>{
+  t.addEventListener('click', ()=>{ show(t.dataset.view); try { if (location.hash !== '#'+t.dataset.view) location.hash = t.dataset.view; } catch(e){} });
+  t.addEventListener('keydown', e=>{
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const n = all[(i + (e.key === 'ArrowRight' ? 1 : all.length-1)) % all.length]; n.focus(); n.click();
+  });
+});
+window.addEventListener('hashchange', ()=> show(location.hash.slice(1)));
+let rz; window.addEventListener('resize', ()=>{ clearTimeout(rz); rz = setTimeout(()=>{ if (currentView === 'workflows'){ build(); paintState(); } sizePlayhead(); }, 120); });
+
+const clock = $('#clock');
+const tickClock = ()=>{ clock.textContent = new Date().toLocaleTimeString('ko-KR', {hour12:false}); };
+tickClock(); setInterval(tickClock, 1000);
+
+buildRealReview(); buildKpi(); buildRoster();
+setMode('demo');
+show(location.hash.slice(1));
+build();
+if (MODE === 'demo') resetRun();
+requestAnimationFrame(frame);
+window.__switchboard = { loadText }; // 디버그용
+})();
+</script>
+</body>
+</html>

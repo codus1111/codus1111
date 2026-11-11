@@ -11,6 +11,7 @@ import time
 
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+os.environ.setdefault("TASHU_TRACE", "0")  # 평가 중에는 실행 기록 파일을 만들지 않는다
 import agent  # noqa: E402
 import agent_tools as at  # noqa: E402
 

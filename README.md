@@ -29,6 +29,8 @@
 <a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-report.svg" width="164" height="38" alt="타슈 분석 과정 보기" /></a>
 &nbsp;
 <a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
+&nbsp;
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-agent.svg" width="164" height="38" alt="타슈 에이전트 관제 화면 보기" /></a>
 
 <img src="https://img.shields.io/badge/Python-2F6F6B?style=flat-square&labelColor=1E3B39&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-2F6F6B?style=flat-square&labelColor=1E3B39&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-2F6F6B?style=flat-square&labelColor=1E3B39&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-2F6F6B?style=flat-square&labelColor=1E3B39&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-2F6F6B?style=flat-square&labelColor=1E3B39&logo=googlegemini&logoColor=white" alt="Gemini" />
 

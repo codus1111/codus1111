@@ -7,7 +7,7 @@
 | 데이터 | 제공기관 | 형식 | 이용 조건 |
 |---|---|---|---|
 | [타슈 대여이력 정보](https://www.data.go.kr/data/15137219/fileData.do) | 대전교통공사 | CSV(월별), 연 1회 갱신 | 무료, **이용허락범위 제한 없음** |
-| [타슈 대여소 현황 API](https://www.data.go.kr/data/15119663/openapi.do) | 대전교통공사 | JSON, 실시간 | 무료, 이용허락범위 제한 없음, 키는 타슈 앱 [자전거정보 > Open API]에서 신청, 트래픽은 기관 정책에 따름 |
+| [타슈 대여소 현황 API](https://www.data.go.kr/data/15119663/openapi.do) | 대전교통공사 | JSON, 실시간 | 무료, 이용허락범위 제한 없음, API 유형이 LINK라 공공데이터포털이 아니라 **타슈 앱 [자전거정보 > Open API]에서 신청·발급**한다(2026-11-11 확인). 포털 상세 페이지에는 호출 주소·응답 필드가 없다(앱에서 신청한 뒤 확인). 심의유형: 개발단계 자동승인·운영단계 심의승인, 트래픽은 기관 정책에 따름 |
 | [타슈정보 API](https://www.data.go.kr/data/15109253/openapi.do) | 대전광역시 | JSON, 실시간 | 무료, 이용허락범위 제한 없음(2026-11-11 확인). 공공데이터포털 **활용신청**으로 인증키(serviceKey) 발급. 호출 주소 `https://apis.data.go.kr/6300000/openapi2022/tasuInfo`, 요청변수 serviceKey·pageNo·numOfRows. 2026-11-11 실제 호출 1회: 주소는 `.../tasuInfo/gettasuInfo`, 응답은 키오스크 202행(거치대 수 `dfrCo`, 좌표, 자치구, 개설 연도). 남은 자전거 수는 없고 호출 한도는 확인하지 못함. 응답 원본은 `data/raw/tashu_api/`(gitignore)에만 둔다 |
 | [Open-Meteo Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) | Open-Meteo | JSON, 시간별 | **비상업적 이용만 무료**(개인·교육·비영리), 일 10,000회·시간 5,000회·분 600회 미만, 데이터는 **CC BY 4.0**(출처 표기 필수). 키 불필요 |
 | [Anthropic API](https://www.anthropic.com/legal/commercial-terms) | Anthropic | 에이전트의 LLM 호출 | 상업 약관 B절: 고객 콘텐츠(입력·출력)로 모델을 학습하지 않음(2026-11-10 확인). 입력 권한 보증(L.1), 사용 정책 준수(D.2). 일반 API 입력의 보관 기간은 확인하지 못함 |
@@ -65,6 +65,11 @@
 ### 지도 시각화 (2026-11-11, 제거)
 - 동 단위 지도를 시도했으나 대시보드에서 뺐다. 지도에 쓰던 외부 경계 자료(geoBoundaries)는 더 이상 쓰지 않는다.
 - 지도를 다시 넣으면 소수 셀 억제(동 단위 합계, 대여소 3곳 미만·이용 200건 미만 제외)와 외부 지도 서비스 약관·출처 표기를 먼저 점검한다.
+
+### 에이전트 실행 기록 (2026-11-11)
+- `src/agent_trace.py`가 실행마다 JSONL을 남긴다(`agent-dashboard/traces/`, gitignore). 질문·답·도구 결과의 내용은 남기지 않고 길이와 도구 이름·짧은 인자·시간·토큰 수만 남긴다. 대여소 검색어(최대 30자)는 인자로 남을 수 있다.
+- 올리는 샘플(`agent-dashboard/samples/`)은 실제 실행 1회 기록이며 질문 내용이 없다.
+- 관제 대시보드의 화면 구조는 JIHOSW/jiho-agent를 참고했다. 그 저장소에는 라이선스가 없어서 사용 허락을 따로 확인받았다(2026-11-11, 사용자 확인). 출처는 대시보드 푸터와 README에 표기한다.
 
 ### 재점검 트리거
 새 데이터 소스 추가 / 위치 보강 데이터 도입 / 외부 서비스(LLM 포함)로 전송 / 데이터 결합 / 결과·지도 공개 / 목적 변경

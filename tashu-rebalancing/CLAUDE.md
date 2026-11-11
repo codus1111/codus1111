@@ -40,6 +40,7 @@ data/        # 전부 gitignore (원본·가공본)
 src/         # 코드
 notebooks/
 reports/     # 집계 결과·실험 기록만 (개별 이용 기록 금지)
+agent-dashboard/  # 에이전트 관제 대시보드(index.html, serve.py). traces/는 실행 기록이라 gitignore
 docs/        # COMPLIANCE.md 등
 .claude/     # hooks, (추후) skills
 ```

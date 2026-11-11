@@ -105,7 +105,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 </head>
 <body>
 <nav><div>
-  <a href="#s0">데이터</a><a href="#sw">용어</a><a href="#s1">과정</a><a href="#sp">문제 해결</a><a href="#s2">움직임</a><a href="#s3">원인</a><a href="#s4">순위</a><a href="#s5">제안</a><a href="#s6">에이전트</a><a href="#s7">한계</a>
+  <a href="#s0">데이터</a><a href="#sw">용어</a><a href="#s1">과정</a><a href="#sp">문제 해결</a><a href="#s2">움직임</a><a href="#s3">원인</a><a href="#s4">순위</a><a href="#sm">지도</a><a href="#s5">제안</a><a href="#s6">에이전트</a><a href="#s7">한계</a>
 </div></nav>
 <div class="wrap"><div class="cover">
   <div class="top"><div class="blob"></div><div class="ring"></div><div class="ring r2"></div>
@@ -268,6 +268,15 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <div class="card rv"><h3>순위는 유지되는가: 만든 기간(~8월) vs 맞춰 본 기간(9~10월)</h3><div id="c_scatter"></div>
 <p class="note">출근 시간에 모자란 날 비율이고, 점 하나가 대여소 하나다. 대각선에 가까울수록 두 기간의 순위가 비슷하다 (순위상관 0.80). 평균 빠진 수로 줄을 세워도 비슷하게 맞아서, 이 점수가 더 낫다고는 못 한다.</p></div></section>
 
+<section id="sm"><h2><small>00</small>지도: 동네별로 보면</h2>
+<p class="lead">대전 동(洞) 단위로 합쳐서 어디가 자전거가 빠지고 어디가 쌓이는지 그렸다. 시간대를 눌러 바꿔 볼 수 있다.</p>
+<div class="card rv tabs"><span class="note">시간대</span> <span id="mtabs"></span>
+<div id="map"></div>
+<div class="legend" id="mlegend"></div>
+<p class="note">점 하나가 동 하나다(그 동에 있는 대여소 위치의 평균). 점이 클수록 이용이 많고, 주황은 자전거가 빠지는 동, 파랑은 쌓이는 동이다. 값은 평일 하루 평균으로 빠진 자전거 수다. 점에 마우스를 올리면 이름과 값이 나온다.</p>
+<p class="note">개인정보 점검: 개별 대여소와 이동 경로는 그리지 않았다. 대여소가 3곳 미만이거나 이용이 200건 미만인 동은 뺐다. 배경 지도(타일)는 외부 지도 서비스의 약관을 피하려고 쓰지 않았다.</p>
+<div id="mtip" class="note" style="min-height:1.6em;color:var(--title);font-weight:700"></div></div></section>
+
 <section id="s5"><h2><small>05</small>그래서 어떻게 하면 좋은가</h2>
 <p class="lead">분석 결과로 정한 제안이다. 거치대 수와 남은 자전거 수를 몰라서 점검 순서까지만 정했고, 몇 대를 옮길지는 정하지 않았다.</p>
 <div id="recs"></div>
@@ -428,6 +437,28 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
 (function(){const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   $("chat").className="chat";
   $("chat").innerHTML=D.dialog.map(d=>`<div class="bub u">${esc(d.q)}</div>${d.tools.length?`<div class="tl">에이전트가 고른 조회 기능: ${d.tools.map(t=>`<span class="chip">${t}</span>`).join("")}</div>`:`<div class="tl">조회 없이 거절 (이 프로젝트 범위 밖 질문)</div>`}<div class="bub m">${esc(d.a)}</div>`).join("")})();
+
+/* 동 단위 지도 (배경 지도 없이 위치만 그림) */
+(function(){const W=640,H=560,m=24;const mb=Object.keys(D.map);let cur=mb[0];
+  const all=mb.flatMap(b=>D.map[b]);const xs=all.map(d=>d.x),ys=all.map(d=>d.y);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const sc=Math.min((W-2*m)/(x1-x0),(H-2*m)/(y1-y0));
+  const X=v=>m+(v-x0)*sc+((W-2*m)-(x1-x0)*sc)/2,Y=v=>H-m-(v-y0)*sc-((H-2*m)-(y1-y0)*sc)/2;
+  const OR="#d9822b",BL=css("--a");
+  function draw(){const rows=D.map[cur],mx=Math.max(...rows.map(r=>Math.abs(r.net)))||1,mv=Math.max(...rows.map(r=>r.vol));
+    let g=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#eef1f7"/>`;
+    // 눈금(북쪽 표시, 5km 막대)
+    const km=5/111.0*sc; g+=`<g><line x1="${m}" y1="${H-14}" x2="${m+km}" y2="${H-14}" stroke="${css("--mute")}" stroke-width="2"/><text x="${m}" y="${H-20}">5km</text><text x="${W-m-8}" y="${m+4}" text-anchor="end">북 ↑</text></g>`;
+    rows.slice().sort((a,b)=>b.vol-a.vol).forEach((r,i)=>{const c=r.net>=0?OR:BL,rad=4+14*Math.sqrt(r.vol/mv),op=.25+.65*Math.min(1,Math.abs(r.net)/mx);
+      g+=`<circle class="mc" data-i="${rows.indexOf(r)}" cx="${X(r.x)}" cy="${Y(r.y)}" r="${rad.toFixed(1)}" fill="${c}" fill-opacity="${op.toFixed(2)}" stroke="${c}" stroke-opacity=".7"><title>${r.gu} ${r.dong}: ${r.net>0?"하루 평균 "+r.net+"대 빠짐":"하루 평균 "+(-r.net)+"대 쌓임"} (대여소 ${r.n}곳)</title></circle>`});
+    // 이용이 많은 동 이름 몇 개
+    rows.slice().sort((a,b)=>Math.abs(b.net)-Math.abs(a.net)).slice(0,7).forEach(r=>{g+=`<text x="${X(r.x)+8}" y="${Y(r.y)-8}" style="fill:var(--ink);font-size:11px;font-weight:700;paint-order:stroke;stroke:#eef1f7;stroke-width:3px">${r.dong}</text>`});
+    $("map").innerHTML=svg(W,H,g);
+    document.querySelectorAll(".mc").forEach(c=>{c.onmouseenter=()=>{const r=rows[+c.dataset.i];$("mtip").textContent=`${r.gu} ${r.dong} · ${r.net>0?"하루 평균 "+r.net+"대 빠짐":"하루 평균 "+(-r.net)+"대 쌓임"} · 대여소 ${r.n}곳`}});
+    $("mlegend").innerHTML=`<span><i style="background:${OR}"></i>빠지는 동 (자전거가 모자라기 쉬움)</span><span><i style="background:${BL}"></i>쌓이는 동</span><span>진할수록 값이 큼 · 클수록 이용 많음 · 동 ${rows.length}곳</span>`}
+  function tabs(){$("mtabs").innerHTML=mb.map(b=>`<button class="${b==cur?"on":""}" data-b="${b}">${b}</button>`).join("");
+    document.querySelectorAll("#mtabs button").forEach(x=>x.onclick=()=>{cur=x.dataset.b;tabs();draw()})}
+  tabs();draw()})();
 
 /* 슬라이드 상단 바 (페이지 번호) */
 (function(){const secs=[...document.querySelectorAll("main section")];

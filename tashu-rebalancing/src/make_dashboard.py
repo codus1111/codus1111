@@ -122,6 +122,22 @@ D["funnel"] = {
     "same": q1("SELECT count(*) FROM rentals WHERE NOT ctrl_rent AND minutes > 0 AND rent_id = ret_id"),
 }
 
+# 6) 지도용 동 단위 집계: 개별 대여소는 노출하지 않고, 대여소 3곳 이상·이용 200건 이상인 동만 남긴다(규칙 9).
+import math  # noqa: E402
+
+D["map"] = {}
+for bname, (h0, h1) in at.BANDS.items():
+    rows = con.execute(f"""
+        SELECT s.gu, s.dong, count(DISTINCT s.id) n_st, avg(s.lat) lat, avg(s.lon) lon,
+               sum(f.rentals - f.returns) net, sum(f.rentals + f.returns) vol
+        FROM flows f JOIN stations s ON s.id = f.sid
+        WHERE f.h BETWEEN {h0} AND {h1} AND dayofweek(f.d) BETWEEN 1 AND 5
+        GROUP BY s.gu, s.dong HAVING count(DISTINCT s.id) >= 3 AND sum(f.rentals + f.returns) >= 200
+        ORDER BY s.gu, s.dong""").fetchall()
+    D["map"][bname] = [{"gu": r[0], "dong": r[1], "n": r[2], "x": round((r[4] - 127.385) * math.cos(math.radians(36.35)), 5),
+                        "y": round(r[3] - 36.35, 5), "net": round(r[5] / n_days, 1), "vol": int(r[6])} for r in rows]
+D["map_note"] = {"n_days": n_days, "dongs": len({d["dong"] for b in D["map"].values() for d in b})}
+
 from dashboard_dialog import load_dialog  # noqa: E402
 
 D["dialog"] = load_dialog(os.path.join(at.ROOT, "reports", "agent_eval.md"),

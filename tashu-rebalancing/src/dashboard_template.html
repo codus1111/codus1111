@@ -165,6 +165,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <div><b>오차 범위 (95%)</b> 참값이 들어올 가능성이 95%인 범위. 좁을수록 믿을 만하다.</div>
 <div><b>회귀분석</b> 비·기온·요일이 대여에 주는 영향을 각각 따로 계산하는 방법.</div>
 <div><b>예측 오차</b> 예측이 평균 몇 대 빗나갔는지. 낮을수록 좋다.</div>
+<div><b>거치대 수</b> 한 대여소가 한 번에 받을 수 있는 자전거 수. 유출이 많으면 비고, 유입이 많으면 꽉 찬다.</div>
 <div><b>순서 일치도</b> 두 줄 세우기(목록)가 얼마나 비슷한지. 1이면 같고 0이면 무관.</div>
 <div><b>재분석 날씨</b> 실측이 아닌 기상 모델 계산값(약 25km 칸 평균).</div>
 <div><b>에이전트</b> 질문에 맞는 조회 기능을 스스로 골라 답하는 AI.</div>
@@ -276,7 +277,11 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <div class="grid" style="margin-top:10px"><div><h3>자주 모자란 곳 상위 (비율 = 모자란 날)</h3><div id="t_short"></div></div><div><h3>자주 쌓이는 곳 상위 (비율 = 쌓인 날)</h3><div id="t_over"></div></div></div>
 <p class="note">이용이 너무 적어(200건 미만) 특정인의 이용 습관이 드러날 수 있는 대여소는 뺐다.</p></div>
 <div class="card rv"><h3>목록은 유지되는가: 만든 기간(~8월) vs 맞춰 본 기간(9~10월)</h3><div id="c_scatter"></div>
-<p class="note">출근 시간에 모자란 날 비율이고, 점 하나가 대여소 하나다. 대각선에 가까울수록 두 기간의 목록이 비슷하다 (순서 일치도 0.80). 평균 빠진 수로 줄을 세워도 비슷하게 맞아서, 이 점수가 더 낫다고는 못 한다.</p></div></section>
+<p class="note">출근 시간에 모자란 날 비율이고, 점 하나가 대여소 하나다. 대각선에 가까울수록 두 기간의 목록이 비슷하다 (순서 일치도 0.80). 평균 빠진 수로 줄을 세워도 비슷하게 맞아서, 이 점수가 더 낫다고는 못 한다.</p></div><div class="card rv" id="rackcard"><h3>거치대 크기와 견주면: 유출·유입이 얼마나 큰 일인가</h3>
+<p class="note">거치대 수는 한 대여소가 한 번에 받을 수 있는 자전거 수다. <b>유출(빌려 감)이 많으면 비고, 유입(반납)이 많으면 꽉 찬다.</b> 그래서 빠진 수를 거치대 수와 나눠 보면 같은 5대라도 거치대 10개 대여소에서는 큰 일이고 40개 대여소에서는 작은 일임을 구분할 수 있다.</p>
+<div id="c_rack"></div><div class="legend" id="l_rack"></div>
+<p class="note" id="rack_note"></p></div>
+</section>
 
 <section id="s5"><h2><small>05</small>그래서 어떻게 하면 좋은가</h2>
 <p class="lead">분석 결과로 정한 제안이다. 거치대 수와 남은 자전거 수를 몰라서 점검 순서까지만 정했고, 몇 대를 옮길지는 정하지 않았다.</p>
@@ -439,6 +444,23 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
 (function(){const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   $("chat").className="chat";
   $("chat").innerHTML=D.dialog.map(d=>`<div class="bub u">${esc(d.q)}</div>${d.tools.length?`<div class="tl">에이전트가 고른 조회 기능: ${d.tools.map(t=>`<span class="chip">${t}</span>`).join("")}</div>`:`<div class="tl">조회 없이 거절 (이 프로젝트 범위 밖 질문)</div>`}<div class="bub m">${esc(d.a)}</div>`).join("")})();
+
+/* 거치대 수와 견준 분포 (실험 10) */
+(function(){const R=D.racks;if(!R){const c=document.getElementById("rackcard");if(c)c.remove();return}
+  const W=640,rh=54,H=3*rh+20,ml=64;const bands=Object.keys(R.bands);
+  const SEG=[["쌓임 큼",css("--a"),0,1],["쌓임 약간","#9fb7ee",1,3],["거의 균형","#cfd5e0",3,4],["빠짐 약간","#f0c08a",4,6],["빠짐 큼",B,6,7]];
+  // ratio_hist 칸: [≤-1, -1~-0.5, -0.5~-0.1, ±0.1, 0.1~0.5, 0.5~1, ≥1]  ->  쌓임 큼(앞 2칸), 쌓임 약간, 균형, 빠짐 약간, 빠짐 큼(뒤 2칸)
+  const grp=h=>[h[0]+h[1],h[2],h[3],h[4],h[5]+h[6]];
+  let g="";bands.forEach((b,i)=>{const v=R.bands[b],h=grp(v.ratio_hist),tot=h.reduce((a,c)=>a+c,0),y=8+i*rh;let x=ml;
+    g+=`<text x="${ml-8}" y="${y+22}" text-anchor="end" style="fill:var(--ink)">${b}</text><text x="${ml-8}" y="${y+38}" text-anchor="end">${tot}곳</text>`;
+    h.forEach((n,k)=>{const w=(W-ml-6)*n/tot;if(w<=0)return;
+      g+=`<rect class="grow" style="transition-delay:${(i*5+k)*50}ms" x="${x.toFixed(1)}" y="${y+8}" width="${w.toFixed(1)}" height="30" fill="${SEG[k][1]}"><title>${b} ${SEG[k][0]}: ${n}곳</title></rect>`;
+      if(w>24)g+=`<text class="pop" x="${(x+w/2).toFixed(1)}" y="${y+28}" text-anchor="middle" style="fill:${k==0||k==4?"#fff":"#222"};font-size:12px;font-weight:700">${n}</text>`;
+      x+=w});});
+  document.getElementById("c_rack").innerHTML=svg(W,H,g);
+  document.getElementById("l_rack").innerHTML=SEG.map(s=>`<span><i style="background:${s[1]}"></i>${s[0]}</span>`).join("")+"<span>쌓임 큼·빠짐 큼 = 하루 평균이 거치대 수의 절반 이상</span>";
+  const o=R.bands["출근"],p=R.bands["퇴근"];
+  document.getElementById("rack_note").textContent=`거치대 수를 아는 ${R.matched}곳(전체 대여소의 약 12%, 대부분 오래된 대여소) 기준이다. 이 대여소들은 하루 평균 빠진 수가 거치대 수의 10% 안쪽인 곳이 가장 많고, 절반 이상 빠지는 곳은 출근 ${o["ratio_ge_0.5"]}곳·퇴근 ${p["ratio_ge_0.5"]}곳뿐이다. 구간 안에서 빠진 수가 거치대 수 이상인 날이 10%를 넘는 대여소는 출근 ${o["exceed_ge_0.1"]}곳, 퇴근 ${p["exceed_ge_0.1"]}곳인데, 이 날들은 가득 찬 대여소여도 중간에 반납이 들어오거나 보충이 있어야 가능한 날이라 재배치가 필요했을 가능성의 하한선으로 볼 수 있다. 앞의 상위 목록 대여소는 대부분 여기 포함되지 않아 목록을 검증하지는 못했다.`})();
 
 /* 슬라이드 상단 바 (페이지 번호) */
 (function(){const secs=[...document.querySelectorAll("main section")];

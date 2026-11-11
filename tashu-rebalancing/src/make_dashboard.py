@@ -123,6 +123,14 @@ D["funnel"] = {
 }
 
 
+# 8) 거치대 수와 견준 집계(실험 10). 응답 파일이 없으면 이 카드는 빠진다.
+try:
+    from analysis_07_racks import summarize as _racks  # noqa: E402
+    D["racks"] = _racks(con)
+except Exception as e:  # noqa: BLE001
+    print("거치대 집계 건너뜀:", e)
+    D["racks"] = None
+
 from dashboard_dialog import load_dialog  # noqa: E402
 
 D["dialog"] = load_dialog(os.path.join(at.ROOT, "reports", "agent_eval.md"),

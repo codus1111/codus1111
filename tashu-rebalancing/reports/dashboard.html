@@ -141,8 +141,11 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <tr><td><b>학기 구분</b><br><span class="note">직접 정함</span></td>
 <td>3~6월과 9~10월은 학기, 12~2월과 7~8월은 방학으로 나눴다. 달력 기준이다.</td>
 <td>학기 효과 계산</td></tr>
+<tr><td><b>타슈정보 API</b><br><span class="note">대전광역시, 공공데이터포털 (이용 제한 없음)</span></td>
+<td>키오스크 대여소 202곳의 거치대 수(2009~2015년 설치분). 대여소 좌표와 60m 안에서 짝지어 169곳에 붙였다.</td>
+<td>거치대 크기와 견주기(실험 10)</td></tr>
 <tr><td><b>쓰지 않은 것</b></td>
-<td>실시간 대여소 API(거치대 수·남은 자전거 수). 키를 아직 신청하지 않았다.</td>
+<td>실시간 남은 자전거 수(앱 방식 API, 아직 신청하지 않았다).</td>
 <td>그래서 "남은 수"는 모르고 대여·반납 기록으로 짐작만 했다.</td></tr>
 </table>
 <p class="note" style="margin-top:8px">AI(Gemini 무료 구간)에게는 이 페이지에 나온 것 같은 대여소·시간대별 집계 결과만 보냈다. 건별 기록은 보내지 않았다.</p></div>
@@ -231,6 +234,13 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <dt>결과</dt><dd>자동 점검은 알맞은 기능 15/15, 한계 말하기 15/15, 출처 15/15, 순서 15/15, 지침 노출 0/15. 거절 5건은 모두 조회 없이 범위 밖이라고 답했다.</dd>
 <dt class="bad">읽어서 찾은 문제</dt><dd>"눈이 오고 영하 5도" 질문에 눈을 비로 가정해 계산하고 그 가정을 밝히지 않았다. "내일 몇 대가 모자랄지" 거절 답에 근거 없는 재배치 조언이 붙었다. 자동 점검은 이 둘을 못 잡았다.</dd>
 <dt>고치고 다시 확인</dt><dd>날씨 자료의 강수량은 눈도 물로 환산해 포함하므로 눈을 비처럼 계산한 건 틀린 처리가 아니었다. 문제는 그 가정을 밝히지 않은 것이었다. 도구 결과에 "가정" 문구를 넣고, 프롬프트에 가정 밝히기와 근거 없는 조언 금지를 넣은 뒤 새 질문 12개로 확인했다. 가정 밝힘 12/12, 근거 없는 조언 0. 한계 말함은 11/12인데, 1건은 올바른 거절 답이 점검 키워드에 안 걸린 것이라 기준을 고정한 채 두었다. 고친 문제를 겨냥한 질문이라 일반화는 아니다.</dd></dl></details>
+
+<details class="card ps rv"><summary>실험 10 · 거치대 수와 견주기<small>일부만 확보</small></summary><dl>
+<dt>가설</dt><dd>거치대 수를 알면 "모자란 날"을 거치대 크기에 맞춰 읽고, 순위 상위 대여소가 정말 큰 불균형인지 확인할 수 있다.</dd>
+<dt>한 일</dt><dd>타슈정보 API를 1회 호출해 키오스크 202곳의 거치대 수를 받고, 대여소 좌표와 60m 안에서 짝지어 169곳에 붙였다. 구간별 하루 평균 빠진 수를 거치대 수로 나눠 봤다.</dd>
+<dt>결과</dt><dd>짝이 있는 대여소는 대부분 하루 평균 빠진 수가 거치대 수의 10% 안쪽이다. 50% 이상 빠지는 곳은 출근 5곳, 퇴근 3곳뿐이다. 빠진 수가 거치대 수 이상인 날이 10%를 넘는 곳은 출근 5곳, 퇴근 8곳이다.</dd>
+<dt class="bad">막힌 점</dt><dd>짝지은 대여소는 2009~2015년에 생긴 오래된 곳(전체의 약 12%)이다. 순위 상위 20곳 중 거치대 수를 아는 곳은 1~7곳뿐이라 순위를 검증하거나 "바닥날 위험"으로 바꾸지 못했다. 응답에는 남은 자전거 수도 없다. API 명세의 위도·경도 이름은 서로 바뀌어 있었다.</dd>
+<dt>다음 가설</dt><dd>현재 전체 대여소의 거치대·재고는 타슈 앱 방식 API(앱에서 신청)로 받을 수 있는지 확인한다.</dd></dl></details>
 </div>
 
 <div class="card rv"><h3>막힌 것을 어떻게 풀었나</h3><table class="fix">
@@ -273,7 +283,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <div class="card rv tabs"><span class="note">시간대</span> <span id="mtabs"></span>
 <div id="map"></div>
 <div class="legend" id="mlegend"></div>
-<p class="note">점 하나가 동 하나다(그 동에 있는 대여소 위치의 평균). 배경은 대전 5개 구(서구·유성구·동구·중구·대덕구)의 대략적인 경계이고, 단순화된 자료라 실제 경계와 조금 다르다. 구 경계 출처: geoBoundaries(CC BY 3.0, 원자료 citypopulation.de). 값은 평일 하루 평균으로 빠진 자전거 수다. 점에 마우스를 올리면 이름과 값이 나온다.</p>
+<p class="note">점 하나가 동 하나다(그 동에 있는 대여소 위치의 평균). 지도는 동 점이 있는 범위로 확대했고 구 경계 일부는 잘린다. 배경은 대전 5개 구(서구·유성구·동구·중구·대덕구)의 대략적인 경계이고, 단순화된 자료라 실제 경계와 조금 다르다. 구 경계 출처: geoBoundaries(CC BY 3.0, 원자료 citypopulation.de). 값은 평일 하루 평균으로 빠진 자전거 수다. 점에 마우스를 올리면 이름과 값이 나온다.</p>
 <p class="note">개인정보 점검: 개별 대여소와 이동 경로는 그리지 않았다. 대여소가 3곳 미만이거나 이용이 200건 미만인 동은 뺐다. 배경 지도(타일)는 외부 지도 서비스의 약관을 피하려고 쓰지 않았다.</p>
 <div id="mtip" class="note" style="min-height:1.6em;color:var(--title);font-weight:700"></div></div></section>
 
@@ -295,7 +305,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 
 <section id="s7"><h2><small>07</small>한계</h2>
 <div class="card rv"><ul>
-<li>남은 자전거 수와 거치대 수를 모른다. '모자란 날이 많다'는 실제로 바닥났다는 뜻이 아니다.</li>
+<li>남은 자전거 수를 모르고, 거치대 수는 일부(169곳)만 안다. '모자란 날이 많다'는 실제로 바닥났다는 뜻이 아니다.</li>
 <li>날씨는 대전 한 지점의 재분석 값(기상 모델이 계산한 약 25km 칸의 평균)이다. 비 온 시간이 적어 비의 영향은 불안정하다.</li>
 <li>학기는 달력으로 나눴다. 기준 5대와 시간대 구분은 임의로 정했고 바꿔서 확인하지 않았다.</li>
 <li>맞춰 본 기간은 2개월, AI 확인 질문은 9개뿐이다.</li>
@@ -312,7 +322,7 @@ function svg(w,h,inner){return `<svg viewBox="0 0 ${w} ${h}" role="img">${inner}
 /* KPI 카운트업 */
 function countUp(id,to,suffix){const el=$(id);if(RM){el.textContent=to.toLocaleString()+suffix;return}
   const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(f)})(t0)}
-countUp("k1",D.scale.used,"건");$("k1s").textContent="분석에 쓴 이용 건수 (원본 "+D.scale.raw.toLocaleString()+"건 중, 관리자 이동 처리와 이용시간 이상 기록 제외)";$("k4").textContent=D.scale.start.slice(0,7).replace("-",".")+" ~ "+D.scale.end.slice(0,7).replace("-",".");countUp("k2",D.scale.stations,"곳");countUp("k3",9,"개");
+countUp("k1",D.scale.used,"건");$("k1s").textContent="분석에 쓴 이용 건수 (원본 "+D.scale.raw.toLocaleString()+"건 중, 관리자 이동 처리와 이용시간 이상 기록 제외)";$("k4").textContent=D.scale.start.slice(0,7).replace("-",".")+" ~ "+D.scale.end.slice(0,7).replace("-",".");countUp("k2",D.scale.stations,"곳");countUp("k3",10,"개");
 
 const STEPS=[
 ["데이터 확정","YouTube 댓글, 카카오 바이크, 청주는 약관이나 데이터가 없어 빼고, 대전 타슈 공식 데이터로 정했다","",""],
@@ -324,6 +334,7 @@ const STEPS=[
 ["실험 06 순위 만들기","시간대별 순위가 만든 기간과 맞춰 본 기간에서 비슷했다 (순위상관 0.6~0.8). 평균 빠진 수 순위보다 낫다고는 못 한다","warn","한계 있음"],
 ["실험 07 에이전트","유료 AI를 무료 Gemini로 바꿨다. 확인하다가 검색 오류와 순서 바꾸는 문제를 찾아 고쳤다 (9/9)","warn","점수 후할 수 있음"],
 ["실험 08 민감도 재분석","180분 이상·같은 대여소 건(6.5%)을 빼고 다시 돌렸다. 비 0.36→0.35, 학기 1.62→1.65, 순위상관은 같다. 결론은 안 바뀌었다","",""],
+["실험 10 거치대 수","거치대 수를 169곳(약 12%)만 확보. 그 대여소들은 불균형이 작고 순위 상위는 대부분 빠져 있어 순위 검증은 못 했다","warn","일부만 확보"],
 ["실험 09 에이전트 재평가","기준을 고정하고 새 질문 15개로 다시 확인했다. 자동 점검은 모두 통과했지만 '눈'을 비로 가정하고 밝히지 않은 답을 읽어서 찾았다","warn","읽어서 찾은 문제 있음"]];
 $("steps").innerHTML=STEPS.map((s,i)=>`<div class="step ${s[2]}" style="transition-delay:${i*70}ms"><b>${s[0]}</b>${s[3]?`<span class="tag">${s[3]}</span>`:""}<div class="note" style="font-size:14px">${s[1]}</div></div>`).join("");
 
@@ -388,7 +399,7 @@ const RECS=[
  ["방학에는 캠퍼스 물량을 학기의 60% 정도로","s2","근거 보통",
   ["날씨를 같이 따졌을 때 학기가 방학의 1.62배라서, 방학은 학기의 약 0.62배다.","시험과 휴강은 반영하지 못했다. 학기는 달력으로 나눴다."]],
  ["먼저 할 일: 거치대 수 확보, 2~4주 시범 운영","s3","다음 단계",
-  ["공식 실시간 대여소 API로 거치대 수를 받으면 '모자란 날'을 '바닥날 위험'으로 바꿀 수 있다 (키는 타슈 앱에서 신청).","상위 20곳만 먼저 보충하고 모자란 날 비율이 줄었는지 전후로 비교한다."]]];
+  ["거치대 수는 타슈정보 API로 169곳만 확보했다(실험 10). 순위 상위 대부분이 빠져 있어, 전체 대여소의 거치대·남은 수는 앱 방식 API(앱에서 신청)로 받을 수 있는지 확인해야 한다.","상위 20곳만 먼저 보충하고 모자란 날 비율이 줄었는지 전후로 비교한다."]]];
 $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${i+1}</div><div><h3>${r[0]}<span class="tag ${r[1]}">${r[2]}</span></h3><ul>${r[3].map(x=>`<li>${x}</li>`).join("")}</ul></div></div>`).join("");
 
 /* 흐름 애니메이션 */
@@ -441,8 +452,9 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
 /* 동 단위 지도: 대전 구 경계(geoBoundaries, CC BY 3.0) 위에 동 점을 그린다 */
 (function(){const W=640,H=600,m=30;const mb=Object.keys(D.map);let cur=mb[0];
   const all=mb.flatMap(b=>D.map[b]);const gp=(D.geo||[]).flatMap(g=>g.rings.flat());
-  const xs=all.map(d=>d.x).concat(gp.map(p=>p[0])),ys=all.map(d=>d.y).concat(gp.map(p=>p[1]));
-  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const xs=all.map(d=>d.x),ys=all.map(d=>d.y);  // 점이 있는 범위에 맞춰 확대한다(구 경계는 일부 잘릴 수 있다)
+  const px_=(Math.max(...xs)-Math.min(...xs))*.06,py_=(Math.max(...ys)-Math.min(...ys))*.06;
+  const x0=Math.min(...xs)-px_,x1=Math.max(...xs)+px_,y0=Math.min(...ys)-py_,y1=Math.max(...ys)+py_;
   const sc=Math.min((W-2*m)/(x1-x0),(H-2*m-14)/(y1-y0));
   const X=v=>m+(v-x0)*sc+((W-2*m)-(x1-x0)*sc)/2,Y=v=>H-m-8-(v-y0)*sc-((H-2*m-14)-(y1-y0)*sc)/2;
   const OR="#d9822b",BL=css("--a");
@@ -455,7 +467,7 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
   function draw(){const rows=D.map[cur],mx=Math.max(...rows.map(r=>Math.abs(r.net)))||1,mv=Math.max(...rows.map(r=>r.vol));
     let g=base;
     const km=5/111.0*sc; g+=`<line x1="${m}" y1="${H-14}" x2="${m+km}" y2="${H-14}" stroke="${css("--mute")}" stroke-width="2"/><text x="${m}" y="${H-20}">약 5km</text><text x="${W-m}" y="${m-8}" text-anchor="end">북 ↑</text>`;
-    rows.slice().sort((a,b)=>b.vol-a.vol).forEach(r=>{const c=r.net>=0?OR:BL,rad=4+14*Math.sqrt(r.vol/mv),op=.35+.55*Math.min(1,Math.abs(r.net)/mx);
+    rows.slice().sort((a,b)=>b.vol-a.vol).forEach(r=>{const c=r.net>=0?OR:BL,rad=3+11*Math.sqrt(r.vol/mv),op=.35+.55*Math.min(1,Math.abs(r.net)/mx);
       g+=`<circle class="mc" data-i="${rows.indexOf(r)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="${rad.toFixed(1)}" fill="${c}" fill-opacity="${op.toFixed(2)}" stroke="#fff" stroke-width="1.2"><title>${r.gu} ${r.dong}: ${r.net>0?"하루 평균 "+r.net+"대 빠짐":"하루 평균 "+(-r.net)+"대 쌓임"} (대여소 ${r.n}곳)</title></circle>`});
     const shown=[];rows.slice().sort((a,b)=>Math.abs(b.net)-Math.abs(a.net)).forEach(r=>{if(shown.length>=6)return;const px=X(r.x),py=Y(r.y);
       if(shown.some(q=>Math.hypot(q[0]-px,q[1]-py)<46))return;shown.push([px,py]);

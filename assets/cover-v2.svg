@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="208" viewBox="0 0 960 208" role="img" aria-label="KIM CHAE YEON Portfolio">
-<rect width="960" height="208" fill="#151515"/>
-<text x="36" y="35" font-family="Arial,sans-serif" font-size="10" letter-spacing="2.5" fill="#A5A5A5">SELECTED WORK</text>
-<text x="924" y="35" text-anchor="end" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="#A5A5A5">PORTFOLIO / 2026</text>
-<text x="33" y="98" font-family="Arial,Helvetica,sans-serif" font-size="49" font-weight="700" letter-spacing="-1.8" fill="#FAFAF7">KIM CHAE YEON</text>
-<text x="36" y="134" font-family="Arial,'Noto Sans KR',sans-serif" font-size="17" fill="#D2D2CE">데이터를 해석하고, 아이디어를 결과물로 만듭니다.</text>
-<path d="M36 157H924" stroke="#454545"/>
-<text x="36" y="184" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.8" fill="#B5B5B0">DATA ANALYSIS</text>
-<text x="236" y="184" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.8" fill="#B5B5B0">SERVICE PLANNING</text>
-<text x="478" y="184" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.8" fill="#B5B5B0">AI AGENT</text>
+<rect width="960" height="208" fill="#10201F"/><rect x="36" y="0" width="56" height="3" fill="#4FA39B"/>
+<text x="36" y="35" font-family="Arial,sans-serif" font-size="10" letter-spacing="2.5" fill="#7FA9A5">SELECTED WORK</text>
+<text x="924" y="35" text-anchor="end" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="#7FA9A5">PORTFOLIO / 2026</text>
+<text x="33" y="98" font-family="Arial,Helvetica,sans-serif" font-size="49" font-weight="700" letter-spacing="-1.8" fill="#F4FAF9">KIM CHAE YEON</text>
+<text x="36" y="134" font-family="Arial,'Noto Sans KR',sans-serif" font-size="17" fill="#C9DDDA">데이터를 해석하고, 아이디어를 결과물로 만듭니다.</text>
+<path d="M36 157H924" stroke="#2F6F6B"/>
+<text x="36" y="184" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.8" fill="#8FC1BC">DATA ANALYSIS</text>
+<text x="236" y="184" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.8" fill="#8FC1BC">SERVICE PLANNING</text>
+<text x="478" y="184" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.8" fill="#8FC1BC">AI AGENT</text>
 </svg>

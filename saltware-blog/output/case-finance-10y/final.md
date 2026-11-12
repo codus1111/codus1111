@@ -34,4 +34,4 @@
 
 참고한 자료
 - 솔트웨어 홈페이지, 금융 산업: https://www.saltware.co.kr/industries/finance.html
-- 금융위원회 보도자료, 전자금융감독규정 개정 (2025.02.05): https://www.fsc.go.kr
+- 금융위원회 보도자료, 전자금융감독규정 일부개정고시안 의결 (2025.02.05): https://www.fsc.go.kr/no010101/83954

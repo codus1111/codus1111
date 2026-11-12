@@ -41,4 +41,4 @@ AI가 숫자를 내놓았을 때 "이거 어디서 나온 거지?"를 확인할 
 참고한 자료
 - 솔트웨어 홈페이지, 제조 산업: https://www.saltware.co.kr/industries/manufacturing.html
 - 솔트웨어 홈페이지, Sapie-ADP: https://www.saltware.co.kr/business/data-ai.html
-- 중소벤처기업부, 스마트제조혁신 실태조사 (2025.04.28): https://www.mss.go.kr
+- 중소벤처기업부, 스마트제조혁신 실태조사 (2025.04.28) (중기부 발표를 보도한 기사): https://www.ddaily.co.kr/page/view/2025042816294926205

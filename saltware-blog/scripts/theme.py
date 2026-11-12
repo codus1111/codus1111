@@ -46,7 +46,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button,inp
 .foot .wrap{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-top:64px;padding-bottom:48px;font-size:14.5px;color:var(--muted)}
 .foot p{margin:18px 0 0;line-height:1.7;max-width:320px}.foot b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--text2);margin-bottom:16px;font-weight:500}
 .foot a:not(.logo){display:block;margin:10px 0}.foot a:hover{color:var(--o)}
-.copy{border-top:1px solid var(--line)}.copy .wrap{padding-top:20px;padding-bottom:36px;font-family:var(--mono);font-size:11.5px;color:#5E5E5E;letter-spacing:.04em}
+.copy{border-top:1px solid var(--line)}.copy .wrap{padding-top:20px;padding-bottom:36px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#BDBDBD;letter-spacing:.02em}
 .toast{position:fixed;left:50%;bottom:30px;max-width:calc(100vw - 32px);white-space:nowrap;transform:translate(-50%,14px);background:var(--o);color:#000;font-weight:700;padding:12px 22px;border-radius:999px;font-size:14.5px;opacity:0;transition:.25s;pointer-events:none;z-index:70}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 /* 글자 표지 */
@@ -99,11 +99,11 @@ def header(base, active):
 def footer(base):
     cats = "".join(f'<a href="{base}index.html?cat={k}#archive">{n}</a>' for k, n, _, _ in CATS)
     return f"""<footer class="foot"><div class="wrap">
-<div><a class="logo" href="{base}index.html"><i></i>saltware</a><p>Connect Any Data. Understand with AI. Act with Agents.<br>솔트웨어가 현장에서 겪은 데이터·AI 이야기를 씁니다.</p></div>
+<div><a class="logo" href="{base}index.html"><i></i>saltware</a><p>Connect Any Data. Understand with AI. Act with Agents.<br>솔트웨어 공개 자료를 바탕으로 정리한 학습용 글입니다.</p></div>
 <div><b>SERIES</b>{cats}</div>
 <div><b>SALTWARE</b><a href="https://www.saltware.co.kr" target="_blank" rel="noopener">회사 홈페이지</a><a href="https://www.youtube.com/@saltware_youtube" target="_blank" rel="noopener">유튜브</a><a href="https://fitcloud.github.io/" target="_blank" rel="noopener">기술 블로그</a></div>
 <div><b>CONTACT</b><a href="{base}contact.html">문의하기</a><a href="{base}index.html#newsletter">뉴스레터</a></div>
-</div><div class="copy"><div class="wrap">블로그 기획 과제용 시안 · 문의·구독 폼은 실제로 전송되지 않습니다</div></div></footer><div class="toast" role="status"></div>"""
+</div><div class="copy"><div class="wrap">CJ올리브네트웍스 L.L.M Academy 수강 중 만든 개인 학습 프로젝트입니다. 솔트웨어와 무관한 비공식 사이트이며, 문의·구독 폼은 실제로 전송되지 않습니다.</div></div></footer><div class="toast" role="status"></div>"""
 
 
 def page(title, base, active, css, body, js):
@@ -194,7 +194,7 @@ $('.search-btn').addEventListener('click',function(ev){ev.preventDefault();$('#a
 var tm;q.addEventListener('input',function(){clearTimeout(tm);tm=setTimeout(function(){s.q=q.value.trim();s.n=N;draw()},150)});qc.addEventListener('click',function(){q.value='';s.q='';draw();q.focus()});
 document.addEventListener('click',function(ev){var t=ev.target.closest('[data-tag]');if(t){ev.preventDefault();s.tag=t.dataset.tag;s.n=N;draw();$('#archive').scrollIntoView({behavior:'smooth'});return}if(ev.target.closest('#tc')){s.tag='';draw()}});
 $('#more button').addEventListener('click',function(){s.n+=N;draw()});
-$('#nf').addEventListener('submit',function(ev){ev.preventDefault();var v=$('#em').value.trim(),m=$('#nm');if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v)){m.textContent='이메일 주소를 다시 확인해 주세요.';$('#em').focus();return}m.textContent=v+' 으로 구독 신청을 받았어요. (시안이라 실제 발송은 되지 않아요)';$('#em').value=''});
+$('#nf').addEventListener('submit',function(ev){ev.preventDefault();var v=$('#em').value.trim(),m=$('#nm');if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v)){m.textContent='이메일 주소를 다시 확인해 주세요.';$('#em').focus();return}m.textContent='연습용 화면이라 입력한 이메일은 저장·전송되지 않아요.';$('#em').value=''});
 rd();draw();
 """
 
@@ -224,7 +224,7 @@ def build_home(posts):
 <label class="search">{I_SEARCH}<input id="q" type="search" placeholder="검색" aria-label="글 검색"><button type="button" id="qc" aria-label="지우기">✕</button></label></div>
 <div class="state" id="state" aria-live="polite"></div><div class="rows" id="rows"></div>
 <div class="more" id="more"><button class="btn" type="button">더 보기 <span class="arr">↓</span></button></div></section>
-<section class="news" id="newsletter"><div><div class="mono o">NEWSLETTER</div><h2>한 달에 한 번,<br>데이터 이야기를 보내 드려요.</h2><p>새 글과 고객 사례, 세미나 소식을 메일 한 통으로 정리합니다.</p>
+<section class="news" id="newsletter"><div><div class="mono o">NEWSLETTER</div><h2>한 달에 한 번,<br>데이터 이야기를 보내 드려요.</h2><p>연습용 화면입니다. 입력한 이메일은 저장하거나 전송하지 않습니다.</p>
 <p class="soon">다음 글 · {soon}</p></div>
 <form id="nf" novalidate><div class="f"><input id="em" type="email" placeholder="회사 이메일" aria-label="이메일"><button class="btn fill" type="submit">구독하기</button></div><p class="msg" id="nm" aria-live="polite"></p></form></section>
 </main>"""
@@ -306,7 +306,7 @@ def build_post(p, posts):
     body = f"""<div class="bar-p"></div><main class="wrap">
 <section class="ph"><div class="crumb mono"><a href="{b}index.html">Insights</a><span>/</span><a href="{b}index.html?cat={p['cat']}#archive">{EN[p['cat']]}</a></div>
 <span class="mono o">{EN[p['cat']]} · {esc(p['series'])}</span><h1>{esc(p['short'])}</h1><p class="dek">{esc(p['summary'])}</p>
-<div class="by mono"><span>{esc(p['author'])}</span><span>{p['date'].replace('-', '.')}</span><span>{p['minutes']} MIN READ</span>
+<div class="by mono"><span>개인 학습 프로젝트</span><span>{p['date'].replace('-', '.')}</span><span>{p['minutes']} MIN READ</span>
 <div class="sh"><button id="cp" type="button">COPY LINK</button><button id="tt" type="button">TOP ↑</button></div></div></section>
 <div class="cover-w">{kw(p, "clamp(80px,15vw,230px)").replace('class="kw"', 'class="kw cover"', 1)}</div>
 <div class="lay"><nav class="toc" aria-label="목차"><span class="mono">CONTENTS</span>{toc}</nav>
@@ -346,7 +346,7 @@ var f=document.querySelector('form.c'),t=new URLSearchParams(location.search).ge
 function ck(el){var b=el.closest('.f'),ok=el.checkValidity();if(b)b.classList.toggle('bad',!ok);return ok}
 f.querySelectorAll('.f input,.f textarea').forEach(function(el){el.addEventListener('blur',function(){if(el.value)ck(el)})});
 f.addEventListener('submit',function(ev){ev.preventDefault();var ok=true,fi=null;f.querySelectorAll('.f input[required],.f textarea').forEach(function(el){if(!ck(el)){ok=false;fi=fi||el}});
-var ag=document.querySelector('#ag');if(ok&&!ag.checked){ok=false;toast('개인정보 수집에 동의해 주세요');fi=ag}if(!ok){fi.focus();return}
+var ag=document.querySelector('#ag');if(ok&&!ag.checked){ok=false;toast('안내 문구를 확인해 주세요');fi=ag}if(!ok){fi.focus();return}
 document.querySelector('#dn').textContent=document.querySelector('#name').value.trim();f.classList.add('sent');scrollTo({top:0,behavior:'smooth'})});
 document.querySelector('#again').addEventListener('click',function(){f.reset();f.classList.remove('sent')});
 """
@@ -355,15 +355,15 @@ document.querySelector('#again').addEventListener('click',function(){f.reset();f
 def build_contact():
     tp = "".join(f'<label><input type="radio" name="topic" value="{k}"><span>{n}</span></label>' for k, n, _, _ in CATS) + '<label><input type="radio" name="topic" value="etc"><span>그 밖의 문의</span></label>'
     body = f"""<main class="wrap"><div class="cw"><div><span class="mono">CONTACT</span><h1>무엇이든<br><em>편하게</em> 물어보세요<span class="o">.</span></h1>
-<p class="lede">글을 읽다가 우리 회사에도 맞을지 궁금해졌다면, 지금 상황을 짧게 적어 주세요. 담당자가 확인하고 연락드립니다.</p>
-<ul class="facts"><li><span class="mono">RESPONSE</span><span>영업일 기준 1~2일 <span class="todo">[확인 필요]</span></span></li><li><span class="mono">TOPICS</span><span>데이터 통합 · AI 도입 · 클라우드 · 계정·권한 관리</span></li><li><span class="mono">WEBSITE</span><a href="https://www.saltware.co.kr" target="_blank" rel="noopener">saltware.co.kr</a></li></ul></div>
+<p class="lede">이 화면은 문의 양식을 연습해 본 시안입니다. 솔트웨어의 문의 창구가 아니며, 입력한 내용은 저장하거나 전송하지 않습니다.</p>
+<ul class="facts"><li><span class="mono">TOPICS</span><span>데이터 통합 · AI 도입 · 클라우드 · 계정·권한 관리</span></li><li><span class="mono">WEBSITE</span><a href="https://www.saltware.co.kr" target="_blank" rel="noopener">saltware.co.kr</a></li></ul></div>
 <form class="c" novalidate><div class="fl"><div class="r2"><div class="f"><label for="name">NAME <i>*</i></label><input id="name" required autocomplete="name"><p class="err">이름을 적어 주세요.</p></div>
 <div class="f"><label for="co">COMPANY <i>*</i></label><input id="co" required autocomplete="organization"><p class="err">회사 이름을 적어 주세요.</p></div></div>
 <div class="f"><label for="ml">EMAIL <i>*</i></label><input id="ml" type="email" required autocomplete="email"><p class="err">이메일 주소를 확인해 주세요.</p></div>
 <div class="f"><label>어떤 글을 보고 오셨나요?</label><div class="tp">{tp}</div></div>
 <div class="f"><label for="msg">MESSAGE <i>*</i></label><textarea id="msg" required minlength="10" placeholder="예: 데이터가 ERP와 CRM에 나뉘어 있는데 AI로 보고서를 만들고 싶어요."></textarea><p class="err">10자 이상 적어 주세요.</p></div>
-<label class="ag"><input type="checkbox" id="ag">문의 답변을 위해 이름, 회사, 이메일을 수집하는 데 동의합니다.</label><button class="btn fill" type="submit">문의 보내기 <span class="arr">→</span></button></div>
-<div class="done"><div class="m">✓</div><b><span id="dn"></span>님, 문의를 받았어요.</b><p>이 사이트는 시안이라 실제로 전송되지는 않았어요.<br>실제 운영에서는 이 자리에서 담당자에게 메일이 갑니다.</p>
+<label class="ag"><input type="checkbox" id="ag">연습용 화면이며 입력한 내용은 저장·전송되지 않는다는 점을 확인했습니다.</label><button class="btn fill" type="submit">문의 보내기 <span class="arr">→</span></button></div>
+<div class="done"><div class="m">✓</div><b><span id="dn"></span>님, 연습용 양식을 작성했어요.</b><p>솔트웨어와 무관한 개인 학습 프로젝트라서, 입력한 내용은 어디에도 전송·저장되지 않았어요.</p>
 <div class="b"><a class="btn" href="index.html">블로그로 돌아가기</a><button class="btn fill" type="button" id="again">하나 더 문의하기</button></div></div></form></div></main>"""
     (ROOT / "contact.html").write_text(page("문의하기 | 솔트웨어 인사이트", "", "contact", CONTACT_CSS, body, CONTACT_JS), encoding="utf-8")
 

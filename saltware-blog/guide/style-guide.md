@@ -70,7 +70,7 @@
 
 ## 7. 솔트웨어 기본 정보 (글에 써도 되는 사실)
 
-- 2003년 설립, 2022년 코스닥 상장
+- 2003년 설립
 - 슬로건: Connect Any Data. Understand with AI. Act with Agents.
 - AI 데이터 플랫폼: Sapie-ADP, Sapie-Agent
 - 데이터: Databricks, Starburst, Sapie-Lake

@@ -32,7 +32,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button,inp
 .foot .wrap{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-top:64px;padding-bottom:48px;font-size:14.5px;color:var(--muted)}
 .foot p{margin:18px 0 0;line-height:1.7;max-width:320px}.foot b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--text2);margin-bottom:16px;font-weight:500}
 .foot a:not(.logo){display:block;margin:10px 0}.foot a:hover{color:var(--o)}
-.copy{border-top:1px solid var(--line)}.copy .wrap{padding-top:20px;padding-bottom:36px;font-family:var(--mono);font-size:11.5px;color:#5E5E5E;letter-spacing:.04em}
+.copy{border-top:1px solid var(--line)}.copy .wrap{padding-top:20px;padding-bottom:36px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#BDBDBD;letter-spacing:.02em}
 .toast{position:fixed;left:50%;bottom:30px;max-width:calc(100vw - 32px);white-space:nowrap;transform:translate(-50%,14px);background:var(--o);color:#000;font-weight:700;padding:12px 22px;border-radius:999px;font-size:14.5px;opacity:0;transition:.25s;pointer-events:none;z-index:70}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 /* 글자 표지 */
@@ -122,16 +122,16 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button,inp
 <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="검색" aria-label="글 검색"><button type="button" id="qc" aria-label="지우기">✕</button></label></div>
 <div class="state" id="state" aria-live="polite"></div><div class="rows" id="rows"></div>
 <div class="more" id="more"><button class="btn" type="button">더 보기 <span class="arr">↓</span></button></div></section>
-<section class="news" id="newsletter"><div><div class="mono o">NEWSLETTER</div><h2>한 달에 한 번,<br>데이터 이야기를 보내 드려요.</h2><p>새 글과 고객 사례, 세미나 소식을 메일 한 통으로 정리합니다.</p>
+<section class="news" id="newsletter"><div><div class="mono o">NEWSLETTER</div><h2>한 달에 한 번,<br>데이터 이야기를 보내 드려요.</h2><p>연습용 화면입니다. 입력한 이메일은 저장하거나 전송하지 않습니다.</p>
 <p class="soon">다음 글 · <b>RAG, AI가 사내 문서를 찾아 읽는 법</b> · <b>Bedrock 프롬프트 캐싱, 직접 켜 보고 요금 비교해 봤습니다</b></p></div>
 <form id="nf" novalidate><div class="f"><input id="em" type="email" placeholder="회사 이메일" aria-label="이메일"><button class="btn fill" type="submit">구독하기</button></div><p class="msg" id="nm" aria-live="polite"></p></form></section>
 </main>
 <footer class="foot"><div class="wrap">
-<div><a class="logo" href="index.html"><i></i>saltware</a><p>Connect Any Data. Understand with AI. Act with Agents.<br>솔트웨어가 현장에서 겪은 데이터·AI 이야기를 씁니다.</p></div>
+<div><a class="logo" href="index.html"><i></i>saltware</a><p>Connect Any Data. Understand with AI. Act with Agents.<br>솔트웨어 공개 자료를 바탕으로 정리한 학습용 글입니다.</p></div>
 <div><b>SERIES</b><a href="index.html?cat=spoon#archive">데이터 한 스푼</a><a href="index.html?cat=note#archive">데이터 노트</a><a href="index.html?cat=case#archive">고객 사례</a></div>
 <div><b>SALTWARE</b><a href="https://www.saltware.co.kr" target="_blank" rel="noopener">회사 홈페이지</a><a href="https://www.youtube.com/@saltware_youtube" target="_blank" rel="noopener">유튜브</a><a href="https://fitcloud.github.io/" target="_blank" rel="noopener">기술 블로그</a></div>
 <div><b>CONTACT</b><a href="contact.html">문의하기</a><a href="index.html#newsletter">뉴스레터</a></div>
-</div><div class="copy"><div class="wrap">블로그 기획 과제용 시안 · 문의·구독 폼은 실제로 전송되지 않습니다</div></div></footer><div class="toast" role="status"></div>
+</div><div class="copy"><div class="wrap">CJ올리브네트웍스 L.L.M Academy 수강 중 만든 개인 학습 프로젝트입니다. 솔트웨어와 무관한 비공식 사이트이며, 문의·구독 폼은 실제로 전송되지 않습니다.</div></div></footer><div class="toast" role="status"></div>
 <script>
 function toast(m){var t=document.querySelector('.toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2200)}
 (function(){var b=document.querySelector('.burger'),d=document.querySelector('.drawer'),ic=b.innerHTML;
@@ -158,6 +158,6 @@ $('.search-btn').addEventListener('click',function(ev){ev.preventDefault();$('#a
 var tm;q.addEventListener('input',function(){clearTimeout(tm);tm=setTimeout(function(){s.q=q.value.trim();s.n=N;draw()},150)});qc.addEventListener('click',function(){q.value='';s.q='';draw();q.focus()});
 document.addEventListener('click',function(ev){var t=ev.target.closest('[data-tag]');if(t){ev.preventDefault();s.tag=t.dataset.tag;s.n=N;draw();$('#archive').scrollIntoView({behavior:'smooth'});return}if(ev.target.closest('#tc')){s.tag='';draw()}});
 $('#more button').addEventListener('click',function(){s.n+=N;draw()});
-$('#nf').addEventListener('submit',function(ev){ev.preventDefault();var v=$('#em').value.trim(),m=$('#nm');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){m.textContent='이메일 주소를 다시 확인해 주세요.';$('#em').focus();return}m.textContent=v+' 으로 구독 신청을 받았어요. (시안이라 실제 발송은 되지 않아요)';$('#em').value=''});
+$('#nf').addEventListener('submit',function(ev){ev.preventDefault();var v=$('#em').value.trim(),m=$('#nm');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){m.textContent='이메일 주소를 다시 확인해 주세요.';$('#em').focus();return}m.textContent='연습용 화면이라 입력한 이메일은 저장·전송되지 않아요.';$('#em').value=''});
 rd();draw();
 </script></body></html>

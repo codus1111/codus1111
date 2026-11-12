@@ -1,7 +1,7 @@
 ---
 title: [고객 사례] 크몽 · 배포 한 번에 2~3시간, 기다리던 개발자들
 series: 고객 사례
-author: 클라우드사업팀 [이름]
+author: 개인 학습 프로젝트
 date: 2026-11-02
 keyword: MSA 전환 사례
 sub_keywords: [CI/CD 구축, AWS Fargate]

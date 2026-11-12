@@ -1,7 +1,7 @@
 ---
 title: [고객 사례] 연성대학교 · 한 달 2,500건 입시 문의에 챗봇을 세운 이유
 series: 고객 사례
-author: AI사업팀 [이름]
+author: 개인 학습 프로젝트
 date: 2026-11-03
 keyword: 대학 입시 상담 챗봇
 sub_keywords: [RAG 챗봇, 생성형 AI 교육]

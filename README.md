@@ -19,7 +19,7 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu.svg" width="360" height="28" alt="04 · DATA ANALYSIS / AI AGENT" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu.svg" width="360" height="28" alt="02 · DATA ANALYSIS / AI AGENT" />
 
 ### 타슈 수급 불균형 분석
 대전 공영자전거 대여 기록으로 대여소가 언제 비고 넘치는지 찾고, 점검 우선순위와 질의응답 에이전트까지 만든 분석.
@@ -39,7 +39,7 @@
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content.svg" width="360" height="28" alt="03 · CONTENT / AI AUTOMATION" />
 
 ### 솔트웨어 인사이트
-리서치·글쓰기·이미지 제작을 분담한 AI 에이전트 팀과 블로그 콘텐츠 **12편**.
+리서치·글쓰기·이미지 제작을 분담한 AI 에이전트 팀과 블로그 콘텐츠 **12편**. [프로젝트 설명](saltware-blog/README.md)
 
 <a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/#archive"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-content-v2.svg" width="164" height="38" alt="솔트웨어 완성 콘텐츠 보기" /></a>
 &nbsp;
@@ -49,7 +49,7 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills.svg" width="360" height="28" alt="05 · CLAUDE CODE SKILLS" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills.svg" width="360" height="28" alt="04 · CLAUDE CODE SKILLS" />
 
 ### 클로드 코드 스킬
 직접 만든 스킬을 종류별로 모았습니다. 종류를 눌러 펼쳐 보세요. 전체 안내는 [스킬 폴더](https://github.com/codus1111/codus1111/tree/main/claude-skills)에 있습니다.

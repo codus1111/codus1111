@@ -1,7 +1,7 @@
 ---
 title: 리전? 가용 영역? 아파트 단지로 이해하는 클라우드 지도 🏢
 series: 데이터 한 스푼
-author: 클라우드사업팀 [이름]
+author: 개인 학습 프로젝트
 date: 2026-11-03
 keyword: 리전 가용 영역
 sub_keywords: [AWS 기초, 고가용성]

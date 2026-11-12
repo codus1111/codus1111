@@ -1,7 +1,7 @@
 ---
 title: 실시간 데이터는 어떻게 흐를까? 수도관으로 보는 Kinesis 🚰
 series: 데이터 한 스푼
-author: 클라우드사업팀 [이름]
+author: 개인 학습 프로젝트
 date: 2026-11-02
 keyword: 실시간 데이터 처리
 sub_keywords: [Amazon Kinesis, 스트리밍 데이터]

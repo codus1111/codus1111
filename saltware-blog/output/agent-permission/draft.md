@@ -1,7 +1,7 @@
 ---
 title: [데이터 노트] 에이전트에게 열쇠를 주기 전에 · 일은 맡기되 문은 정해 준다
 series: 데이터 노트
-author: 보안사업팀 [이름]
+author: 개인 학습 프로젝트
 date: 2026-11-02
 keyword: AI 에이전트 권한 관리
 sub_keywords: [생성형 AI 보안, 민감정보 보호]

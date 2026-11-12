@@ -26,7 +26,7 @@
 
 호숫가에 집을 지었다고 생각하시면 됩니다. 데이터는 호수처럼 형식 상관없이 넉넉하게 담아 두고, 그 위에 창고처럼 라벨과 규칙을 얹는 구조예요.
 
-Databricks 공식 문서도 레이크하우스를 레이크와 웨어하우스의 장점을 합친 데이터 관리 방식으로 설명합니다. 데이터를 담는 저장 계층 위에 누가 어떤 데이터를 쓸 수 있는지 관리하는 계층을 따로 둬서, 호수가 늪으로 변하지 않게 붙잡아 두는 거죠.
+Databricks 공식 문서도 레이크하우스를 레이크와 웨어하우스의 장점을 합친 데이터 관리 방식으로 설명합니다. 그리고 Unity Catalog 같은 거버넌스 기능으로 누가 어떤 데이터를 쓸 수 있는지 관리한다고 소개해요. 호수가 늪으로 변하지 않게 붙잡아 두는 장치인 셈이죠.
 
 그러면 일하는 방식이 달라져요. 매출 담당자는 지금처럼 정리된 표를 꺼내 보고, 데이터 분석가는 같은 곳에서 상담 기록까지 엮어 분석합니다. 데이터를 두 군데 따로 관리하지 않으니 "어느 숫자가 맞아요?"라는 질문도 줄어들고요.
 
@@ -42,7 +42,7 @@ Databricks 공식 문서도 레이크하우스를 레이크와 웨어하우스�
 
 ## 솔트웨어는 이렇게 하고 있어요
 
-솔트웨어는 Databricks로 레이크하우스를 구축하는 일을 돕고 있어요. 처음부터 데이터를 전부 옮기기 부담스러운 회사라면, Starburst로 지금 있는 시스템은 그대로 두고 여러 곳을 한 번에 조회하는 데서 시작하는 방법도 있습니다. 다만 이 방식은 시스템 사이 거리가 멀면 조회가 느려질 수 있어서, 자주 쓰는 데이터부터 단계적으로 모으는 식으로 섞어 쓰는 경우가 많아요.
+솔트웨어는 Databricks 도입을 위한 현황 진단부터 데이터 이관, 권한 설정, 구축 후 운영까지 맡고 있어요. 처음부터 데이터를 전부 옮기기 부담스러운 회사라면, Starburst로 지금 있는 시스템은 그대로 두고 여러 곳을 한 번에 조회하는 데서 시작하는 방법도 있습니다. 옮길 수 있는 데이터와 내부망에 남길 데이터가 섞여 있다면 두 제품을 함께 써요. 옮길 데이터는 업무 영역별로 단계적으로 Databricks로 모으고, 남길 데이터는 Starburst로 조회하는 식입니다.
 
 
 ## 오늘의 한 스푼
@@ -58,3 +58,5 @@ Databricks 공식 문서도 레이크하우스를 레이크와 웨어하우스�
 - Databricks 블로그, Lakehouse FAQ: https://www.databricks.com/it/blog/2021/08/30/frequently-asked-questions-about-the-data-lakehouse.html
 - Atlan, Data Lake vs Data Swamp: https://atlan.com/data-lake-vs-data-swamp/
 - Starburst 소개 자료: https://www.starburst.io/resources/starburst-brochure
+- 솔트웨어 홈페이지, Databricks: https://www.saltware.co.kr/business/databricks.html
+- 솔트웨어 홈페이지, Starburst: https://www.saltware.co.kr/business/starburst.html

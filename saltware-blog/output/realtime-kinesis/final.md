@@ -22,7 +22,7 @@
 
 ## Kinesis 삼 형제, 뭐가 다른데요?
 
-웨비나에서는 Kinesis를 세 가지로 나눠 설명했어요.
+웨비나에서 실습으로 다룬 Kinesis는 세 가지예요.
 
 첫째는 Kinesis Data Streams예요. 굵기를 조절할 수 있는 수도관이에요. 샤드라는 단위로 관을 늘리고 줄이고, 흘러간 데이터를 일정 기간 담아 두었다가 다시 읽을 수도 있어요.
 
@@ -34,7 +34,7 @@
 
 ## 솔트웨어는 이렇게 하고 있어요
 
-솔트웨어는 웨비나에서 Kinesis 세 서비스를 직접 만들어 보는 실습을 함께 진행했어요. 실시간 처리가 필요한 고객사라면 어떤 데이터를 어떤 속도로 받아야 하는지부터 같이 정리하고, 관을 직접 깔지 관리형 서비스로 갈지 고르는 데서 시작합니다.
+솔트웨어는 AWS 전문 파트너로서 이 웨비나를 열었고, Kinesis 이론과 Data Streams, Data Firehose, Data Analytics 실습을 다뤘어요.
 
 
 ## 오늘의 한 스푼
@@ -48,3 +48,5 @@
 참고한 자료
 - 솔트웨어 웨비나, AWS를 활용한 Data Analytics (정영우 SA): https://www.youtube.com/watch?v=0iuvRXVC8OA
 - AWS, Amazon Managed Service for Apache Flink: https://aws.amazon.com/managed-service-apache-flink/
+- AWS What's New, Amazon Managed Service for Apache Flink 이름 변경 (2023.08): https://aws.amazon.com/about-aws/whats-new/2023/08/amazon-managed-service-apache-flink/
+- AWS What's New, Amazon Data Firehose 이름 변경 (2024.02): https://aws.amazon.com/about-aws/whats-new/2024/02/amazon-data-firehose-formerly-kinesis-data-firehose/

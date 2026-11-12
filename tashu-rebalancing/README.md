@@ -31,7 +31,7 @@
 > 과정과 결과를 한 페이지로 보려면 [대시보드 바로 보기](https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html)(파일은 [`reports/dashboard.html`](reports/dashboard.html)) (`.venv/Scripts/python src/make_dashboard.py`로 재생성, 데이터 필요).
 
 ## 재배치 질의응답 에이전트
-LLM이 도구 4개를 호출해 답합니다. 도구는 대여소·구간 단위 집계만 돌려주며(상위 20곳, 이용 200건 미만 숨김, 읽기 전용), LLM에는 질문과 이 집계만 전달됩니다.
+LLM이 도구 5개를 호출해 답합니다. 도구는 대여소·구간 단위 집계만 돌려주며(상위 20곳, 이용 200건 미만 숨김, 읽기 전용), LLM에는 질문과 이 집계만 전달됩니다.
 
 | 도구 | 하는 일 |
 |---|---|

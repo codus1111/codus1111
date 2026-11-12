@@ -26,6 +26,7 @@
 - DuckDB로 CSV를 읽을 때 `encoding='utf-8'`을 먼저 시도하고 실패하면 `'CP949'`로 읽는다(월별로 섞여 있음). 이 버전의 DuckDB는 `con.sql(...).fetchone()`이 아니라 `con.execute(...).fetchall()`을 쓴다.
 - 날씨는 `data/raw/weather_daejeon.json`(Open-Meteo, CC BY 4.0, 비상업적 이용 한정)을 `src/load_weather.py`로 `weather` 테이블에 적재. 재분석 값이며 대전 한 지점 기준. 출처 표기 유지.
 - statsmodels.api도 pandas 의존으로 차단된다. 회귀는 numpy로 직접 구현(`src/analysis_04_weather.py`의 IRLS 참고)하거나 차단 여부를 먼저 확인한다.
+- 타슈 앱 Open API(`src/fetch_app_stations.py`, 키 `TASHU_APP_API_KEY`, 헤더 `api-token`): 대여소 1,378곳, ID가 이력과 같음. `parking_count`는 **거치대 수가 아니라 호출 시점 재고**(스냅샷). 응답은 `data/raw/tashu_app/`.
 - "부족"은 순유출(대여−반납) 누적으로 추정한다. 재고 API는 현재 값만 주므로 보조로만 쓴다.
 
 ## 작업 방식

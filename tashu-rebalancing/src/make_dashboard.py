@@ -131,6 +131,14 @@ except Exception as e:  # noqa: BLE001
     print("거치대 집계 건너뜀:", e)
     D["racks"] = None
 
+# 9) 앱 API 현재 재고 스냅샷과 견준 집계(실험 11). 키가 없거나 호출이 실패하면 이 카드는 빠진다.
+try:
+    from stock_now import summary as _stock  # noqa: E402
+    D["stock"] = _stock()
+except Exception as e:  # noqa: BLE001
+    print("재고 스냅샷 건너뜀:", type(e).__name__)
+    D["stock"] = None
+
 from dashboard_dialog import load_dialog  # noqa: E402
 
 D["dialog"] = load_dialog(os.path.join(at.ROOT, "reports", "agent_eval.md"),

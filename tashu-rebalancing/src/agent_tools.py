@@ -129,8 +129,14 @@ def weather_factor(precip_mm: float = 0.0, temp_c: float = 20.0, rain_mm=None):
             "근거": "한남대 캠퍼스 8곳 포아송 회귀(기준 15~25°C, 강수 없음). 재분석 날씨, 대전 한 지점. 압력 점수에 곱해 물량을 가늠하는 참고값."}
 
 
+def stock_now(band: str, kind: str, n: int = 5):
+    """상위 대여소의 지금 자전거 수(타슈 앱 API 1회 값). 순환 import를 피하려고 늦게 불러온다."""
+    import stock_now as sn
+    return sn.stock_now(band, kind, n)
+
+
 TOOLS = {"top_stations": top_stations, "station_profile": station_profile,
-         "suggest_moves": suggest_moves, "weather_factor": weather_factor}
+         "suggest_moves": suggest_moves, "weather_factor": weather_factor, "stock_now": stock_now}
 
 SCHEMAS = [
     {"name": "top_stations", "description": "평일 시간대 구간(출근 7~9시, 낮 10~14시, 퇴근 15~18시)별로 부족 또는 과잉 압력이 반복되는 대여소 상위 목록.",
@@ -145,4 +151,8 @@ SCHEMAS = [
          "max_km": {"type": "number"}}, "required": ["band"]}},
     {"name": "weather_factor", "description": "예보 강수량(mm, 비와 눈 모두 물로 환산한 값)과 기온(°C)에 따른 수요 배수(한남대 캠퍼스 기준 추정). 결과의 '가정'을 답에 밝힌다.",
      "input_schema": {"type": "object", "properties": {"precip_mm": {"type": "number", "description": "강수량(mm). 비·눈 구분 없음"}, "temp_c": {"type": "number"}}}},
+    {"name": "stock_now", "description": "구간·종류별 상위 대여소의 '지금' 자전거 수(타슈 앱 API, 호출 시점 1회 값)와 상위 50곳·전체 요약. 예측이 아니며 조회시각을 답에 밝힌다.",
+     "input_schema": {"type": "object", "properties": {
+         "band": {"type": "string", "enum": list(BANDS)}, "kind": {"type": "string", "enum": ["shortage", "overflow"]},
+         "n": {"type": "integer", "minimum": 1, "maximum": MAX_N}}, "required": ["band", "kind"]}},
 ]

@@ -144,9 +144,9 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <tr><td><b>타슈정보 API</b><br><span class="note">대전광역시, 공공데이터포털 (이용 제한 없음)</span></td>
 <td>키오스크 대여소 202곳의 거치대 수(2009~2015년 설치분). 대여소 좌표와 60m 안에서 짝지어 169곳에 붙였다.</td>
 <td>거치대 크기와 견주기(실험 10)</td></tr>
-<tr><td><b>쓰지 않은 것</b></td>
-<td>실시간 남은 자전거 수(구하지 못했다).</td>
-<td>그래서 "남은 수"는 모르고 대여·반납 기록으로 짐작만 했다.</td></tr>
+<tr><td><b>타슈 앱 API (대여소 현재 재고)</b></td>
+<td>대여소 1,378곳의 호출 시점 자전거 수. 한 번 받은 값이다.</td>
+<td>이력으로 고른 목록과 견주기(실험 11). 분석의 기본은 여전히 대여·반납 기록으로 짐작한 값이다.</td></tr>
 </table>
 <p class="note" style="margin-top:8px">AI(Gemini 무료 구간)에게는 이 페이지에 나온 것 같은 대여소·시간대별 집계 결과만 보냈다. 건별 기록은 보내지 않았다.</p></div>
 
@@ -242,6 +242,12 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <dt>결과</dt><dd>짝이 있는 대여소는 대부분 하루 평균 빠진 수가 거치대 수의 10% 안쪽이다. 50% 이상 빠지는 곳은 출근 5곳, 퇴근 3곳뿐이다. 빠진 수가 거치대 수 이상인 날이 10%를 넘는 곳은 출근 5곳, 퇴근 8곳이다.</dd>
 <dt class="bad">막힌 점</dt><dd>짝지은 대여소는 2009~2015년에 생긴 오래된 곳(전체의 약 12%)이다. 상위 20곳 중 거치대 수를 아는 곳은 1~7곳뿐이라 목록을 검증하거나 "바닥날 위험"으로 바꾸지 못했다. 응답에는 남은 자전거 수도 없다. API 명세의 위도·경도 이름은 서로 바뀌어 있었다.</dd>
 </dl></details>
+<details class="card ps rv"><summary>실험 11 · 앱 API로 지금 재고 붙이기<small>한 시점 값</small></summary><dl>
+<dt>가설</dt><dd>대여소별 지금 자전거 수를 받으면, 이력으로 찾은 "자주 모자란 곳"이 지금도 비어 있는지 가볍게 확인할 수 있다.</dd>
+<dt>한 일</dt><dd>타슈 앱 Open API를 1회 호출해 대여소 1,378곳의 지금 자전거 수를 받았다. 대여소 번호가 이력과 같아 1,376곳(98%)이 바로 붙었다(실험 10의 좌표 짝짓기는 12%).</dd>
+<dt>결과</dt><dd>출근 때 쌓이는 상위 50곳의 지금 재고 중앙값은 10대(전체 1대)이고, 퇴근 때 모자란 상위 50곳도 10대 안팎이다. 출근 때 모이는 곳이 퇴근 때 비는 곳과 겹친다는 이력 결론과 어긋나지 않는다. 0대인 곳은 출근 부족 34%, 퇴근 쌓임 32%(전체 42~45%).</dd>
+<dt class="bad">막힌 점</dt><dd>한 시점(평일 오전) 값이라 "자주 모자란 곳이 지금 비어 있다"는 확인하지 못했다(출근 부족 상위의 재고도 전체와 비슷했다). 처음에 응답의 <code>parking_count</code>를 거치대 수로 읽어 분석을 돌렸다가, 이전 거치대 값과 대조해 <b>지금 재고</b>임을 알고 되돌렸다.</dd>
+</dl></details>
 </div>
 
 <div class="card rv"><h3>막힌 것을 어떻게 풀었나</h3><table class="fix">
@@ -281,10 +287,13 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 <p class="note">거치대 수는 한 대여소가 한 번에 받을 수 있는 자전거 수다. <b>유출(빌려 감)이 많으면 비고, 유입(반납)이 많으면 꽉 찬다.</b> 그래서 빠진 수를 거치대 수와 나눠 보면 같은 5대라도 거치대 10개 대여소에서는 큰 일이고 40개 대여소에서는 작은 일임을 구분할 수 있다.</p>
 <div id="c_rack"></div><div class="legend" id="l_rack"></div>
 <p class="note" id="rack_note"></p></div>
+<div class="card rv" id="stockcard"><h3>지금 재고로 본 목록 (타슈 앱 API, 한 시점)</h3>
+<p class="note">타슈 앱 API는 대여소 1,378곳의 <b>호출 시점 자전거 수</b>를 준다. 이력으로 고른 상위 50곳의 지금 재고를 전체 대여소와 견줬다.</p>
+<div id="stock_tbl"></div><p class="note" id="stock_note"></p></div>
 </section>
 
 <section id="s5"><h2><small>05</small>그래서 어떻게 하면 좋은가</h2>
-<p class="lead">분석 결과로 정한 제안이다. 거치대 수와 남은 자전거 수를 몰라서 점검 순서까지만 정했고, 몇 대를 옮길지는 정하지 않았다.</p>
+<p class="lead">분석 결과로 정한 제안이다. 거치대 수를 일부만 알고 남은 자전거 수는 한 시점 값뿐이라 점검 순서까지만 정했고, 몇 대를 옮길지는 정하지 않았다.</p>
 <div id="recs"></div>
 <div class="card dont rv"><h3>이렇게 쓰면 안 된다</h3><ul>
 <li>대여소 한 곳의 시간당 예측으로 실시간 배차를 짜는 것. 후문 시간당 빠진 수는 비교 기준과 비슷한 수준으로밖에 못 맞혔다 (실험 05).</li>
@@ -301,7 +310,7 @@ footer{margin:26px 4px 0;color:#58667a;font-size:12px}
 
 <section id="s7"><h2><small>07</small>한계</h2>
 <div class="card rv"><ul>
-<li>남은 자전거 수를 모르고, 거치대 수는 일부(169곳)만 안다. '모자란 날이 많다'는 실제로 바닥났다는 뜻이 아니다.</li>
+<li>남은 자전거 수는 앱 API의 한 시점 값(실험 11)뿐이고, 거치대 수는 일부(169곳)만 안다. '모자란 날이 많다'는 실제로 바닥났다는 뜻이 아니다.</li>
 <li>날씨는 대전 한 지점의 재분석 값(기상 모델이 계산한 약 25km 칸의 평균)이다. 비 온 시간이 적어 비의 영향은 불안정하다.</li>
 <li>학기는 달력으로 나눴다. 기준 5대와 시간대 구분은 임의로 정했고 바꿔서 확인하지 않았다.</li>
 <li>맞춰 본 기간은 2개월, AI 확인 질문은 9개뿐이다.</li>
@@ -461,6 +470,14 @@ $("recs").innerHTML=RECS.map((r,i)=>`<div class="card rec rv"><div class="no">${
   document.getElementById("l_rack").innerHTML=SEG.map(s=>`<span><i style="background:${s[1]}"></i>${s[0]}</span>`).join("")+"<span>쌓임 큼·빠짐 큼 = 하루 평균이 거치대 수의 절반 이상</span>";
   const o=R.bands["출근"],p=R.bands["퇴근"];
   document.getElementById("rack_note").textContent=`거치대 수를 아는 ${R.matched}곳(전체 대여소의 약 12%, 대부분 오래된 대여소) 기준이다. 이 대여소들은 하루 평균 빠진 수가 거치대 수의 10% 안쪽인 곳이 가장 많고, 절반 이상 빠지는 곳은 출근 ${o["ratio_ge_0.5"]}곳·퇴근 ${p["ratio_ge_0.5"]}곳뿐이다. 구간 안에서 빠진 수가 거치대 수 이상인 날이 10%를 넘는 대여소는 출근 ${o["exceed_ge_0.1"]}곳, 퇴근 ${p["exceed_ge_0.1"]}곳인데, 이 날들은 가득 찬 대여소여도 중간에 반납이 들어오거나 보충이 있어야 가능한 날이라 재배치가 필요했을 가능성의 하한선으로 볼 수 있다. 앞의 상위 목록 대여소는 대부분 여기 포함되지 않아 목록을 검증하지는 못했다.`})();
+
+/* 지금 재고 스냅샷 (실험 11) */
+(function(){const S=D.stock;if(!S){const c=document.getElementById("stockcard");if(c)c.remove();return}
+  const rows=[["출근","쌓임","출근_overflow"],["출근","모자람","출근_shortage"],["퇴근","쌓임","퇴근_overflow"],["퇴근","모자람","퇴근_shortage"]];
+  document.getElementById("stock_tbl").innerHTML='<table><tr><th>이력으로 고른 상위 50곳</th><th class="n">지금 재고 중앙값</th><th class="n">0대인 곳</th><th class="n">전체 중앙값</th><th class="n">전체 중 0대</th></tr>'+
+    rows.map(r=>{const g=S.groups[r[2]];return `<tr><td>${r[0]} 때 자주 ${r[1]}</td><td class="n">${g.median}대</td><td class="n">${Math.round(g.zero*100)}%</td><td class="n">${g.all_median}대</td><td class="n">${Math.round(g.all_zero*100)}%</td></tr>`}).join("")+"</table>";
+  document.getElementById("stock_note").textContent=`${S.t} 한 번 받은 값(대여소 ${S.n}곳)이다. 시간대·요일에 따라 크게 달라지고 예측이 아니다. 출근 때 쌓이는 곳과 퇴근 때 모자란 곳의 재고가 많은 점은 이력 결론과 어긋나지 않지만, 한 시점이라 확인으로 부르지 않는다.`;
+})();
 
 /* 슬라이드 상단 바 (페이지 번호) */
 (function(){const secs=[...document.querySelectorAll("main section")];

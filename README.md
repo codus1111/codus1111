@@ -36,19 +36,6 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-brand.svg" width="360" height="28" alt="02 · BRAND STRATEGY / PROPOSAL" />
-
-### 제로이드 × 무신사 뷰티
-브랜드 분석과 꿈돌이 협업 아이디어를 담은 무신사 뷰티 입점 제안서.
-
-<a href="https://github.com/codus1111/daejeon_01/blob/main/codus1111/zeroid-세로형/제로이드_무신사_입점제안서_세로형.pdf"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portrait-v2.svg" width="164" height="38" alt="제로이드 제안서 세로형 PDF 보기" /></a>
-&nbsp;
-<a href="https://github.com/codus1111/daejeon_01/blob/main/codus1111/zeroid-가로형/제로이드_무신사_입점제안서_가로형.pdf"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-landscape-v2.svg" width="164" height="38" alt="제로이드 제안서 가로형 PDF 보기" /></a>
-
-<img src="https://img.shields.io/badge/%EB%B8%8C%EB%9E%9C%EB%93%9C%20%EB%B6%84%EC%84%9D-6E9C98?style=flat-square&labelColor=1E3B39" alt="브랜드 분석" /> <img src="https://img.shields.io/badge/%EC%9E%85%EC%A0%90%20%EA%B8%B0%ED%9A%8D-6E9C98?style=flat-square&labelColor=1E3B39" alt="입점 기획" /> <img src="https://img.shields.io/badge/%EC%A0%9C%EC%95%88%EC%84%9C%20%EB%94%94%EC%9E%90%EC%9D%B8-6E9C98?style=flat-square&labelColor=1E3B39" alt="제안서 디자인" />
-
----
-
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content.svg" width="360" height="28" alt="03 · CONTENT / AI AUTOMATION" />
 
 ### 솔트웨어 인사이트
@@ -100,10 +87,10 @@
 ---
 
 <sub>¹ 5겹 교차검증의 평균 절대 오차율이며, 서비스에는 별도 혼합 보정을 적용합니다. ² 28문항을 한 번씩 실행한 결과입니다. ³ 질문 9·15·12개로 세 번 평가하며 2차에서 찾은 문제를 고쳤습니다. 각 1회 실행이고 3차는 고친 문제를 겨냥한 질문이라 일반화는 어렵습니다.<br>
-연봉 AI의 AI 기능은 비밀번호가 필요할 수 있습니다. 제안서·블로그는 학습용 비공식 시안입니다.<br>타슈 분석은 개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 타슈 대여이력(공공데이터포털), Weather data by Open-Meteo.com (CC BY 4.0). 대여소 재고는 알 수 없어 순유출 압력으로 추정했습니다.</sub>
+연봉 AI의 AI 기능은 비밀번호가 필요할 수 있습니다. 블로그는 학습용 비공식 시안입니다.<br>타슈 분석은 개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 타슈 대여이력(공공데이터포털), Weather data by Open-Meteo.com (CC BY 4.0). 대여소 재고는 알 수 없어 순유출 압력으로 추정했습니다.</sub>
 
 ---
 
 <div align="center">
-<sub><b>개인 포트폴리오입니다.</b> 이 저장소의 프로젝트는 개인 학습용이며, 언급된 기업·기관(제로이드, 무신사, 솔트웨어, 대전교통공사·대전광역시 등)과 제휴·후원·고용 관계가 없습니다. 상표와 서비스 이름은 각 소유자의 것입니다.</sub>
+<sub><b>개인 포트폴리오입니다.</b> 이 저장소의 프로젝트는 개인 학습용이며, 언급된 기업·기관(솔트웨어, 대전교통공사·대전광역시 등)과 제휴·후원·고용 관계가 없습니다. 상표와 서비스 이름은 각 소유자의 것입니다.</sub>
 </div>

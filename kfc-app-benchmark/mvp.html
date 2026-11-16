@@ -228,13 +228,21 @@ footer{margin-top:36px;color:var(--muted);font-size:.84rem;border-top:1px solid 
 @media (max-width:560px){.hero{flex-direction:column;align-items:flex-start;gap:8px;padding:18px}}
 .stats .stat{padding:12px 14px;box-shadow:none}
 .stats .stat b{font-size:1.05rem}
+.cases li{grid-template-columns:28px 1fr}
+.cases li span{color:var(--ink-2)}
+table.plan-t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.plan-t th,table.plan-t td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+table.plan-t th{font-size:.78rem;color:var(--muted);font-weight:700}
+table.plan-t td:first-child{white-space:nowrap;color:var(--accent)}
+.risk{margin-top:14px;display:grid;gap:8px;font-size:.9rem;color:var(--ink-2)}
+.risk p{margin:0;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
 </style>
 </head>
 <body>
 <nav class="topnav" aria-label="바로가기"><div class="nav-in">
   <a class="brand-n" href="#top">버거 앱 기능 비교</a>
   <div class="nav-links">
-    <a href="#scaleSec">브랜드 규모</a><a href="#gapSec">먼저 볼 곳</a><a href="#shotsSec">앱 화면</a><a href="#controls">기능 비교</a><a href="#fix">개선안 1 · 로그인</a><a href="#proposal">개선안 2 · 쿠폰</a>
+    <a href="#scaleSec">브랜드 규모</a><a href="#gapSec">먼저 볼 곳</a><a href="#shotsSec">앱 화면</a><a href="#controls">기능 비교</a><a href="#fix">개선안 1 · 로그인</a><a href="#proposal">개선안 2 · 쿠폰</a><a href="#fix3">개선안 3 · 메뉴</a><a href="#plan">실행 순서</a>
   </div></div></nav>
 <div class="wrap">
 <header id="top">
@@ -325,6 +333,12 @@ footer{margin-top:36px;color:var(--muted);font-size:.84rem;border-top:1px solid 
           <li><b>로그인해도 장바구니 그대로</b> · 메뉴를 담다가 로그인하러 가도 담은 메뉴가 사라지지 않게</li>
         </ul>
         <p class="kpi"><span>볼 숫자</span><b>로그인 성공률</b> 로그인을 시도한 사람 중 성공한 비율</p>
+        <div class="exist"><span class="policy-k">다른 업종은 이렇게 해요</span>
+          <ul>
+            <li><b>카카오:</b> 비밀번호 없이 지문·얼굴로 로그인하는 패스키를 넣었고, 카카오 로그인을 붙인 다른 서비스도 쓸 수 있어요 (<a href="https://www.kakaocorp.com/page/detail/11349" target="_blank" rel="noopener">카카오 2024-11</a>).</li>
+            <li><b>토스:</b> 앱에 들어오자마자 로그인을 요청하면 약 49.6%만 끝까지 로그인했다고 공개했어요. 로그인은 꼭 필요할 때(주문 직전) 묻는 게 좋아요 (<a href="https://toss.im/apps-in-toss/blog/mini-app-login-notification-timing" target="_blank" rel="noopener">토스 블로그</a>, 2026-11-16 확인).</li>
+          </ul>
+        </div>
         <details class="more"><summary>근거와 같이 볼 숫자</summary>
           <ul class="ev">
             <li><b>평점이 가장 낮은 축:</b> KFC 앱 평점은 아이폰 1.7점, 안드로이드 2.1점. 버거킹(3.8점, 4.2점)과 차이가 커요 (2026-11-16 확인).</li>
@@ -365,6 +379,13 @@ footer{margin-top:36px;color:var(--muted);font-size:.84rem;border-top:1px solid 
         </ul>
         <p class="kpi"><span>볼 숫자</span><b>재방문율</b> 첫 주문 뒤 30일 안에 다시 주문한 회원 비율</p>
         <p class="meta">지금 KFC·경쟁 3곳 앱에서 이 기능은 공개 자료로 못 찾았어요. 버거킹만 등급 쿠폰을 고객이 직접 고르게 해요.</p>
+        <div class="exist"><span class="policy-k">다른 업종은 이렇게 해요</span>
+          <ul>
+            <li><b>올리브영:</b> 결제창에서 가장 이득인 쿠폰을 자동으로 골라 둬요. 같은 종류 쿠폰은 1장만 써요 (<a href="https://unpa.me/community/beautytip/130893459" target="_blank" rel="noopener">사용자 커뮤니티 글</a>, 공식 안내 아님).</li>
+            <li><b>아마존(미국):</b> 곧 끝나는 쿠폰을 "Expiring Soon" 칸에 따로 모아 보여 준다고 해요 (<a href="https://www.aol.com/lifestyle/secret-coupon-page-filled-major-184400321.html" target="_blank" rel="noopener">AOL 기사</a>, 2026-11-16 확인).</li>
+            <li><b>배달의민족:</b> 쿠폰 자동 적용 기능은 아직 없다고 직접 답했어요. 큰 배달앱에도 없어서 먼저 하면 차이를 만들 수 있어요 (가정) (<a href="https://apps.apple.com/kr/app/id378084485" target="_blank" rel="noopener">App Store</a>, 2026-11-16 확인).</li>
+          </ul>
+        </div>
         <details class="more"><summary>자세한 규칙과 확인 근거</summary>
           <p class="meta"><b>왜:</b> 사람들 의견은 "쿠폰을 많이 주면 좋겠다", "어떤 쿠폰이 제일 이득인지, 지금 써야 하는 쿠폰이 뭔지 보여 주면 좋겠다"였어요.</p>
           <ol class="rules">
@@ -394,6 +415,58 @@ footer{margin-top:36px;color:var(--muted);font-size:.84rem;border-top:1px solid 
         <div class="cart-sum" id="cpSum"></div>
         <div class="cp-list" id="cpList"></div>
       </div>
+    </div>
+  </div>
+</section>
+<section class="sec" id="fix3">
+  <div class="sec-h"><h2>개선안 3 · 메뉴·품절 정보 채널 맞추기</h2><span>쿠폰·추천의 바탕</span></div>
+  <div class="card prop">
+    <div class="prop-grid">
+      <div>
+        <div class="policy"><span class="policy-k">운영 방침</span><p>같은 메뉴는 <b>앱·홈페이지·배달앱·기프티콘 어디서 봐도 같은 정보</b>가 보이게 한다. 메뉴 정보가 틀리면 주문 기록도, 쿠폰 추천도 틀린다.</p></div>
+        <ul class="key">
+          <li><b>매일 아침 채널별 메뉴 비교</b> · 메뉴명·가격·옵션·판매 상태가 채널마다 같은지 점검표로 확인</li>
+          <li><b>판매 종료 메뉴 내리는 날 정하기</b> · POS·키오스크에 끝난 메뉴가 남지 않게</li>
+          <li><b>품절은 모든 채널에 한 번에</b> · 매장에서 품절 처리하면 기프티콘·배달 주문에도 바로 반영</li>
+        </ul>
+        <p class="kpi"><span>볼 숫자</span><b>채널 간 불일치 건수</b> 와 품절 메뉴 주문으로 생긴 환불 건수</p>
+        <div class="exist"><span class="policy-k">다른 기업은 이렇게 해요</span>
+          <ul>
+            <li><b>토스플레이스 포스:</b> 포스에 배민·쿠팡이츠·요기요를 연결하고 "배달 품절" 기능을 줘요 (<a href="https://tossplace.com/product/pos" target="_blank" rel="noopener">공식 소개</a>, 2026-11-16 확인).</li>
+            <li><b>풀링포레스트 외식 POS:</b> 본사 대시보드에서 메뉴 품절을 클릭 한 번으로 제어한다고 소개해요. 모든 채널에 동시에 반영되는지는 안 적혀 있어요 (<a href="https://www.pooolingforest.com/product/restaurant-pos" target="_blank" rel="noopener">공식 소개</a>).</li>
+            <li><b>못 찾음:</b> 기프티콘 판매처까지 품절을 함께 반영하는 공식 사례. KFC가 실제로 어떻게 관리하는지는 내부 업무라 공개 자료로는 알 수 없어요.</li>
+          </ul>
+        </div>
+        <p class="meta">KFC IT팀 공고의 "채널별 상품정보 등록·정합성 점검"과 같은 일이에요. 공식 FAQ에도 "배달이 안 되는 일부 메뉴는 매장 한정 판매"라고 적혀 있어 채널마다 메뉴가 다를 수 있어요.</p>
+      </div>
+      <div class="flow">
+        <div class="demo-h"><b>매장에서 겪은 일 → 막는 방법</b><span class="meta">롯데리아 매장 아르바이트 2년 7개월 경험</span></div>
+        <ol class="steps cases">
+          <li class="bad"><b>우리 매장에서 안 파는 신메뉴가 키오스크로 주문됨</b><span>→ 신메뉴 등록 때 매장별 판매 여부를 같이 등록하고 점검</span></li>
+          <li class="bad"><b>품절 처리한 메뉴가 기프티콘으로 계속 주문됨</b><span>→ 품절을 기프티콘 채널까지 한 번에 반영</span></li>
+          <li class="bad"><b>판매 종료 메뉴가 POS·키오스크에 많이 남아 있음</b><span>→ 판매 종료 날짜에 코드도 함께 정리</span></li>
+        </ol>
+        <p class="meta">그때마다 고객에게 설명하고 다른 메뉴로 다시 주문받은 뒤 차액을 환불했어요. 매장의 일손과 고객 경험이 함께 깎였어요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="plan">
+  <div class="sec-h"><h2>실행 순서</h2><span>자세한 내용은 plan.md</span></div>
+  <div class="card prop">
+    <div class="tablewrap"><table class="plan-t">
+      <thead><tr><th>언제</th><th>할 일</th><th>누가 <span class="meta">(가정)</span></th></tr></thead>
+      <tbody>
+        <tr><td><b>내일</b></td><td>지금 로그인 성공률·가입 완료율·리뷰 중 로그인 불만 비율 재기 (기준선)</td><td>IT팀</td></tr>
+        <tr><td><b>이번 주</b></td><td>채널별 메뉴 정보 점검표를 매일 아침 돌리기 (개선안 3)</td><td>IT팀 상품정보 담당</td></tr>
+        <tr><td><b>이번 달</b></td><td>간편 로그인·인증번호 대체 수단·로그인해도 장바구니 유지 (개선안 1)</td><td>IT팀·앱 개발사</td></tr>
+        <tr><td><b>다음 달</b></td><td>쿠폰 추천을 회원 일부에게만 먼저 보여 주고 30일 재방문율 비교 (개선안 2)</td><td>IT팀·마케팅</td></tr>
+      </tbody>
+    </table></div>
+    <div class="risk">
+      <p><b>효과 재는 법:</b> 목표 숫자를 미리 정하지 않고, 지금 값(기준선)을 먼저 잰 뒤 바뀐 뒤 값과 비교해요. 쿠폰 추천은 회원을 둘로 나눠 한쪽에만 보여 주는 A/B 테스트로 봐요.</p>
+      <p><b>위험:</b> 쿠폰을 많이 주면 할인 비용이 커지고 가맹점 부담도 늘 수 있어요. 그래서 쿠폰 수를 늘리기보다 가진 쿠폰을 버리지 않게 하는 방향이에요. 장바구니·주문내역 화면은 로그인해야 보여서 실행 전에 앱에서 직접 확인이 필요해요.</p>
     </div>
   </div>
 </section>
@@ -436,8 +509,8 @@ footer{margin-top:36px;color:var(--muted);font-size:.84rem;border-top:1px solid 
 2026-11-16,KFC(우리),앱,회원 전용 주문,있음,2026-11 앱·홈페이지 비회원 주문 제한 (뉴시스 2026-11-11). 2026-11-16 홈페이지 로그인 화면을 직접 열어 보니 비회원 주문 버튼 없음,2026-11-11,,,https://m.news.nate.com/view/20261111n26839
 2026-11-16,KFC(우리),앱,앱 월간 이용자 수,있음,2026년 1~7월 평균 약 119만 명 (2024년 63만 명). 와이즈앱·리테일 조사 (남도일보 2026-09-09),2026-09-09 (조사 기간 2026년 1~7월 평균),119,만 명,https://v.daum.net/v/20260909170339572
 2026-11-16,맘스터치,앱,앱 전용 쿠폰,있음,2026-09 앱에서 기프트카드 1만원 이상 충전 시 5천원 할인 쿠폰,2026-09-03,,,https://m.ddaily.co.kr/page/view/2026090314212761630
-2026-11-16,맘스터치,앱,멤버십 등급,못 찾음,공식 자료 없음. 2024-06 앱 개편 기사에도 등급 안내 없음,2024-06-13,,,https://www.asiatime.co.kr/article/20240613500129
-2026-11-16,맘스터치,앱,포인트 적립,못 찾음,공개 자료에 적립 안내 없음,2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id6475806498
+2026-11-16,맘스터치,앱,멤버십 등급,못 찾음,공식 자료 없음. 2024-06 앱 개편 기사에도 등급 안내 없음 재조사(2026-11-16): 등급 개편 기사 못 찾음,2024-06-13,,,https://www.asiatime.co.kr/article/20240613500129
+2026-11-16,맘스터치,앱,포인트 적립,못 찾음,"공개 자료에 적립 안내 없음 재조사(2026-11-16): 쿠폰 안내 블로그에 ""앱 멤버십 메뉴에서 포인트를 모아 쿠폰으로 바꿈""이라는 글은 있으나 공식 자료가 아니라 못 찾음 유지 (https://arirangrestaurant.co.kr)",2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id6475806498
 2026-11-16,맘스터치,앱,개인화 추천,못 찾음,추천 기능 안내 없음. 자주 먹는 메뉴를 저장하는 퀵오더는 있음,2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id6475806498
 2026-11-16,맘스터치,앱,푸시 알림,못 찾음,2024-06 회사가 맞춤형 고객 서비스를 위한 푸시 기능을 늘리겠다고 밝힘. 지금 쓰이는지는 못 찾음,2024-06-13,,,https://biz.heraldcorp.com/article/3414444
 2026-11-16,맘스터치,앱,회원 전용 주문,있음,비회원 주문과 PC 주문을 중단함 (2026-11-11 보도 기준 이미 시행) (뉴시스 2026-11-11),2026-11-11,,,https://m.news.nate.com/view/20261111n26839
@@ -477,8 +550,8 @@ footer{margin-top:36px;color:var(--muted);font-size:.84rem;border-top:1px solid 
 2026-11-16,버거킹,앱,쿠폰 고르기,있음,크라운 등급은 매달 마이픽 할인 쿠폰 3매·음료 쿠폰 3매를 고객이 직접 고름 (2025-12 개편),2025-12-01,,,https://www.newsis.com/view/NISX20251201_0003422807
 2026-11-16,버거킹,앱,미션·출석·친구 초대,있음,"적립금 플레임을 앱 출석, 미션·뱃지, 친구 초대로 모음 (2025-12 개편)",2025-12-01,,,https://www.newsis.com/view/NISX20251201_0003422807
 2026-11-16,버거킹,앱,메뉴·주문 평점 리뷰,있음,업데이트 5.0.12: 주문 경험을 별점으로 남길 수 있음. 메뉴별 리뷰는 못 찾음,2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id1017567032
-2026-11-16,버거킹,앱,자사앱 배달 최소 주문 금액,못 찾음,"매장·지역마다 다르다는 자료뿐, 공식 기준 못 찾음",2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id1017567032
-2026-11-16,버거킹,앱,자사앱 배달비,못 찾음,자료마다 달라 공식 기준 못 찾음,2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id1017567032
+2026-11-16,버거킹,앱,자사앱 배달 최소 주문 금액,있음,"공식 기준은 못 찾음. 할인 안내 블로그(2026-04)에 앱 딜리버리 최소 주문 14,000원. 2022년 무렵 기사에는 13,000원이라 자료마다 다름 (공식 아님, 앱에서 다시 확인 필요)",2026-04,14000,원,https://dasaja.co.kr/saja_guide/88
+2026-11-16,버거킹,앱,자사앱 배달비,있음,"공식 기준은 못 찾음. 블로그(2026-10): 기본 배달비 약 3,000원, 앱에서 30,000원 이상 주문하면 무료 (공식 아님, 앱에서 다시 확인 필요)",2026-10,3000,원,https://picjjang.com/1076758/
 2026-11-16,버거킹,앱,간편결제·선불카드,있음,업데이트 4.4.07: 삼성카드 모니모페이 결제 가능. 자체 페이는 못 찾음,2026-11-16 확인 (현재 페이지),,,https://apps.apple.com/kr/app/id1017567032
 2026-11-16,버거킹,앱,앱 평점(아이폰 App Store),있음,"5점 만점에 3.8점, 평가 약 19,000개 (2026-11-16 확인). 대표 리뷰(요약): 로그인·회원가입이 안 되고 간편가입 계정 연동 오류가 난다는 불만이 가장 많음 (2025-01-17 리뷰 등)",2026-11-16 확인 (현재 페이지),3.8,점,https://apps.apple.com/kr/app/id1017567032?see-all=reviews
 2026-11-16,버거킹,앱,앱 평점(안드로이드 Google Play),있음,"5점 만점에 4.2점, 리뷰 약 30,600개",2026-11-16 확인 (현재 페이지),4.2,점,https://play.google.com/store/apps/details?id=kr.co.burgerkinghybrid&hl=ko&gl=KR
@@ -622,7 +695,7 @@ function renderGap(){
     ul.append(el("li",{text:`${f}: ${have.join(", ")}에는 있음 / KFC는 ${u}`}));
   });
   g.append(ul);
-  const gl=el("div",{class:"golinks"});gl.append(el("a",{class:"go",href:"#fix",text:"→ 개선안 1: 로그인 막힘 없애기"}),el("a",{class:"go",href:"#proposal",text:"→ 개선안 2: 장바구니 쿠폰 추천"}));g.append(gl);
+  const gl=el("div",{class:"golinks"});gl.append(el("a",{class:"go",href:"#fix",text:"→ 개선안 1: 로그인 막힘 없애기"}),el("a",{class:"go",href:"#proposal",text:"→ 개선안 2: 장바구니 쿠폰 추천"}),el("a",{class:"go",href:"#fix3",text:"→ 개선안 3: 메뉴·품절 정보 맞추기"}));g.append(gl);
 }
 function render(){
   renderGap();

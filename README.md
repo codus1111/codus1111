@@ -52,7 +52,7 @@
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-kfc.svg" width="360" height="28" alt="04 · DATA ANALYSIS / APP BENCHMARK" />
 
 ### KFC 앱 기능 비교
-KFC 앱을 경쟁 버거 3곳 앱과 비교해 **KFC 앱에 없는 기능 3개**를 찾고, 로그인 개선과 장바구니 쿠폰 추천을 제안한 MVP.
+KFC 앱을 경쟁 버거 3곳 앱과 비교해 **KFC 앱에 없는 기능 3개**를 찾고, 로그인 개선, 장바구니 쿠폰 추천, 메뉴·품절 정보 채널 맞추기를 제안한 MVP.
 
 | 비교한 줄 | 경쟁사에 있고 KFC에서 못 찾은 기능 | KFC 앱 평점 (아이폰 / 안드로이드) |
 | :---: | :---: | :---: |

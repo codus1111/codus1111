@@ -56,7 +56,7 @@ KFC 앱을 경쟁 버거 3곳 앱과 비교해 **KFC 앱에 없는 기능 3개**
 
 | 비교한 줄 | 경쟁사에 있고 KFC에서 못 찾은 기능 | KFC 앱 평점 (아이폰 / 안드로이드) |
 | :---: | :---: | :---: |
-| **87줄** · 4곳, 기능 23가지 | **3개** · 재주문, 쿠폰 고르기, 주문 평점 | **1.7 / 2.1** · 버거킹 3.8 / 4.2 |
+| **88줄** · 4곳, 기능 24가지 | **3개** · 재주문, 쿠폰 고르기, 주문 평점 | **1.7 / 2.1** · 버거킹 3.8 / 4.2 |
 
 <a href="https://codus1111.github.io/codus1111/kfc-app-benchmark/mvp.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-kfc-dashboard.svg" width="164" height="38" alt="KFC 앱 비교 화면 바로 보기" /></a>
 &nbsp;

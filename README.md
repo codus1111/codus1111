@@ -49,7 +49,24 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills.svg" width="360" height="28" alt="04 · CLAUDE CODE SKILLS" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-kfc.svg" width="360" height="28" alt="04 · DATA ANALYSIS / APP BENCHMARK" />
+
+### KFC 앱 기능 비교
+KFC 앱을 경쟁 버거 3곳 앱과 비교해 **KFC 앱에 없는 기능 3개**를 찾고, 로그인 개선과 장바구니 쿠폰 추천을 제안한 MVP.
+
+| 비교한 줄 | 경쟁사에 있고 KFC에서 못 찾은 기능 | KFC 앱 평점 (아이폰 / 안드로이드) |
+| :---: | :---: | :---: |
+| **87줄** · 4곳, 기능 23가지 | **3개** · 재주문, 쿠폰 고르기, 주문 평점 | **1.7 / 2.1** · 버거킹 3.8 / 4.2 |
+
+<a href="https://codus1111.github.io/codus1111/kfc-app-benchmark/mvp.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-kfc-dashboard.svg" width="164" height="38" alt="KFC 앱 비교 화면 바로 보기" /></a>
+&nbsp;
+<a href="https://github.com/codus1111/codus1111/tree/main/kfc-app-benchmark#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-kfc-report.svg" width="164" height="38" alt="KFC 앱 조사 과정 보기" /></a>
+
+<img src="https://img.shields.io/badge/HTML%20%C2%B7%20CSS%20%C2%B7%20JS-2F6F6B?style=flat-square&labelColor=1E3B39&logo=html5&logoColor=white" alt="HTML · CSS · JS" /> <img src="https://img.shields.io/badge/%EA%B2%BD%EC%9F%81%EC%82%AC%20%EB%B6%84%EC%84%9D-6E9C98?style=flat-square&labelColor=1E3B39" alt="경쟁사 분석" /> <img src="https://img.shields.io/badge/Claude%20Code-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="Claude Code" />
+
+---
+
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills.svg" width="360" height="28" alt="05 · CLAUDE CODE SKILLS" />
 
 ### 클로드 코드 스킬
 직접 만든 스킬을 종류별로 모았습니다. 종류를 눌러 펼쳐 보세요. 전체 안내는 [스킬 폴더](https://github.com/codus1111/codus1111/tree/main/claude-skills)에 있습니다.

@@ -900,8 +900,9 @@ function loseLife(msg){ S.life--; S.combo=0; notice(`${msg} (클레임 ${MAX_LIF
 function tick(dt){
   S.t += dt;
   if (S.t>=S.nextCust){ spawnCustomer(); S.nextCust = S.t + (4.6-diff()*1.6)*(.75+Math.random()*.5)*(S.rushT>0?.6:1); }
-  if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (12.5-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1);
-  if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); SND.setRush(false); notice('러시 끝! 다시 5연속에 도전해 보세요'); } } }
+  if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (12.5-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1); }
+  // 러시 남은 시간은 매 프레임 줄어듦 (예전엔 배달 생성 블록 안에 있어서 러시가 거의 끝나지 않던 버그)
+  if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); SND.setRush(false); notice('러시 끝! 다시 5연속에 도전해 보세요'); } }
   if (S.t>=S.nextEvent) fireEvent();
   if (!S.tutorial){ S.queue.forEach(c=>c.pat-=dt); S.dels.forEach(d=>d.pat-=dt); }
   const goneC = S.queue.filter(c=>c.pat<=0), goneD = S.dels.filter(d=>d.pat<=0);

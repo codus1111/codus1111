@@ -317,6 +317,16 @@
   .mute:active{box-shadow:inset 3px 3px 0 #e3cfa6}
   .mute.inbar{position:static;width:30px;height:22px;font-size:13px;border-width:2px;box-shadow:none;flex:none}
   .entry .er.hide{display:none}
+
+  /* ===== 소리 설정 메뉴 ===== */
+  .sndmenu{position:fixed;z-index:45;background:var(--paper);border:3px solid var(--line);box-shadow:4px 4px 0 rgba(0,0,0,.35);padding:6px;width:200px}
+  .sndmenu.hide{display:none}
+  .sm-t{font-size:11px;color:var(--sub);margin:0 2px 5px}
+  .sm-row{display:flex;justify-content:space-between;align-items:center;width:100%;font-family:inherit;font-size:13px;color:var(--ink);
+          background:#fff;border:2px solid var(--line);padding:8px 8px;margin-top:4px;cursor:pointer;text-align:left}
+  .sm-row small{display:block;font-size:9px;color:var(--sub)}
+  .sm-row b{font-family:"Galmuri9";font-size:12px;padding:3px 7px;border:2px solid var(--line);background:#9aa3ab;color:#fff;min-width:44px;text-align:center}
+  .sm-row.on b{background:var(--green)}
 </style>
 </head>
 <body>
@@ -364,7 +374,12 @@
 </div>
 
 <!-- ===== 오프닝 ===== -->
-<button class="mute" id="muteBtn" aria-label="소리 켜기/끄기">🔊</button>
+<button class="mute" id="muteBtn" aria-label="소리 설정">🔊</button>
+<div class="sndmenu hide" id="sndMenu" role="menu">
+  <div class="sm-t">소리 설정</div>
+  <button class="sm-row" id="sndMusic"><span>🎵 배경음악</span><b></b></button>
+  <button class="sm-row" id="sndSfx"><span>🔔 효과음<small>버튼 · 주문 소리</small></span><b></b></button>
+</div>
 <div class="title" id="titleOv">
   <div class="tlogo" aria-label="햄부기 러시">
     <span style="--i:0">햄</span><span style="--i:1">부</span><span style="--i:2">기</span><span class="sp"></span><span style="--i:3">러</span><span style="--i:4">시</span>
@@ -937,14 +952,16 @@ document.addEventListener('keydown',e=>{
 
 // ================= 사운드 (직접 작곡한 칩튠 · WebAudio 합성, 외부 음원 없음) =================
 const SND = (() => {
-  let ac=null, master, musicG, sfxG, muted=false;
-  try{ muted = localStorage.getItem('hbr_mute')==='1'; }catch(e){}
+  let ac=null, master, musicG, sfxG, musicOff=false, sfxOff=false;
+  try{ const old=localStorage.getItem('hbr_mute')==='1';
+       musicOff = (localStorage.getItem('hbr_music') ?? (old?'0':'1'))==='0';
+       sfxOff   = (localStorage.getItem('hbr_sfx')   ?? (old?'0':'1'))==='0'; }catch(e){}
   const hz = m => 440*Math.pow(2,(m-69)/12);
   function init(){
     if (ac) { if (ac.state==='suspended') ac.resume(); return true; }
     const AC = window.AudioContext||window.webkitAudioContext; if (!AC) return false;
-    ac = new AC(); master = ac.createGain(); master.gain.value = muted?0:.55; master.connect(ac.destination);
-    musicG = ac.createGain(); musicG.gain.value=.32; musicG.connect(master);
+    ac = new AC(); master = ac.createGain(); master.gain.value = .55; master.connect(ac.destination);
+    musicG = ac.createGain(); musicG.gain.value = musicOff?0:.32; musicG.connect(master);
     sfxG = ac.createGain(); sfxG.gain.value=.7; sfxG.connect(master);
     return true;
   }
@@ -1000,7 +1017,7 @@ const SND = (() => {
 
   // ---- 효과음 ----
   function sfx(name, arg){
-    if (!ac || muted) return; const t=ac.currentTime;
+    if (!ac || sfxOff) return; const t=ac.currentTime;
     switch(name){
       case 'pick': tone(sfxG,'square',hz(72+[0,2,4,5,7,9][arg||0]),t,.07,.12); break;                         // 담기: 뽁
       case 'serve': tone(sfxG,'triangle',hz(96),t,.18,.25); tone(sfxG,'triangle',hz(100),t+.09,.35,.25);
@@ -1018,8 +1035,9 @@ const SND = (() => {
       case 'over': [67,63,60,55].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.18,.3,.12)); break;
     }
   }
-  function setMuted(v){ muted=v; try{ localStorage.setItem('hbr_mute', v?'1':'0'); }catch(e){} if (master) master.gain.value = v?0:.55; }
-  return {init, play, stop, setRush, sfx, setMuted, isMuted:()=>muted, current:()=>playing};
+  function setMusic(on){ musicOff=!on; try{ localStorage.setItem('hbr_music', on?'1':'0'); }catch(e){} if (musicG) musicG.gain.value = on?.32:0; }
+  function setSfx(on){ sfxOff=!on; try{ localStorage.setItem('hbr_sfx', on?'1':'0'); }catch(e){} }
+  return {init, play, stop, setRush, sfx, setMusic, setSfx, musicOn:()=>!musicOff, sfxOn:()=>!sfxOff, current:()=>playing};
 })();
 
 // ================= 오프닝 모션 =================
@@ -1115,9 +1133,23 @@ $('rankStart').innerHTML = rankHTML(null, null, ONLINE?'🌐 전체 랭킹':'매
 showTitle();
 if (ONLINE) $('rankNote').textContent='전체 랭킹 · 누구나 같은 순위를 봐요';
 
-function syncMute(){ $('muteBtn').textContent = SND.isMuted() ? '🔇' : '🔊'; }
-$('muteBtn').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setMuted(!SND.isMuted()); syncMute();
-  if (!SND.isMuted() && !SND.current()) SND.play(S && S.running ? 'game' : 'title'); });
+function syncMute(){
+  const m=SND.musicOn(), f=SND.sfxOn();
+  $('muteBtn').textContent = m&&f ? '🔊' : (m||f) ? '🔉' : '🔇';
+  $('sndMusic').classList.toggle('on', m); $('sndMusic').querySelector('b').textContent = m?'ON':'OFF';
+  $('sndSfx').classList.toggle('on', f);   $('sndSfx').querySelector('b').textContent   = f?'ON':'OFF';
+}
+function openSndMenu(){
+  const r=$('muteBtn').getBoundingClientRect(), m=$('sndMenu');
+  m.classList.remove('hide');
+  const w=m.offsetWidth; m.style.left = Math.max(8, Math.min(innerWidth-w-8, r.right-w))+'px'; m.style.top = (r.bottom+6)+'px';
+}
+$('muteBtn').addEventListener('click', e=>{ e.stopPropagation(); SND.init();
+  $('sndMenu').classList.contains('hide') ? openSndMenu() : $('sndMenu').classList.add('hide'); });
+$('sndMusic').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setMusic(!SND.musicOn()); syncMute();
+  if (SND.musicOn() && !SND.current()) SND.play(S && S.running ? 'game' : 'title'); });
+$('sndSfx').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setSfx(!SND.sfxOn()); syncMute(); if (SND.sfxOn()) SND.sfx('button'); });
+document.addEventListener('pointerdown', e=>{ if (!e.target.closest('#sndMenu, #muteBtn')) $('sndMenu').classList.add('hide'); });
 syncMute();
 // 브라우저는 사용자가 한 번 누르기 전에는 소리를 못 내게 막아서, 첫 클릭/키 입력 때 오프닝 음악 시작
 function unlockAudio(){
@@ -1128,7 +1160,7 @@ window.addEventListener('pointerdown', unlockAudio); window.addEventListener('ke
 // 일반 버튼 누를 때 효과음 (메뉴 담기·전달·품절 처리·채널 토글은 각자 고유 효과음이 있어서 제외)
 document.addEventListener('pointerdown', e=>{
   const btn = e.target.closest && e.target.closest('button'); if (!btn || btn.disabled) return;
-  if (btn.matches('.food, .tg, #btnGo, #btnSorry')) return;
+  if (btn.matches('.food, .tg, #btnGo, #btnSorry, .sm-row')) return;
   if (SND.init()) SND.sfx('button');
 }, true);
 })();

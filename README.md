@@ -1,76 +1,76 @@
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/cover-v2.svg" width="100%" alt="KIM CHAE YEON — 데이터 분석 · 서비스 기획 · AI 에이전트 포트폴리오" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/cover-v2.svg?v=3" width="100%" alt="KIM CHAE YEON — 데이터 분석 · 서비스 기획 · AI 에이전트 포트폴리오" />
 
 <br>
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-game-01.svg" width="360" height="28" alt="01 · GAME / AI COLLABORATION" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-game-01.svg?v=3" width="360" height="28" alt="01 · GAME / AI COLLABORATION" />
 
 ### 햄부기 러시
 패스트푸드 매장 알바 경험으로 기획하고 AI(Claude Code)와 함께 만든 도트 피크타임 게임. 매장과 배달이 동시에 몰리는 피크타임과 **품절 주문 처리**를 게임 규칙으로 옮겼고, 플레이 피드백을 받아 **20번 업데이트**하며 다듬었습니다. [게임 설명](hamburgi-rush/README.md) · [개발 로그](hamburgi-rush/DEVLOG.md)
 
-<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/play-hamburgi.gif" width="654" alt="햄부기 러시 실제 플레이 화면: 손님이 줄을 서고, 메뉴를 담아 전달하면 '맛있게 드세요!' 말풍선이 뜬다" /></a>
+<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/play-hamburgi.gif?v=3" width="654" alt="햄부기 러시 실제 플레이 화면: 손님이 줄을 서고, 메뉴를 담아 전달하면 '맛있게 드세요!' 말풍선이 뜬다" /></a>
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-game.svg" width="654" height="172" alt="아이디어 출처 패스트푸드 알바 2년 7개월 · 직접 플레이 후 개선 20번 · 상점 아이템 스킨과 인테리어 12종 · 외부 이미지와 음원 0개" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-game.svg?v=3" width="654" height="172" alt="아이디어 출처 패스트푸드 알바 2년 7개월 · 직접 플레이 후 개선 20번 · 상점 아이템 스킨과 인테리어 12종 · 외부 이미지와 음원 0개" />
 
-<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-play.svg" width="164" height="38" alt="햄부기 러시 게임 하러 가기" /></a>
+<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-play.svg?v=3" width="164" height="38" alt="햄부기 러시 게임 하러 가기" /></a>
 &nbsp;
-<a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
+<a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg?v=3" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
 
 <img src="https://img.shields.io/badge/JavaScript-4B5563?style=flat-square&labelColor=1E2230&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-4B5563?style=flat-square&labelColor=1E2230&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-4B5563?style=flat-square&labelColor=1E2230&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-4B5563?style=flat-square&labelColor=1E2230&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-4B5563?style=flat-square&labelColor=1E2230&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-4B5563?style=flat-square&labelColor=1E2230&logo=anthropic&logoColor=white" alt="Claude Code" />
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-data-02.svg" width="360" height="28" alt="02 · DATA ANALYSIS / AI SERVICE" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-data-02.svg?v=3" width="360" height="28" alt="02 · DATA ANALYSIS / AI SERVICE" />
 
 ### 회사 연봉 AI
 국민연금 데이터로 연봉을 추정하고, 실제 공시 급여로 검증한 회사 탐색 서비스.
 
-<a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-salary-app.png" width="654" alt="회사 연봉 AI 서비스 첫 화면: 회사 이름으로 평균 연봉을 묻는 검색창과 업종·지역·규모 조건 검색" /></a>
+<a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-salary-app.png?v=3" width="654" alt="회사 연봉 AI 서비스 첫 화면: 회사 이름으로 평균 연봉을 묻는 검색창과 업종·지역·규모 조건 검색" /></a>
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-salary.svg" width="654" height="172" alt="검증 기업 2,392곳 · 평균 절대 오차율 14.6%에서 11.1%로 개선 · 순위 상관 0.88 · AI 평가 28문항 중 27문항 통과" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-salary.svg?v=3" width="654" height="172" alt="검증 기업 2,392곳 · 평균 절대 오차율 14.6%에서 11.1%로 개선 · 순위 상관 0.88 · AI 평가 28문항 중 27문항 통과" />
 
-<a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-service-v2.svg" width="164" height="38" alt="회사 연봉 AI 서비스 사용하기" /></a>
+<a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-service-v2.svg?v=3" width="164" height="38" alt="회사 연봉 AI 서비스 사용하기" /></a>
 &nbsp;
-<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/salary-portfolio.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portfolio.svg" width="164" height="38" alt="회사 연봉 AI 모션 포트폴리오 보기" /></a>
+<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/salary-portfolio.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portfolio.svg?v=3" width="164" height="38" alt="회사 연봉 AI 모션 포트폴리오 보기" /></a>
 &nbsp;
-<a href="https://github.com/codus1111/pension-salary#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-report-v2.svg" width="164" height="38" alt="연봉 AI 분석 과정 보기" /></a>
+<a href="https://github.com/codus1111/pension-salary#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-report-v2.svg?v=3" width="164" height="38" alt="연봉 AI 분석 과정 보기" /></a>
 
 <img src="https://img.shields.io/badge/Python-4B5563?style=flat-square&labelColor=1E2230&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/SQL-4B5563?style=flat-square&labelColor=1E2230&logo=postgresql&logoColor=white" alt="SQL" /> <img src="https://img.shields.io/badge/Streamlit-4B5563?style=flat-square&labelColor=1E2230&logo=streamlit&logoColor=white" alt="Streamlit" /> <img src="https://img.shields.io/badge/Gemini-4B5563?style=flat-square&labelColor=1E2230&logo=googlegemini&logoColor=white" alt="Gemini" /> <img src="https://img.shields.io/badge/MCP-4B5563?style=flat-square&labelColor=1E2230&logo=anthropic&logoColor=white" alt="MCP" />
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu-03.svg" width="360" height="28" alt="03 · DATA ANALYSIS / AI AGENT" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu-03.svg?v=3" width="360" height="28" alt="03 · DATA ANALYSIS / AI AGENT" />
 
 ### 타슈 수급 불균형 분석
 대전 공영자전거 대여 기록으로 대여소가 언제 비고 넘치는지 찾고, 점검 우선순위와 질의응답 에이전트까지 만든 분석.
 
-<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-tashu.png" width="654" alt="타슈 분석 대시보드 첫 화면: 분석 대여 기록 754만 건, 대여소 1,384곳" /></a>
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-tashu.png?v=3" width="654" alt="타슈 분석 대시보드 첫 화면: 분석 대여 기록 754만 건, 대여소 1,384곳" /></a>
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-tashu.svg" width="654" height="172" alt="분석한 대여 기록 801만 건 · 대여소 1,406곳 · 비 1mm 이상일 때 수요 0.36배 · 에이전트 평가 3차 반복 총 36문항" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-tashu.svg?v=3" width="654" height="172" alt="분석한 대여 기록 801만 건 · 대여소 1,406곳 · 비 1mm 이상일 때 수요 0.36배 · 에이전트 평가 3차 반복 총 36문항" />
 
-<a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-report.svg" width="164" height="38" alt="타슈 분석 과정 보기" /></a>
+<a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-report.svg?v=3" width="164" height="38" alt="타슈 분석 과정 보기" /></a>
 &nbsp;
-<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-dashboard.svg?v=3" width="164" height="38" alt="타슈 분석 대시보드 바로 보기" /></a>
 &nbsp;
-<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-agent.svg" width="164" height="38" alt="타슈 에이전트 관제 화면 보기" /></a>
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-agent.svg?v=3" width="164" height="38" alt="타슈 에이전트 관제 화면 보기" /></a>
 
 <img src="https://img.shields.io/badge/Python-4B5563?style=flat-square&labelColor=1E2230&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-4B5563?style=flat-square&labelColor=1E2230&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-4B5563?style=flat-square&labelColor=1E2230&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-4B5563?style=flat-square&labelColor=1E2230&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-4B5563?style=flat-square&labelColor=1E2230&logo=googlegemini&logoColor=white" alt="Gemini" />
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content-04.svg" width="360" height="28" alt="04 · CONTENT / AI AUTOMATION" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content-04.svg?v=3" width="360" height="28" alt="04 · CONTENT / AI AUTOMATION" />
 
 ### 솔트웨어 인사이트
 리서치·글쓰기·이미지 제작을 분담한 AI 에이전트 팀과 블로그 콘텐츠 **12편**. [프로젝트 설명](saltware-blog/README.md)
 
-<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/#archive"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-content-v2.svg" width="164" height="38" alt="솔트웨어 완성 콘텐츠 보기" /></a>
+<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/#archive"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-content-v2.svg?v=3" width="164" height="38" alt="솔트웨어 완성 콘텐츠 보기" /></a>
 &nbsp;
-<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-html-v2.svg" width="164" height="38" alt="솔트웨어 블로그 화면 보기" /></a>
+<a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-html-v2.svg?v=3" width="164" height="38" alt="솔트웨어 블로그 화면 보기" /></a>
 
 <img src="https://img.shields.io/badge/%EC%BD%98%ED%85%90%EC%B8%A0%20%EA%B8%B0%ED%9A%8D-4B5563?style=flat-square&labelColor=1E2230" alt="콘텐츠 기획" /> <img src="https://img.shields.io/badge/SEO-4B5563?style=flat-square&labelColor=1E2230" alt="SEO" /> <img src="https://img.shields.io/badge/AI%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-4B5563?style=flat-square&labelColor=1E2230" alt="AI 에이전트" />
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills-05.svg" width="360" height="28" alt="05 · CLAUDE CODE SKILLS" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills-05.svg?v=3" width="360" height="28" alt="05 · CLAUDE CODE SKILLS" />
 
 ### 클로드 코드 스킬
 직접 만든 스킬을 종류별로 모았습니다. 종류를 눌러 펼쳐 보세요. 전체 안내는 [스킬 폴더](https://github.com/codus1111/codus1111/tree/main/claude-skills)에 있습니다.

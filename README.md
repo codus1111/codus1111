@@ -39,7 +39,7 @@
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-game.svg" width="360" height="28" alt="03 · GAME / AI COLLABORATION" />
 
 ### 햄부기 러시
-패스트푸드 매장 알바 경험으로 기획하고 AI(Claude Code)와 함께 만든 도트 피크타임 게임. 매장과 배달이 동시에 몰리는 피크타임과 **품절 주문 처리**를 게임 규칙으로 옮겼고, 플레이 피드백을 받아 **20번 업데이트**하며 다듬었습니다. [게임 설명](hamburgi-rush/README.md)
+패스트푸드 매장 알바 경험으로 기획하고 AI(Claude Code)와 함께 만든 도트 피크타임 게임. 매장과 배달이 동시에 몰리는 피크타임과 **품절 주문 처리**를 게임 규칙으로 옮겼고, 플레이 피드백을 받아 **20번 업데이트**하며 다듬었습니다. [게임 설명](hamburgi-rush/README.md) · [개발 로그](hamburgi-rush/DEVLOG.md)
 
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-game.svg" width="654" height="172" alt="아이디어 출처 패스트푸드 알바 2년 7개월 · 직접 플레이 후 개선 20번 · 상점 아이템 스킨과 인테리어 12종 · 외부 이미지와 음원 0개" />
 

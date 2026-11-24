@@ -459,7 +459,7 @@
 <div id="app">
  <div class="col colL">
   <div class="hud">
-    <div class="box stat"><b id="hTime">70</b><span>남은 시간</span></div>
+    <div class="box stat"><b id="hTime">60</b><span>남은 시간</span></div>
     <div class="box stat"><b id="hScore">0</b><span>점수</span></div>
     <div class="box stat"><b id="hCombo">0</b><span>콤보</span></div>
     <div class="box stat" title="손님이 기다리다 떠나거나 배달이 늦으면 클레임 1건. 3건이면 영업 종료"><b id="hLife" style="color:var(--red)">♥♥♥</b><span>클레임 3건=끝</span></div>
@@ -528,7 +528,7 @@
     <span style="--i:0">햄</span><span style="--i:1">부</span><span style="--i:2">기</span><span class="sp"></span><span style="--i:3">러</span><span style="--i:4">시</span>
   </div>
   <div class="tsub">PEAK TIME FAST-FOOD RUSH</div>
-  <div class="tdesc">🍔 내가 운영하는 <b>햄버거 가게 시뮬레이션</b> · 점심 피크 70초를 버텨라!</div>
+  <div class="tdesc">🍔 내가 운영하는 <b>햄버거 가게 시뮬레이션</b> · 점심 피크 60초를 버텨라!</div>
   <div class="tchips">
     <span>🏪 매장 + 🛵 배달 동시 운영</span><span>⚠ 품절 나면 키오스크·배달앱 OFF</span><span>🔥 5연속 완료 시 러시 ×2</span>
   </div>
@@ -736,7 +736,7 @@ function themePreview(c){   // 작은 매장 미리보기 그림
 
 // 브라우저 탭 아이콘 = 도트 햄버거 (12x12 칸에 그려서 64px로 확대)
 try{ document.getElementById('favicon').href = toImg(ICON.burger, {}, 12, 12, 6); }catch(e){}
-const ROUND = 70, MAX_LIFE = 3, MAX_Q = 5, MAX_D = 3;
+const ROUND = 60, MAX_LIFE = 3, MAX_Q = 5, MAX_D = 3;
 const $ = id => document.getElementById(id);
 const nm = id => MENU.find(m=>m.id===id);
 const cv = $('scene'), ctx = cv.getContext('2d');
@@ -774,7 +774,7 @@ function drawFloorDecor(){
 
 let S, raf=null, last=0;
 // ---- 랭킹 TOP 5 (이 기기에 저장) ----
-const RANK_KEY='hbr_rank_v3', RANK_N=5;
+const RANK_KEY='hbr_rank_v4', RANK_N=5;
 // 한 사람(이름)당 최고 점수 하나만 남기기
 function bestPerName(list){
   const m=new Map();
@@ -1273,7 +1273,7 @@ function start(mode){                     // mode: undefined(일반) | 'tutorial
 function countdown(afterTut){
   const ov=$('cdOv'), num=$('cdNum'), sub=$('cdSub');
   S.paused=true; S.countdown=true; ov.classList.remove('hide');
-  const seq = (afterTut ? [['🎓 튜토리얼 완료!','이제 진짜 영업이에요 · 70초']] : []).concat([['3',''],['2',''],['1',''],['영업 시작!','']]);
+  const seq = (afterTut ? [['🎓 튜토리얼 완료!','이제 진짜 영업이에요 · 60초']] : []).concat([['3',''],['2',''],['1',''],['영업 시작!','']]);
   let i=0;
   const step=()=>{
     if (!S || !S.countdown) return;
@@ -1539,7 +1539,7 @@ const TUT_STEPS = [
     hi:()=>['#c_cheese'], enter:()=>tutSoldOut('cheese'), done:()=>!S.items.cheese.kiosk && !S.items.cheese.app },
   { t:'④ 품절 주문 정리', d:'끄기 전에 들어온 품절 주문은 <b>품절 메뉴 취소</b>로 정리해요. (PC: Q)',
     hi:()=>['#tickets [data-k="c"]','#btnSorry'], enter:()=>tutCust(['cheese','fries']), done:()=>S.sorry>=1 },
-  { t:'⑤ 준비 끝!', d:'실전 <b>70초</b>. <b>5연속</b> 완료하면 🔥<b>러시 ×2</b>, 손님 이탈·배달 지연 <b>클레임 3건</b>이면 끝!',
+  { t:'⑤ 준비 끝!', d:'실전 <b>60초</b>. <b>5연속</b> 완료하면 🔥<b>러시 ×2</b>, 손님 이탈·배달 지연 <b>클레임 3건</b>이면 끝!',
     hi:()=>['.rushbar','.hud .stat:last-child'], next:true, last:true },
 ];
 let TUT = null;

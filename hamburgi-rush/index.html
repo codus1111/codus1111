@@ -341,7 +341,7 @@
   @media (min-width:880px){
     html,body{height:100%}
     body{padding:8px 0;overflow:hidden}
-    #app{height:calc(100dvh - 16px);max-width:min(1400px, calc(100vw - 24px));min-width:0;width:100%}
+    #app{height:calc(100dvh - 16px);max-width:min(1800px, calc(100vw - 32px));min-width:0;width:100%}
     .colL{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
     .colR{flex:none}
     .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;overflow:hidden}
@@ -662,6 +662,24 @@ function drawWideDecor(){
   const ps = 34;
   ctx.fillStyle='#2b1d14'; ctx.fillRect(ps,10,18,24); ctx.fillStyle='#ffd34d'; ctx.fillRect(ps+1,11,16,22);
   spr(ctx, ICON.burger, {}, ps+4, 16); ctx.fillStyle='#e4002b'; ctx.fillRect(ps+3,28,12,2);
+  if (SW>=280){
+    // 벽시계 (메뉴판 왼쪽)
+    const ck = Math.round(SW/2-39) - 22;
+    if (ck > 58){ ctx.fillStyle='#2b1d14'; ctx.fillRect(ck,10,14,14); ctx.fillStyle='#fff8e8'; ctx.fillRect(ck+1,11,12,12);
+      ctx.fillStyle='#2b1d14'; ctx.fillRect(ck+6,13,2,5); ctx.fillRect(ck+7,17,4,1); ctx.fillStyle='#e4002b'; ctx.fillRect(ck+6,16,2,2); }
+    // 두 번째 포스터 (NEW 치즈스틱)
+    const p2 = SW-62;
+    if (p2 > Math.round(SW/2)+48){ ctx.fillStyle='#2b1d14'; ctx.fillRect(p2,10,18,24); ctx.fillStyle='#2bb3a3'; ctx.fillRect(p2+1,11,16,22);
+      spr(ctx, ICON.cheese, {}, p2+4, 13); ctx.fillStyle='#fff'; ctx.font='6px Galmuri9'; ctx.fillText('NEW',p2+3,31); }
+  }
+}
+// 바닥 화분 (손님 줄 오른쪽 끝, 넓을 때만)
+function drawFloorDecor(){
+  if (SW<240) return;
+  const pot = x => { ctx.fillStyle='#3f8f4a'; ctx.fillRect(x+1,74,10,8); ctx.fillRect(x+3,71,6,3); ctx.fillStyle='#56ad5f'; ctx.fillRect(x+3,75,3,3);
+    ctx.fillStyle='#b5562b'; ctx.fillRect(x,82,12,10); ctx.fillStyle='#8f3f1c'; ctx.fillRect(x,82,12,2); };
+  pot(SW-16);
+  if (SW>=340) pot(SW-40);
 }
 
 let S, raf=null, last=0;
@@ -894,6 +912,7 @@ function draw(){
   const px=CX()+48; ctx.fillStyle='#2b1d14'; ctx.fillRect(px,46,14,10); ctx.fillStyle='#7ee0c3'; ctx.fillRect(px+1,47,12,7);
   // 바닥
   for(let y=70;y<112;y+=7) for(let x=0;x<SW;x+=7){ ctx.fillStyle=((x+y)/7)%2?th.f1:th.f2; ctx.fillRect(x,y,7,7); }
+  drawFloorDecor();
   if (!S) return;
   // 배달 라이더
   S.dels.forEach(d=>{
@@ -1430,7 +1449,7 @@ function fitScene(){
   app.style.maxWidth='';                                    // 먼저 최대 폭으로 펼친 뒤
   const st=$('stage'), availH = st.clientHeight - $('tickets').offsetHeight - 4, availW = st.clientWidth;
   // 장면 가로 길이를 화면 비율에 맞춰 160~260 도트로 늘림 (벽·카운터·바닥이 옆으로 이어짐)
-  const nsw = Math.max(160, Math.min(260, Math.round(112*availW/Math.max(1,availH))));
+  const nsw = Math.max(160, Math.min(420, Math.round(112*availW/Math.max(1,availH))));
   if (cvEl.width!==nsw){ cvEl.width=nsw; SW=nsw; if (S) draw(); }
   const sc = Math.max(1, Math.min(availW/SW, availH/112));
   const w = SW*sc;

@@ -340,7 +340,7 @@
   @media (min-width:880px){
     html,body{height:100%}
     body{padding:8px 0;overflow:hidden}
-    #app{height:calc(100dvh - 16px);max-width:min(1000px, calc(100vw - 24px));min-width:0;width:100%}
+    #app{height:calc(100dvh - 16px);max-width:min(1400px, calc(100vw - 24px));min-width:0;width:100%}
     .colL{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
     .colR{flex:none}
     .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;overflow:hidden}
@@ -352,6 +352,7 @@
     .rule-m{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   }
   @media (min-width:880px) and (max-height:620px){ body{overflow:auto} #app{height:auto} }
+  #howOv{z-index:35}
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -367,7 +368,7 @@
 <div id="app">
  <div class="col colL">
   <div class="hud">
-    <div class="box stat"><b id="hTime">90</b><span>남은 시간</span></div>
+    <div class="box stat"><b id="hTime">70</b><span>남은 시간</span></div>
     <div class="box stat"><b id="hScore">0</b><span>매출(원)</span></div>
     <div class="box stat"><b id="hCombo">0</b><span>콤보</span></div>
     <div class="box stat" title="손님이 기다리다 떠나거나 배달이 늦으면 클레임 1건. 3건이면 영업 종료"><b id="hLife" style="color:var(--red)">♥♥♥</b><span>클레임 3건=끝</span></div>
@@ -419,7 +420,7 @@
     <span style="--i:0">햄</span><span style="--i:1">부</span><span style="--i:2">기</span><span class="sp"></span><span style="--i:3">러</span><span style="--i:4">시</span>
   </div>
   <div class="tsub">PEAK TIME FAST-FOOD RUSH</div>
-  <div class="tdesc">🍔 내가 운영하는 <b>햄버거 가게 시뮬레이션</b> · 점심 피크 90초를 버텨라!</div>
+  <div class="tdesc">🍔 내가 운영하는 <b>햄버거 가게 시뮬레이션</b> · 점심 피크 70초를 버텨라!</div>
   <div class="tchips">
     <span>🏪 매장 + 🛵 배달 동시 운영</span><span>⚠ 품절 나면 키오스크·배달앱 OFF</span><span>🔥 5연속 완료 시 러시 ×2</span>
   </div>
@@ -469,6 +470,7 @@
     <h2>⏸ 일시정지</h2>
     <p>잠깐 쉬어 가요. 손님들도 기다려 줄게요.</p>
     <p class="keyhint">⌨ Esc / P / Enter 로 계속하기</p>
+    <div class="trow"><button class="btn b-sorry" id="btnPauseHow">📖 게임 방법</button></div>
     <div class="trow">
       <button class="btn b-clear" id="btnQuit">처음으로</button>
       <button class="btn b-go" id="btnResume">▶ 계속하기</button>
@@ -554,10 +556,23 @@ const MENU = [
   {id:'cola', n:'콜라', p:2000}, {id:'cheese', n:'치즈스틱', p:2400}, {id:'ice', n:'아이스크림', p:1200},
 ];
 const IMG = {}; MENU.forEach(m => IMG[m.id] = toImg(ICON[m.id], {}, 10, 10, 4));
-const ROUND = 90, MAX_LIFE = 3, MAX_Q = 5, MAX_D = 3;
+const ROUND = 70, MAX_LIFE = 3, MAX_Q = 5, MAX_D = 3;
 const $ = id => document.getElementById(id);
 const nm = id => MENU.find(m=>m.id===id);
 const cv = $('scene'), ctx = cv.getContext('2d');
+let SW = 160;                                   // 장면 가로 도트 수 (PC에서 화면 비율에 맞게 늘어남)
+const CX = () => Math.round(SW/2 - 8);          // 알바생 기본 위치 (카운터 가운데)
+const QX = () => Math.round(SW/2 - 4);          // 맨 앞 손님 위치
+function drawWideDecor(){
+  // 오른쪽 벽 창문 (바깥 노을)
+  const wx = SW-34;
+  ctx.fillStyle='#5a4a3a'; ctx.fillRect(wx,8,28,30); ctx.fillStyle='#ffcf8a'; ctx.fillRect(wx+2,10,24,26);
+  ctx.fillStyle='#ff9f6b'; ctx.fillRect(wx+2,24,24,12); ctx.fillStyle='#5a4a3a'; ctx.fillRect(wx+13,10,2,26); ctx.fillRect(wx+2,22,24,2);
+  // 왼쪽 벽 포스터 (오늘의 메뉴)
+  const ps = 34;
+  ctx.fillStyle='#2b1d14'; ctx.fillRect(ps,10,18,24); ctx.fillStyle='#ffd34d'; ctx.fillRect(ps+1,11,16,22);
+  spr(ctx, ICON.burger, {}, ps+4, 16); ctx.fillStyle='#e4002b'; ctx.fillRect(ps+3,28,12,2);
+}
 
 let S, raf=null, last=0;
 // ---- 랭킹 TOP 5 (이 기기에 저장) ----
@@ -625,9 +640,9 @@ function newState(){
   const items={};
   MENU.forEach(m => items[m.id] = {stock:true, kiosk:true, app:true, kOut:null, aOut:null, kBack:null, aBack:null});
   return {t:0, running:false, score:0, shopRev:0, delRev:0, combo:0, maxCombo:0, life:MAX_LIFE,
-    queue:[], dels:[], leaving:[], tray:[], items, wt:72, dNo:101,
+    queue:[], dels:[], leaving:[], tray:[], items, wt:'c', dNo:101,
     nextCust:1.0, nextDel:7, nextEvent:10, served:0, delivered:0,
-    soldOutOrders:0, sorry:0, kDelay:[], aDelay:[], wrong:0, timeouts:0, leftC:0, lateD:0, rushT:0, rushes:0, rushRev:0, fx:[], wx:72};
+    soldOutOrders:0, sorry:0, kDelay:[], aDelay:[], wrong:0, timeouts:0, leftC:0, lateD:0, rushT:0, rushes:0, rushRev:0, fx:[], wx:CX()};
 }
 const diff = () => Math.min(1, S.t/ROUND);
 
@@ -641,7 +656,7 @@ function spawnCustomer(){
   const d=diff(), n = 1 + (Math.random()<.3+d*.4?1:0) + (Math.random()<d*.3?1:0);
   const order = pick(shown, n), pat = 22 - d*5 + n*2.5;   // v3: 대기 시간 +4~5초
   if (hasOut(order)) S.soldOutOrders++;
-  S.queue.push({look:makeLook(), order, pat, max:pat, x:170});
+  S.queue.push({look:makeLook(), order, pat, max:pat, x:SW+10});
 }
 function spawnDelivery(){
   if (S.dels.length>=MAX_D) return;
@@ -683,11 +698,12 @@ function tick(dt){
   for (const c of goneC){ S.timeouts++; S.leftC++; if (S.running) loseLife('💢 매장 손님이 기다리다 떠났어요'); }
   for (const d of goneD){ S.timeouts++; S.lateD++; if (S.running) loseLife('⭐ 배달 지연… 별점 1점 리뷰가 달렸어요'); }
   // 이동 애니메이션
-  S.queue.forEach((c,i)=>{ const tx=76+i*17; c.x += Math.sign(tx-c.x)*Math.min(Math.abs(tx-c.x), 70*dt); });
+  S.queue.forEach((c,i)=>{ const tx=QX()+i*17; c.x += Math.sign(tx-c.x)*Math.min(Math.abs(tx-c.x), 70*dt); });
   S.dels.forEach((d,i)=>{ const tx=2+i*16; d.x += Math.sign(tx-d.x)*Math.min(Math.abs(tx-d.x), 60*dt); });
   S.leaving.forEach(l=>{ l.x += (l.kind==='c'? 80 : -90)*dt; });
-  S.leaving = S.leaving.filter(l=>l.x>-30 && l.x<190);
-  S.wx += Math.sign(S.wt-S.wx)*Math.min(Math.abs(S.wt-S.wx), 120*dt);
+  S.leaving = S.leaving.filter(l=>l.x>-30 && l.x<SW+30);
+  const wtx = S.wt==='d' ? 22 : CX();
+  S.wx += Math.sign(wtx-S.wx)*Math.min(Math.abs(wtx-S.wx), 120*dt);
   if (S.t>=ROUND && S.running) end(false);
 }
 function loop(ts){ if (!S.running || S.paused) return; const dt=Math.min(.1,(ts-last)/1000); last=ts; tick(dt); draw(); renderUI(); raf=requestAnimationFrame(loop); }
@@ -697,8 +713,8 @@ function loop(ts){ if (!S.running || S.paused) return; const dt=Math.min(.1,(ts-
 function openOrders(){ const a=[]; if (S.queue[0]) a.push({o:S.queue[0],isDel:false}); S.dels.forEach(d=>a.push({o:d,isDel:true})); return a; }
 const urgency = x => x.o.pat/x.o.max;
 function removeOrder(x, mad){
-  if (x.isDel){ S.dels=S.dels.filter(d=>d!==x.o); S.leaving.push({kind:'d',x:x.o.x,mad}); S.wt=22; }
-  else { S.queue.shift(); S.leaving.push({kind:'c',look:x.o.look,x:x.o.x,mad}); S.wt=72; }
+  if (x.isDel){ S.dels=S.dels.filter(d=>d!==x.o); S.leaving.push({kind:'d',x:x.o.x,mad}); S.wt='d'; }
+  else { S.queue.shift(); S.leaving.push({kind:'c',look:x.o.look,x:x.o.x,mad}); S.wt='c'; }
 }
 // 주문표 위에 처리 결과 도장 찍기 (완료 / 실패 / 품절 처리)
 function stamp(k, cls, text){ stampEl(document.querySelector(`#tickets [data-k="${k}"]`), cls, text); }
@@ -762,13 +778,15 @@ function toggle(id, ch){
 function draw(){
   const t=S?S.t:0;
   // 벽
-  ctx.fillStyle='#f6e3c4'; ctx.fillRect(0,0,160,56);
-  ctx.fillStyle='#ecd2a8'; for(let x=0;x<160;x+=8) ctx.fillRect(x,0,1,48);
-  ctx.fillStyle='#c8102e'; ctx.fillRect(0,48,160,8);
-  ctx.fillStyle='#fff8e8'; for(let x=2;x<160;x+=10) ctx.fillRect(x,51,5,2);
-  // 메뉴판
-  ctx.fillStyle='#2b1d14'; ctx.fillRect(41,3,78,22); ctx.fillStyle='#2f3b2f'; ctx.fillRect(42,4,76,20);
-  MENU.forEach((m,i)=>{ const x=45+i*12, y=9; spr(ctx, ICON[m.id], {}, x, y+(10-ICON[m.id].length)/2);
+  ctx.fillStyle='#f6e3c4'; ctx.fillRect(0,0,SW,56);
+  ctx.fillStyle='#ecd2a8'; for(let x=0;x<SW;x+=8) ctx.fillRect(x,0,1,48);
+  ctx.fillStyle='#c8102e'; ctx.fillRect(0,48,SW,8);
+  ctx.fillStyle='#fff8e8'; for(let x=2;x<SW;x+=10) ctx.fillRect(x,51,5,2);
+  // 메뉴판 (가운데)
+  const mb=Math.round(SW/2-39);
+  ctx.fillStyle='#2b1d14'; ctx.fillRect(mb,3,78,22); ctx.fillStyle='#2f3b2f'; ctx.fillRect(mb+1,4,76,20);
+  if (SW>=210) drawWideDecor();
+  MENU.forEach((m,i)=>{ const x=mb+4+i*12, y=9; spr(ctx, ICON[m.id], {}, x, y+(10-ICON[m.id].length)/2);
     if (S && !S.items[m.id].stock){ ctx.fillStyle='#ff3b5c'; for(let k=0;k<10;k++){ ctx.fillRect(x+k,y+k,1,1); ctx.fillRect(x+9-k,y+k,1,1);} } });
   // 배달 픽업 창구
   ctx.fillStyle='#5a4a3a'; ctx.fillRect(2,12,26,44); ctx.fillStyle='#a7d3e8'; ctx.fillRect(4,14,22,40);
@@ -776,15 +794,15 @@ function draw(){
   ctx.fillStyle='#2bb3a3'; ctx.fillRect(2,4,26,8); ctx.fillStyle='#fff'; ctx.font='8px Galmuri9'; ctx.fillText('배달',7,11);
   // 알바생 (카운터 뒤)
   const bob = Math.floor(t*3)%2;
-  spr(ctx, WORKER, {H:'#3a2416',P:'#2e3a59'}, S?S.wx:72, 36+bob);
+  spr(ctx, WORKER, {H:'#3a2416',P:'#2e3a59'}, S?S.wx:CX(), 36+bob);
   // 카운터
-  ctx.fillStyle='#b07a45'; ctx.fillRect(32,56,128,3); ctx.fillStyle='#8b5a2b'; ctx.fillRect(32,59,128,11);
-  ctx.fillStyle='#7a4a22'; for(let x=36;x<160;x+=16) ctx.fillRect(x,61,1,8);
+  ctx.fillStyle='#b07a45'; ctx.fillRect(32,56,SW-32,3); ctx.fillStyle='#8b5a2b'; ctx.fillRect(32,59,SW-32,11);
+  ctx.fillStyle='#7a4a22'; for(let x=36;x<SW;x+=16) ctx.fillRect(x,61,1,8);
   ctx.fillStyle='#6b5a4a'; ctx.fillRect(0,56,32,14); ctx.fillStyle='#a08a72'; ctx.fillRect(0,56,32,2);
   // POS
-  ctx.fillStyle='#2b1d14'; ctx.fillRect(120,46,14,10); ctx.fillStyle='#7ee0c3'; ctx.fillRect(121,47,12,7);
+  const px=CX()+48; ctx.fillStyle='#2b1d14'; ctx.fillRect(px,46,14,10); ctx.fillStyle='#7ee0c3'; ctx.fillRect(px+1,47,12,7);
   // 바닥
-  for(let y=70;y<112;y+=7) for(let x=0;x<160;x+=7){ ctx.fillStyle=((x+y)/7)%2?'#e9d5b5':'#dcc29a'; ctx.fillRect(x,y,7,7); }
+  for(let y=70;y<112;y+=7) for(let x=0;x<SW;x+=7){ ctx.fillStyle=((x+y)/7)%2?'#e9d5b5':'#dcc29a'; ctx.fillRect(x,y,7,7); }
   if (!S) return;
   // 배달 라이더
   S.dels.forEach(d=>{
@@ -794,7 +812,7 @@ function draw(){
   });
   // 매장 손님
   S.queue.forEach((c,i)=>{
-    const walk = Math.abs(c.x-(76+i*17))>.5 ? Math.floor(t*8)%2 : 0;
+    const walk = Math.abs(c.x-(QX()+i*17))>.5 ? Math.floor(t*8)%2 : 0;
     spr(ctx, c.look.rows, c.look, c.x, 77-walk);
     bar(c.x, 97, c.pat/c.max);
     if (c.pat/c.max<.3) mad(c.x+10, 74);
@@ -807,7 +825,7 @@ function draw(){
   });
   // 말풍선: 맨 앞 손님
   const f = S.queue[0];
-  if (f && Math.abs(f.x-76)<2) bubble(f.x+6, f.order, hasOut(f.order));
+  if (f && Math.abs(f.x-QX())<2) bubble(f.x+6, f.order, hasOut(f.order));
   drawFx();
 }
 // ---- 말풍선 결과 표시 (OK♥ / NO / ...) ----
@@ -816,7 +834,7 @@ const HEART=[[1,0],[3,0],[0,1],[1,1],[2,1],[3,1],[4,1],[1,2],[2,2],[3,2],[2,3]];
 function drawFx(){
   S.fx = S.fx.filter(f=>S.t-f.t<1);
   S.fx.forEach(f=>{
-    const a=S.t-f.t, y=Math.round(57-a*10), w=f.kind==='ok'?24:18, x=Math.round(Math.min(158-w,Math.max(1,f.x-w/2)));
+    const a=S.t-f.t, y=Math.round(57-a*10), w=f.kind==='ok'?24:18, x=Math.round(Math.min(SW-2-w,Math.max(1,f.x-w/2)));
     const col = f.kind==='ok'?'#2e9e5b':f.kind==='fail'?'#e4002b':'#f2a71b';
     ctx.fillStyle=col; ctx.fillRect(x-1,y-1,w+2,13); ctx.fillStyle='#fff8e8'; ctx.fillRect(x,y,w,11);
     ctx.fillStyle=col; ctx.fillRect(Math.round(f.x)-1,y+12,3,2);
@@ -845,7 +863,7 @@ function bar(x,y,r){ ctx.fillStyle='#2b1d14'; ctx.fillRect(x,y,12,3); ctx.fillSt
 function mad(x,y){ ctx.fillStyle='#e4002b'; [[0,0],[2,0],[1,1],[0,2],[2,2]].forEach(([a,b])=>ctx.fillRect(x+a,y+b,1,1)); }
 function arrow(x,y){ ctx.fillStyle='#e4002b'; for(let i=0;i<4;i++) ctx.fillRect(x-3+i,y+i,7-2*i,1); }
 function bubble(cx, order, sel){
-  const w = order.length*11+3, x = Math.round(Math.min(157-w, Math.max(1, cx-w/2))), y=59;
+  const w = order.length*11+3, x = Math.round(Math.min(SW-3-w, Math.max(1, cx-w/2))), y=59;
   ctx.fillStyle = sel?'#e4002b':'#2b1d14'; ctx.fillRect(x-1,y-1,w+2,15);
   ctx.fillStyle='#fff8e8'; ctx.fillRect(x,y,w,13);
   ctx.fillStyle = sel?'#e4002b':'#2b1d14'; ctx.fillRect(cx-1,y+14,3,2); ctx.fillRect(cx,y+16,1,1);
@@ -1022,7 +1040,7 @@ function start(){
   notice('영업 시작! 되는 주문부터 만들어요','good');
   renderUI(true); fitScene(); last=performance.now(); raf=requestAnimationFrame(loop);
 }
-$('btnStart').onclick=start; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
+$('btnStart').onclick=()=>{ if (S && S.running && S.paused){ $('howOv').classList.add('hide'); resumeGame(); } else start(); }; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
 $('btnHow').onclick=()=>{ $('howOv').classList.remove('hide'); track('how_open'); };
 $('btnRank').onclick=()=>{ renderRank($('rankStart')); $('rankOv').classList.remove('hide'); track('rank_open'); };
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add('hide'));
@@ -1034,7 +1052,9 @@ $('btnClear').addEventListener('pointerdown',e=>{e.preventDefault(); clearTray()
 $('btnSorry').addEventListener('pointerdown',e=>{e.preventDefault(); sorry();});
 document.addEventListener('keydown',e=>{
   if (e.target && e.target.tagName==='INPUT') return;
-  if (S && S.running && S.paused){ if (['Escape','p','P','Enter',' '].includes(e.key)){ e.preventDefault(); resumeGame(); } return; }
+  if (S && S.running && S.paused){
+    if (!$('howOv').classList.contains('hide')){ if (e.key==='Escape'){ e.preventDefault(); $('howOv').classList.add('hide'); } return; }
+    if (['Escape','p','P','Enter',' '].includes(e.key)){ e.preventDefault(); resumeGame(); } return; }
   if (S && S.running && (e.key==='Escape'||e.key==='p'||e.key==='P')){ e.preventDefault(); pauseGame(); return; }
   if (!S || !S.running){ if (e.key==='Enter'){ e.preventDefault(); start(); } return; }
   const n=parseInt(e.key,10);
@@ -1224,13 +1244,23 @@ mqPC.addEventListener ? mqPC.addEventListener('change',placeTickets) : mqPC.addL
 placeTickets();
 $('btnPause').addEventListener('click', e=>{ e.stopPropagation(); pauseGame(); });
 $('btnResume').onclick=resumeGame; $('btnQuit').onclick=quitGame;
+// 일시정지 중 게임 방법: '바로 시작' 대신 '계속하기'
+$('btnPauseHow').onclick=()=>{ $('btnStart').textContent='▶ 계속하기'; $('howOv').classList.remove('hide'); track('how_open',{from:'pause'}); };
+$('btnHow').addEventListener('click', ()=>{ $('btnStart').textContent='▶ 바로 시작'; });
 // PC: 매장 그림 크기를 남은 화면 높이에 맞춰 조절 → 조작부까지 한 화면에
 const cvEl=$('scene');
 function fitScene(){
-  if (!mqPC.matches){ cvEl.style.width=''; cvEl.style.height=''; return; }
-  const st=$('stage'), avail = st.clientHeight - $('tickets').offsetHeight - 4;
-  const w = Math.max(200, Math.min(st.clientWidth, avail*160/112));
-  cvEl.style.width = w+'px'; cvEl.style.height = (w*112/160)+'px';
+  const app=$('app');
+  if (!mqPC.matches){ cvEl.style.width=''; cvEl.style.height=''; app.style.maxWidth=''; if (cvEl.width!==160){ cvEl.width=160; SW=160; if (S) draw(); } return; }
+  app.style.maxWidth='';                                    // 먼저 최대 폭으로 펼친 뒤
+  const st=$('stage'), availH = st.clientHeight - $('tickets').offsetHeight - 4, availW = st.clientWidth;
+  // 장면 가로 길이를 화면 비율에 맞춰 160~260 도트로 늘림 (벽·카운터·바닥이 옆으로 이어짐)
+  const nsw = Math.max(160, Math.min(260, Math.round(112*availW/Math.max(1,availH))));
+  if (cvEl.width!==nsw){ cvEl.width=nsw; SW=nsw; if (S) draw(); }
+  const sc = Math.max(1, Math.min(availW/SW, availH/112));
+  const w = SW*sc;
+  cvEl.style.width = w+'px'; cvEl.style.height = (112*sc)+'px';
+  app.style.maxWidth = Math.max(640, Math.ceil(w)) + 'px';  // 전체 폭 = 매장 그림 폭 (조작부 최소 640px)
 }
 addEventListener('resize', fitScene); mqPC.addEventListener ? mqPC.addEventListener('change',fitScene) : mqPC.addListener(fitScene);
 fitScene(); if (document.fonts) document.fonts.ready.then(fitScene);

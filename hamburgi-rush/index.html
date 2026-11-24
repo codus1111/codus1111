@@ -327,6 +327,31 @@
   .sm-row small{display:block;font-size:9px;color:var(--sub)}
   .sm-row b{font-family:"Galmuri9";font-size:12px;padding:3px 7px;border:2px solid var(--line);background:#9aa3ab;color:#fff;min-width:44px;text-align:center}
   .sm-row.on b{background:var(--green)}
+
+  /* ===== v11: 일시정지 ===== */
+  .pausebtn{width:30px;height:22px;font-size:12px;line-height:1;padding:0;cursor:pointer;background:var(--paper);border:2px solid var(--line);flex:none}
+  .pausebtn:active{transform:translateY(1px)}
+
+  /* ===== v11: 채널 줄 넘침 방지 ===== */
+  .chgrid > .ch{min-width:0;overflow:hidden}
+  .tg{min-width:0;overflow:hidden;text-overflow:clip}
+
+  /* ===== v11: PC 한 화면 고정 레이아웃 ===== */
+  @media (min-width:880px){
+    html,body{height:100%}
+    body{padding:8px 0;overflow:hidden}
+    #app{height:calc(100dvh - 16px);max-width:min(1000px, calc(100vw - 24px));min-width:0;width:100%}
+    .colL{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+    .colR{flex:none}
+    .stage{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+    .stage .tickets{width:100%;flex:none}
+    canvas#scene{flex:none;width:auto;max-width:100%}
+    .chgrid{grid-template-columns:repeat(6,minmax(0,1fr))}
+    .tg i{display:none}
+    .tg{font-size:11px;padding:5px 0}
+    .rule-m{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  }
+  @media (min-width:880px) and (max-height:620px){ body{overflow:auto} #app{height:auto} }
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -348,7 +373,7 @@
     <div class="box stat" title="손님이 기다리다 떠나거나 배달이 늦으면 클레임 1건. 3건이면 영업 종료"><b id="hLife" style="color:var(--red)">♥♥♥</b><span>클레임 3건=끝</span></div>
   </div>
   <div class="timebar"><i id="timebar" style="width:100%"></i></div>
-  <div class="rushbar" title="연속 5건 완료하면 10초 동안 매출 ×2"><span class="rl">🔥 RUSH</span><div class="seg" id="rushSeg"><i></i><i></i><i></i><i></i><i></i></div><span class="rt" id="rushTxt">0/5</span></div>
+  <div class="rushbar" title="연속 5건 완료하면 10초 동안 매출 ×2"><span class="rl">🔥 RUSH</span><div class="seg" id="rushSeg"><i></i><i></i><i></i><i></i><i></i></div><span class="rt" id="rushTxt">0/5</span><button class="pausebtn" id="btnPause" title="일시정지 (Esc / P)" aria-label="일시정지">⏸</button></div>
 
   <div class="stage" id="stage">
     <canvas id="scene" width="160" height="112"></canvas>
@@ -436,6 +461,18 @@
     <div class="rank" id="rankStart"></div>
     <p class="dim small" id="rankNote">랭킹은 이 기기(브라우저)에 저장돼요.</p>
     <div class="trow"><button class="btn b-clear" data-close="rankOv">닫기</button></div>
+  </div>
+</div>
+
+<div class="ov hide" id="pauseOv">
+  <div class="box card">
+    <h2>⏸ 일시정지</h2>
+    <p>잠깐 쉬어 가요. 손님들도 기다려 줄게요.</p>
+    <p class="keyhint">⌨ Esc / P / Enter 로 계속하기</p>
+    <div class="trow">
+      <button class="btn b-clear" id="btnQuit">처음으로</button>
+      <button class="btn b-go" id="btnResume">▶ 계속하기</button>
+    </div>
   </div>
 </div>
 
@@ -653,7 +690,7 @@ function tick(dt){
   S.wx += Math.sign(S.wt-S.wx)*Math.min(Math.abs(S.wt-S.wx), 120*dt);
   if (S.t>=ROUND && S.running) end(false);
 }
-function loop(ts){ if (!S.running) return; const dt=Math.min(.1,(ts-last)/1000); last=ts; tick(dt); draw(); renderUI(); raf=requestAnimationFrame(loop); }
+function loop(ts){ if (!S.running || S.paused) return; const dt=Math.min(.1,(ts-last)/1000); last=ts; tick(dt); draw(); renderUI(); raf=requestAnimationFrame(loop); }
 
 // ================= 조작 =================
 // 지금 받을 수 있는 주문 = 매장 맨 앞 손님 + 배달 주문 전부
@@ -854,7 +891,7 @@ function renderUI(force){
     MENU.forEach(m=>{ const it=S.items[m.id];
       $('f_'+m.id).classList.toggle('out',!it.stock);
       $('k_'+m.id).classList.toggle('on',it.kiosk); $('a_'+m.id).classList.toggle('on',it.app);
-      $('k_'+m.id).textContent='키오 '+(it.kiosk?'ON':'OFF'); $('a_'+m.id).textContent='배달 '+(it.app?'ON':'OFF');
+      $('k_'+m.id).innerHTML='키오<i> '+(it.kiosk?'ON':'OFF')+'</i>'; $('a_'+m.id).innerHTML='배달<i> '+(it.app?'ON':'OFF')+'</i>';
       $('c_'+m.id).classList.toggle('bad', it.kiosk!==it.stock || it.app!==it.stock);
     });
   }
@@ -871,7 +908,7 @@ function build(){
     b.innerHTML=`<span class="k">${i+1}</span><img class="px" src="${IMG[m.id]}"><div class="n">${m.n}</div>`;
     b.addEventListener('pointerdown',e=>{e.preventDefault(); addFood(m.id);}); k.appendChild(b);
     const c=document.createElement('div'); c.className='ch'; c.id='c_'+m.id;
-    c.innerHTML=`<img class="px" src="${IMG[m.id]}"><button class="tg on" id="k_${m.id}">키오 ON</button><button class="tg on" id="a_${m.id}">배달 ON</button>`;
+    c.innerHTML=`<img class="px" src="${IMG[m.id]}"><button class="tg on" id="k_${m.id}">키오<i> ON</i></button><button class="tg on" id="a_${m.id}">배달<i> ON</i></button>`;
     g.appendChild(c);
     $('k_'+m.id).addEventListener('pointerdown',e=>{e.preventDefault(); toggle(m.id,'kiosk');});
     $('a_'+m.id).addEventListener('pointerdown',e=>{e.preventDefault(); toggle(m.id,'app');});
@@ -957,7 +994,24 @@ function saveRank(){
   $('entryMsg').innerHTML = me ? `✔ <b>${esc(me.name)}</b>(으)로 바꿨어요` : '';
   $('rankEnd').innerHTML = rankHTML(S.rankId);
 }
-document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState==='hidden') flushSubmit(); });
+document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState==='hidden'){ flushSubmit(); pauseGame(); } });
+// ---- 일시정지 / 재개 ----
+function pauseGame(){
+  if (!S || !S.running || S.paused) return;
+  S.paused=true; cancelAnimationFrame(raf); SND.stop();
+  $('pauseOv').classList.remove('hide'); track('pause', {at_sec: Math.round(S.t)});
+}
+function resumeGame(){
+  if (!S || !S.running || !S.paused) return;
+  S.paused=false; $('pauseOv').classList.add('hide');
+  SND.play('game'); SND.setRush(S.rushT>0);
+  last=performance.now(); raf=requestAnimationFrame(loop);
+}
+function quitGame(){
+  if (!S) return; S.running=false; S.paused=false; cancelAnimationFrame(raf);
+  document.body.classList.remove('rush'); SND.setRush(false);
+  $('pauseOv').classList.add('hide'); track('quit', {at_sec: Math.round(S.t)}); showTitle();
+}
 function start(){
   track('game_start', {retry: S && S.t>0 ? 'yes':'no'});
   flushSubmit();
@@ -966,7 +1020,7 @@ function start(){
   S=newState(); S.running=true; tKey='';
   ['titleOv','howOv','rankOv','endOv'].forEach(id=>$(id).classList.add('hide')); stopTitle();
   notice('영업 시작! 되는 주문부터 만들어요','good');
-  renderUI(true); last=performance.now(); raf=requestAnimationFrame(loop);
+  renderUI(true); fitScene(); last=performance.now(); raf=requestAnimationFrame(loop);
 }
 $('btnStart').onclick=start; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
 $('btnHow').onclick=()=>{ $('howOv').classList.remove('hide'); track('how_open'); };
@@ -980,6 +1034,8 @@ $('btnClear').addEventListener('pointerdown',e=>{e.preventDefault(); clearTray()
 $('btnSorry').addEventListener('pointerdown',e=>{e.preventDefault(); sorry();});
 document.addEventListener('keydown',e=>{
   if (e.target && e.target.tagName==='INPUT') return;
+  if (S && S.running && S.paused){ if (['Escape','p','P','Enter',' '].includes(e.key)){ e.preventDefault(); resumeGame(); } return; }
+  if (S && S.running && (e.key==='Escape'||e.key==='p'||e.key==='P')){ e.preventDefault(); pauseGame(); return; }
   if (!S || !S.running){ if (e.key==='Enter'){ e.preventDefault(); start(); } return; }
   const n=parseInt(e.key,10);
   if (n>=1&&n<=6) addFood(MENU[n-1].id);
@@ -1166,6 +1222,18 @@ function placeTickets(){
 }
 mqPC.addEventListener ? mqPC.addEventListener('change',placeTickets) : mqPC.addListener(placeTickets);
 placeTickets();
+$('btnPause').addEventListener('click', e=>{ e.stopPropagation(); pauseGame(); });
+$('btnResume').onclick=resumeGame; $('btnQuit').onclick=quitGame;
+// PC: 매장 그림 크기를 남은 화면 높이에 맞춰 조절 → 조작부까지 한 화면에
+const cvEl=$('scene');
+function fitScene(){
+  if (!mqPC.matches){ cvEl.style.width=''; cvEl.style.height=''; return; }
+  const st=$('stage'), avail = st.clientHeight - $('tickets').offsetHeight - 4;
+  const w = Math.max(200, Math.min(st.clientWidth, avail*160/112));
+  cvEl.style.width = w+'px'; cvEl.style.height = (w*112/160)+'px';
+}
+addEventListener('resize', fitScene); mqPC.addEventListener ? mqPC.addEventListener('change',fitScene) : mqPC.addListener(fitScene);
+fitScene(); if (document.fonts) document.fonts.ready.then(fitScene);
 build(); S=newState(); renderUI(true); draw();
 if (document.fonts) document.fonts.ready.then(()=>draw());
 $('rankStart').innerHTML = rankHTML(null, null, ONLINE?'🌐 전체 랭킹':'매출 랭킹');

@@ -460,12 +460,12 @@
  <div class="col colL">
   <div class="hud">
     <div class="box stat"><b id="hTime">70</b><span>남은 시간</span></div>
-    <div class="box stat"><b id="hScore">0</b><span>매출(원)</span></div>
+    <div class="box stat"><b id="hScore">0</b><span>점수</span></div>
     <div class="box stat"><b id="hCombo">0</b><span>콤보</span></div>
     <div class="box stat" title="손님이 기다리다 떠나거나 배달이 늦으면 클레임 1건. 3건이면 영업 종료"><b id="hLife" style="color:var(--red)">♥♥♥</b><span>클레임 3건=끝</span></div>
   </div>
   <div class="timebar"><i id="timebar" style="width:100%"></i></div>
-  <div class="rushbar" title="연속 5건 완료하면 10초 동안 매출 ×2"><span class="rl">🔥 RUSH</span><div class="seg" id="rushSeg"><i></i><i></i><i></i><i></i><i></i></div><span class="rt" id="rushTxt">0/5</span><span class="coinRun" title="이번 판에서 번 코인 (매출 1,000원 = 🪙1)">🪙 <b id="coinRun">0</b></span><button class="pausebtn" id="btnPause" title="일시정지 (Esc / P)" aria-label="일시정지">⏸</button></div>
+  <div class="rushbar" title="연속 5건 완료하면 10초 동안 점수 ×2"><span class="rl">🔥 RUSH</span><div class="seg" id="rushSeg"><i></i><i></i><i></i><i></i><i></i></div><span class="rt" id="rushTxt">0/5</span><span class="coinRun" title="이번 판에서 번 코인 (100점 = 🪙1)">🪙 <b id="coinRun">0</b></span><button class="pausebtn" id="btnPause" title="일시정지 (Esc / P)" aria-label="일시정지">⏸</button></div>
 
   <div class="stage" id="stage">
     <canvas id="scene" width="160" height="112"></canvas>
@@ -523,7 +523,7 @@
   </div>
 </div>
 <div class="title" id="titleOv">
-  <div class="ttop"><div class="acct acct-top" id="acctTitle"></div><div class="tcoin" title="보유 코인 · 매출 1,000원마다 1개">🪙 <b class="coinNow">0</b></div></div>
+  <div class="ttop"><div class="acct acct-top" id="acctTitle"></div><div class="tcoin" title="보유 코인 · 100점마다 1개">🪙 <b class="coinNow">0</b></div></div>
   <div class="tlogo" aria-label="햄부기 러시">
     <span style="--i:0">햄</span><span style="--i:1">부</span><span style="--i:2">기</span><span class="sp"></span><span style="--i:3">러</span><span style="--i:4">시</span>
   </div>
@@ -602,7 +602,7 @@
   <div class="box card">
     <h2>🛍 햄부기 상점</h2>
     <div class="stabs"><button class="stab on" data-tab="skin">👕 알바생 옷</button><button class="stab" data-tab="theme">🏪 매장 인테리어</button></div>
-    <div class="shopc">보유 코인 🪙 <b id="shopCoins">0</b> <span>· 매출 1,000원 = 🪙1</span></div>
+    <div class="shopc">보유 코인 🪙 <b id="shopCoins">0</b> <span>· 100점 = 🪙1</span></div>
     <div class="acct acct-shop"></div>
     <div class="skins" id="skinGrid"></div>
     <div class="trow"><button class="btn b-clear" data-close="shopOv">닫기</button></div>
@@ -684,9 +684,9 @@ function rand(n){ return Math.floor(Math.random()*n); }
 
 // ================= 게임 데이터 =================
 const MENU = [
-  // 가격: 국내 패스트푸드 매장 단품 가격대를 참고한 대략값 (원)
-  {id:'burger', n:'버거', p:6500}, {id:'chicken', n:'치킨', p:3300}, {id:'fries', n:'감자튀김', p:2300},
-  {id:'cola', n:'콜라', p:2000}, {id:'cheese', n:'치즈스틱', p:2400}, {id:'ice', n:'아이스크림', p:1200},
+  // 점수: 국내 패스트푸드 단품 가격대(원)의 1/10 (예: 버거 6,500원 → 650점)
+  {id:'burger', n:'버거', p:650}, {id:'chicken', n:'치킨', p:330}, {id:'fries', n:'감자튀김', p:230},
+  {id:'cola', n:'콜라', p:200}, {id:'cheese', n:'치즈스틱', p:240}, {id:'ice', n:'아이스크림', p:120},
 ];
 const IMG = {}; MENU.forEach(m => IMG[m.id] = toImg(ICON[m.id], {}, 10, 10, 4));
 // ================= 코인 & 알바생 스킨 상점 (이 기기에 저장) =================
@@ -707,7 +707,7 @@ const coins   = () => W$.get('hbr_coins', 0);
 const owned   = () => W$.get('hbr_owned', ['basic']);
 const skinId  = () => { const id=W$.get('hbr_skin','basic'); return owned().includes(id) ? id : 'basic'; };
 const skinPal = () => (SKINS.find(k=>k.id===skinId())||SKINS[0]).pal;
-const coinOf  = score => Math.floor(Math.max(0,score)/1000);     // 매출 1,000원 = 1코인
+const coinOf  = score => Math.floor(Math.max(0,score)/100);      // 100점 = 1코인
 function addCoins(n){ W$.set('hbr_coins', coins()+n); }
 // ---- 매장 인테리어 테마 ----
 // wall 벽, stripe 벽 줄무늬, band 띠, dot 띠 점, board 메뉴판, ctop/cbody/cline 카운터, side 배달 쪽 받침, f1/f2 바닥 타일
@@ -774,7 +774,7 @@ function drawFloorDecor(){
 
 let S, raf=null, last=0;
 // ---- 랭킹 TOP 5 (이 기기에 저장) ----
-const RANK_KEY='hbr_rank_v2', RANK_N=5;
+const RANK_KEY='hbr_rank_v3', RANK_N=5;
 // 한 사람(이름)당 최고 점수 하나만 남기기
 function bestPerName(list){
   const m=new Map();
@@ -806,9 +806,9 @@ function myBest(){ const n=defaultName(); const e=rankGet().find(x=>x.name===n);
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function rankHTML(meId, list, label){
   const r = list || rankGet();
-  const rows = r.length ? r.map((e,i)=>`<li class="${meId!=null && e.id===meId?'me':''}"><span class="r">${i+1}위</span><span>${esc(e.name)}${e.tag?`<small class="tag"> #${esc(e.tag)}</small>`:''}</span><b>${Number(e.score).toLocaleString()}원</b></li>`).join('')
+  const rows = r.length ? r.map((e,i)=>`<li class="${meId!=null && e.id===meId?'me':''}"><span class="r">${i+1}위</span><span>${esc(e.name)}${e.tag?`<small class="tag"> #${esc(e.tag)}</small>`:''}</span><b>${Number(e.score).toLocaleString()}점</b></li>`).join('')
                         : '<div class="empty">아직 기록이 없어요. 첫 1위가 되어 보세요!</div>';
-  return `<h3>🏆 ${label||'매출 랭킹'} TOP ${RANK_N}</h3><ol>${rows}</ol>`;
+  return `<h3>🏆 ${label||'점수 랭킹'} TOP ${RANK_N}</h3><ol>${rows}</ol>`;
 }
 
 // ---- 전체 공개 랭킹 (Supabase) : url/key를 넣으면 켜지고, 비어 있거나 연결 실패 시 이 기기 랭킹으로 ----
@@ -846,7 +846,7 @@ async function onlineSubmit(name, score, keepalive){
   if (!r.ok) throw new Error('submit '+r.status); const j = await r.json(); return j[0];
 }
 async function renderRank(el, meId, meName){
-  if (!ONLINE){ el.innerHTML = rankHTML(meId, null, '매출 랭킹'); return; }
+  if (!ONLINE){ el.innerHTML = rankHTML(meId, null, '점수 랭킹'); return; }
   el.innerHTML = '<h3>🌐 전체 랭킹 TOP '+RANK_N+'</h3><div class="empty">불러오는 중…</div>';
   try{ const l=await onlineTop(); const mp=myPid(); const me = (l.find(x=>x.pid && x.pid===mp)||{}).id ?? meId; el.innerHTML = rankHTML(me, l, '🌐 전체 랭킹'); }
   catch(e){ el.innerHTML = rankHTML(null, null, '이 기기 랭킹') + '<div class="empty">전체 랭킹 서버에 연결하지 못했어요</div>'; }
@@ -960,12 +960,12 @@ function give(){
     addFx(o.x+6,'ok'); SND.sfx(isDel?'deliver':'serve');
     const inRush = S.rushT>0;
     const base = o.order.reduce((s,id)=>s+nm(id).p,0), speed=Math.max(0,o.pat/o.max);
-    // 매출 = 메뉴 가격 합 + 콤보 보너스(1콤보당 5%, 최대 50%) + 빠른 처리 팁(최대 10%) + 배달팁
+    // 점수 = 메뉴 점수 합 + 콤보 보너스(1콤보당 5%, 최대 50%) + 빠른 처리 보너스(최대 10%) + 배달 보너스 100
     // 러시 모드 중에는 ×2
-    const gain = Math.round((base*(1+Math.min(S.combo,10)*.05) + base*.1*speed + (isDel?1000:0))*(inRush?2:1)/10)*10;
+    const gain = Math.round((base*(1+Math.min(S.combo,10)*.05) + base*.1*speed + (isDel?100:0))*(inRush?2:1));
     if (inRush) S.rushRev+=gain;
     S.score+=gain; if (isDel){ S.delRev+=gain; S.delivered++; } else { S.shopRev+=gain; S.served++; }
-    pop(`+${gain.toLocaleString()}원${inRush?' 🔥×2':''}`, $('btnGo'), inRush?'#ff7a00':isDel?'#2bb3a3':'#ffd34d');
+    pop(`+${gain.toLocaleString()}점${inRush?' 🔥×2':''}`, $('btnGo'), inRush?'#ff7a00':isDel?'#2bb3a3':'#ffd34d');
     if (!inRush && S.combo%5===0) startRush();
     else notice(isDel?`🛵 배달 #${o.no} 포장 완료!`:'😋 매장 손님 서빙 완료!','good');
   }
@@ -1070,12 +1070,12 @@ function track(name, tags){
     if (tags) for (const k in tags) window.clarity('set', k, String(tags[k]));
   }catch(e){}
 }
-const scoreBand = v => v<=0?'0': v<20000?'~2만': v<50000?'2~5만': v<100000?'5~10만': v<200000?'10~20만':'20만+';
+const scoreBand = v => v<=0?'0': v<2000?'~2천': v<5000?'2~5천': v<10000?'5천~1만': v<20000?'1~2만':'2만+';
 function startRush(){
   track('rush_start', {rush_at_sec: Math.round(S.t)});
   S.rushT=10; S.rushes++; document.body.classList.add('rush'); SND.setRush(true); SND.sfx('rush');
   const b=$('rushBanner'); b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
-  notice('🔥 RUSH MODE! 10초 동안 매출 ×2 · 손님이 몰려와요!','good');
+  notice('🔥 RUSH MODE! 10초 동안 점수 ×2 · 손님이 몰려와요!','good');
 }
 function bar(x,y,r){ ctx.fillStyle='#2b1d14'; ctx.fillRect(x,y,12,3); ctx.fillStyle=r<.3?'#e4002b':r<.6?'#f2a71b':'#2e9e5b'; ctx.fillRect(x+1,y+1,Math.max(0,Math.round(10*r)),1); }
 function mad(x,y){ ctx.fillStyle='#e4002b'; [[0,0],[2,0],[1,1],[0,2],[2,2]].forEach(([a,b])=>ctx.fillRect(x+a,y+b,1,1)); }
@@ -1170,15 +1170,15 @@ function end(byLife){
     kiosk_off_avg: S.kDelay.length? (S.kDelay.reduce((a,b)=>a+b,0)/S.kDelay.length).toFixed(1):'-',
     device: matchMedia('(pointer:fine)').matches?'pc':'mobile'});
   const top = rankGet()[0], isBest = !top || S.score>top.score;
-  $('endTitle').textContent = byLife ? '💢 클레임 폭주! 영업 종료' : (isBest && S.score>0 ? '★ 최고 매출 달성!' : '피크타임 끝! 수고했어요');
+  $('endTitle').textContent = byLife ? '💢 클레임 폭주! 영업 종료' : (isBest && S.score>0 ? '★ 최고 점수 달성!' : '피크타임 끝! 수고했어요');
   const why = $('endWhy');
   if (byLife){ why.classList.remove('hide');
     why.innerHTML = `클레임 ${MAX_LIFE}건이 쌓여 영업이 끝났어요 · 매장 손님 이탈 <b>${S.leftC}건</b> · 배달 지연 <b>${S.lateD}건</b>`;
   } else why.classList.add('hide');
   $('report').innerHTML = `
-    <div class="total"><span>오늘 총 매출</span><b>${S.score.toLocaleString()}원</b>
-      <small>매장 ${S.shopRev.toLocaleString()}원 (${S.served}건) · 배달 ${S.delRev.toLocaleString()}원 (${S.delivered}건, 배달팁 포함)</small></div>
-    <div><b>${S.maxCombo} · 🔥${S.rushes}회</b><span>최고 콤보 · 러시 매출 ${S.rushRev.toLocaleString()}원</span></div>
+    <div class="total"><span>오늘 점수</span><b>${S.score.toLocaleString()}점</b>
+      <small>매장 ${S.shopRev.toLocaleString()}점 (${S.served}건) · 배달 ${S.delRev.toLocaleString()}점 (${S.delivered}건, 배달 보너스 포함)</small></div>
+    <div><b>${S.maxCombo} · 🔥${S.rushes}회</b><span>최고 콤보 · 러시 점수 ${S.rushRev.toLocaleString()}점</span></div>
     <div><b>${S.leftC+S.lateD}건</b><span>클레임 (이탈 ${S.leftC} · 배달 지연 ${S.lateD})</span></div>
     <div><b>${avg(S.kDelay)}</b><span>품절 → 키오스크 OFF</span></div>
     <div><b>${avg(S.aDelay)}</b><span>품절 → 배달앱 OFF</span></div>`;
@@ -1187,7 +1187,7 @@ function end(byLife){
   else if (S.lateD>S.leftC) tip='배달이 자주 늦었어요. 배달 주문표의 게이지도 같이 봐 주세요.';
   else if (S.leftC) tip='매장 손님이 떠났어요. 2개 이상 주문은 미리 담아 두면 빨라요.';
   else if (S.wrong) tip=`맞는 주문이 없어 버린 쟁반이 ${S.wrong}번 있었어요. 담기 전에 주문표를 한 번 더 확인!`;
-  else tip='깔끔한 영업이었어요! 콤보를 이어서 최고 매출에 도전해 보세요.';
+  else tip='깔끔한 영업이었어요! 콤보를 이어서 최고 점수에 도전해 보세요.';
   $('endTip').textContent=tip;
   setTimeout(()=>{ if (S.score>0 && S.score<=prevBest) $('endTip').textContent += ` (내 최고 기록 ${prevBest.toLocaleString()}원은 그대로 유지돼요)`; },0);
   const prevBest = myBest();
@@ -1733,7 +1733,7 @@ addEventListener('resize', fitScene); mqPC.addEventListener ? mqPC.addEventListe
 fitScene(); if (document.fonts) document.fonts.ready.then(fitScene);
 build(); S=newState(); renderUI(true); draw();
 if (document.fonts) document.fonts.ready.then(()=>draw());
-$('rankStart').innerHTML = rankHTML(null, null, ONLINE?'🌐 전체 랭킹':'매출 랭킹');
+$('rankStart').innerHTML = rankHTML(null, null, ONLINE?'🌐 전체 랭킹':'점수 랭킹');
 showTitle();
 renderAcct(); CLOUD.init();
 $('tutNext').onclick=()=>{ if (!TUT) return; const st=TUT_STEPS[TUT.step]; if (st.last) endTutorial(false); else tutGo(TUT.step+1); };

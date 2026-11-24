@@ -437,6 +437,13 @@
   .tcoin b{font-family:"Galmuri9";color:#b36b00}
   @media (max-width:879px){ .ttop{position:static;align-self:stretch;justify-content:flex-start;padding-right:46px;flex-wrap:wrap} .ttop .acct-t{font-size:11px} }
   @media (min-width:880px){ .tmenu{width:min(100%,600px)} }
+  /* ===== 시작 카운트다운 ===== */
+  .cd{position:fixed;inset:0;z-index:28;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(20,12,6,.45)}
+  .cd.hide{display:none}
+  .cd-num{font-family:"Galmuri9";font-size:clamp(48px,11vw,120px);color:#ffd34d;text-shadow:4px 4px 0 #e4002b,8px 8px 0 #2b1d14;text-align:center;padding:0 12px}
+  .cd-num.pop{animation:cdPop .55s cubic-bezier(.3,1.6,.5,1)}
+  @keyframes cdPop{from{transform:scale(2.4);opacity:0}}
+  .cd-sub{font-size:clamp(14px,2.4vw,22px);color:#fff4dc;margin-top:10px;text-shadow:2px 2px 0 #2b1d14}
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -575,6 +582,8 @@
   <div class="tut-text" id="tutText"></div>
   <div class="tut-btns"><button class="btn b-clear" id="tutSkip">건너뛰기</button><button class="btn b-go" id="tutNext">다음 ▶</button></div>
 </div>
+
+<div class="cd hide" id="cdOv"><div class="cd-num" id="cdNum">3</div><div class="cd-sub" id="cdSub"></div></div>
 
 <div class="ov hide" id="pauseOv">
   <div class="box card">
@@ -1246,8 +1255,9 @@ function quitGame(){
   document.body.classList.remove('rush'); SND.setRush(false);
   $('pauseOv').classList.add('hide'); track('quit', {at_sec: Math.round(S.t)}); showTitle();
 }
-function start(){
-  track('game_start', {retry: S && S.t>0 ? 'yes':'no'});
+function start(mode){                     // mode: undefined(일반) | 'tutorial' | 'afterTut'
+  if (typeof mode!=='string') mode='';
+  track('game_start', {retry: S && S.t>0 ? 'yes':'no', mode: mode||'normal'});
   flushSubmit();
   SND.play('game'); SND.setRush(false);
   const mb=$('muteBtn'); document.querySelector('.rushbar').append(mb); mb.classList.add('inbar');
@@ -1255,7 +1265,25 @@ function start(){
   if (TUT && !S.tutorial){ /* 튜토리얼 중 재시작 대비 */ }
   ['titleOv','howOv','rankOv','endOv'].forEach(id=>$(id).classList.add('hide')); stopTitle();
   notice('영업 시작! 되는 주문부터 만들어요','good');
-  renderUI(true); fitScene(); last=performance.now(); raf=requestAnimationFrame(loop);
+  renderUI(true); fitScene(); draw();
+  if (mode==='tutorial'){ last=performance.now(); raf=requestAnimationFrame(loop); return; }
+  countdown(mode==='afterTut');
+}
+// 실전 시작 전 3, 2, 1 (튜토리얼을 마치고 넘어올 때는 '튜토리얼 완료' 안내 먼저)
+function countdown(afterTut){
+  const ov=$('cdOv'), num=$('cdNum'), sub=$('cdSub');
+  S.paused=true; S.countdown=true; ov.classList.remove('hide');
+  const seq = (afterTut ? [['🎓 튜토리얼 완료!','이제 진짜 영업이에요 · 70초']] : []).concat([['3',''],['2',''],['1',''],['영업 시작!','']]);
+  let i=0;
+  const step=()=>{
+    if (!S || !S.countdown) return;
+    if (i>=seq.length){ ov.classList.add('hide'); S.countdown=false; S.paused=false; last=performance.now(); raf=requestAnimationFrame(loop); return; }
+    const [n,t]=seq[i]; num.textContent=n; sub.textContent=t;
+    num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop');
+    SND.sfx(i===seq.length-1 ? 'restock' : 'click');
+    setTimeout(step, (afterTut && i===0) ? 1400 : 650); i++;
+  };
+  step();
 }
 $('btnStart').onclick=()=>{ if (S && S.running && S.paused){ $('howOv').classList.add('hide'); resumeGame(); } else start(); }; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
 $('btnTitleTut').onclick=startTutorial;
@@ -1310,6 +1338,7 @@ $('btnClear').addEventListener('pointerdown',e=>{e.preventDefault(); clearTray()
 $('btnSorry').addEventListener('pointerdown',e=>{e.preventDefault(); sorry();});
 document.addEventListener('keydown',e=>{
   if (e.target && e.target.tagName==='INPUT') return;
+  if (S && S.countdown) return;
   if (S && S.running && S.paused){
     if (!$('howOv').classList.contains('hide')){ if (e.key==='Escape'){ e.preventDefault(); $('howOv').classList.add('hide'); } return; }
     if (!$('setOv').classList.contains('hide')){ if (e.key==='Escape'){ e.preventDefault(); $('setOv').classList.add('hide'); } return; }
@@ -1519,7 +1548,7 @@ function tutDel(order){ S.dels.push({no:S.dNo++, order:[...order], pat:99, max:9
 function tutSoldOut(id){ const it=S.items[id]; it.stock=false; it.kOut=it.kiosk?S.t:null; it.aOut=it.app?S.t:null; SND.sfx('alert');
   notice(`⚠ ${nm(id).n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); }
 function startTutorial(){
-  restoreTutSteps(); start(); S.tutorial=true; S.nextCust=S.nextDel=S.nextEvent=1e9;
+  restoreTutSteps(); start('tutorial'); S.tutorial=true; S.nextCust=S.nextDel=S.nextEvent=1e9;
   TUT={step:-1}; $('tutBox').classList.remove('hide'); track('tut_start'); tutGo(0);
 }
 function tutGo(i){
@@ -1546,7 +1575,7 @@ function endTutorial(skipped){
   try{ localStorage.setItem('hbr_tut_done','1'); }catch(e){}
   track(skipped?'tut_skip':'tut_done', {step:TUT?TUT.step+1:0});
   TUT=null; $('tutBox').classList.add('hide'); document.querySelectorAll('.tut-hi').forEach(el=>el.classList.remove('tut-hi'));
-  restoreTutSteps(); start();
+  restoreTutSteps(); start(skipped ? '' : 'afterTut');
 }
 const TUT_DONE = TUT_STEPS.map(st=>st.done);
 function restoreTutSteps(){ TUT_STEPS.forEach((st,i)=>st.done=TUT_DONE[i]); }

@@ -15,7 +15,7 @@
 &nbsp;
 <a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
 
-<img src="https://img.shields.io/badge/JavaScript-2F6F6B?style=flat-square&labelColor=1E3B39&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-2F6F6B?style=flat-square&labelColor=1E3B39&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-2F6F6B?style=flat-square&labelColor=1E3B39&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="Claude Code" />
+<img src="https://img.shields.io/badge/JavaScript-E4002B?style=flat-square&labelColor=1E2230&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-E4002B?style=flat-square&labelColor=1E2230&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-E4002B?style=flat-square&labelColor=1E2230&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-E4002B?style=flat-square&labelColor=1E2230&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-E4002B?style=flat-square&labelColor=1E2230&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-E4002B?style=flat-square&labelColor=1E2230&logo=anthropic&logoColor=white" alt="Claude Code" />
 
 ---
 
@@ -24,7 +24,7 @@
 ### 회사 연봉 AI
 국민연금 데이터로 연봉을 추정하고, 실제 공시 급여로 검증한 회사 탐색 서비스.
 
-<a href="https://codus1111.github.io/codus1111/pension-salary/dashboard/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-salary-agent.png" width="654" alt="회사 연봉 AI 에이전트 관제실: 질문을 받은 AI가 어떤 도구를 쓰는지 연결 그래프로 보여 주는 화면" /></a>
+<a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-salary-app.png" width="654" alt="회사 연봉 AI 서비스 첫 화면: 회사 이름으로 평균 연봉을 묻는 검색창과 업종·지역·규모 조건 검색" /></a>
 
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-salary.svg" width="654" height="172" alt="검증 기업 2,392곳 · 평균 절대 오차율 14.6%에서 11.1%로 개선 · 순위 상관 0.88 · AI 평가 28문항 중 27문항 통과" />
 
@@ -34,7 +34,7 @@
 &nbsp;
 <a href="https://github.com/codus1111/pension-salary#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-report-v2.svg" width="164" height="38" alt="연봉 AI 분석 과정 보기" /></a>
 
-<img src="https://img.shields.io/badge/Python-2F6F6B?style=flat-square&labelColor=1E3B39&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/SQL-2F6F6B?style=flat-square&labelColor=1E3B39&logo=postgresql&logoColor=white" alt="SQL" /> <img src="https://img.shields.io/badge/Streamlit-2F6F6B?style=flat-square&labelColor=1E3B39&logo=streamlit&logoColor=white" alt="Streamlit" /> <img src="https://img.shields.io/badge/Gemini-2F6F6B?style=flat-square&labelColor=1E3B39&logo=googlegemini&logoColor=white" alt="Gemini" /> <img src="https://img.shields.io/badge/MCP-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="MCP" />
+<img src="https://img.shields.io/badge/Python-2F6BFF?style=flat-square&labelColor=1E2230&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/SQL-2F6BFF?style=flat-square&labelColor=1E2230&logo=postgresql&logoColor=white" alt="SQL" /> <img src="https://img.shields.io/badge/Streamlit-2F6BFF?style=flat-square&labelColor=1E2230&logo=streamlit&logoColor=white" alt="Streamlit" /> <img src="https://img.shields.io/badge/Gemini-2F6BFF?style=flat-square&labelColor=1E2230&logo=googlegemini&logoColor=white" alt="Gemini" /> <img src="https://img.shields.io/badge/MCP-2F6BFF?style=flat-square&labelColor=1E2230&logo=anthropic&logoColor=white" alt="MCP" />
 
 ---
 
@@ -53,7 +53,7 @@
 &nbsp;
 <a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-agent.svg" width="164" height="38" alt="타슈 에이전트 관제 화면 보기" /></a>
 
-<img src="https://img.shields.io/badge/Python-2F6F6B?style=flat-square&labelColor=1E3B39&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-2F6F6B?style=flat-square&labelColor=1E3B39&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-2F6F6B?style=flat-square&labelColor=1E3B39&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-2F6F6B?style=flat-square&labelColor=1E3B39&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-2F6F6B?style=flat-square&labelColor=1E3B39&logo=googlegemini&logoColor=white" alt="Gemini" />
+<img src="https://img.shields.io/badge/Python-4F5BD5?style=flat-square&labelColor=1E2230&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-4F5BD5?style=flat-square&labelColor=1E2230&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-4F5BD5?style=flat-square&labelColor=1E2230&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-4F5BD5?style=flat-square&labelColor=1E2230&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-4F5BD5?style=flat-square&labelColor=1E2230&logo=googlegemini&logoColor=white" alt="Gemini" />
 
 ---
 
@@ -66,7 +66,7 @@
 &nbsp;
 <a href="https://chaeyeon-saltware-insights.day1companyk-6083.chatgpt.site/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-html-v2.svg" width="164" height="38" alt="솔트웨어 블로그 화면 보기" /></a>
 
-<img src="https://img.shields.io/badge/%EC%BD%98%ED%85%90%EC%B8%A0%20%EA%B8%B0%ED%9A%8D-6E9C98?style=flat-square&labelColor=1E3B39" alt="콘텐츠 기획" /> <img src="https://img.shields.io/badge/SEO-6E9C98?style=flat-square&labelColor=1E3B39" alt="SEO" /> <img src="https://img.shields.io/badge/AI%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-6E9C98?style=flat-square&labelColor=1E3B39" alt="AI 에이전트" />
+<img src="https://img.shields.io/badge/%EC%BD%98%ED%85%90%EC%B8%A0%20%EA%B8%B0%ED%9A%8D-6B7280?style=flat-square&labelColor=1E2230" alt="콘텐츠 기획" /> <img src="https://img.shields.io/badge/SEO-6B7280?style=flat-square&labelColor=1E2230" alt="SEO" /> <img src="https://img.shields.io/badge/AI%20%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8-6B7280?style=flat-square&labelColor=1E2230" alt="AI 에이전트" />
 
 ---
 
@@ -102,7 +102,7 @@
 
 </details>
 
-<img src="https://img.shields.io/badge/Claude%20Code-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="Claude Code" /> <img src="https://img.shields.io/badge/%EC%8A%A4%ED%82%AC-6E9C98?style=flat-square&labelColor=1E3B39" alt="%EC%8A%A4%ED%82%AC" /> <img src="https://img.shields.io/badge/%ED%9B%85-6E9C98?style=flat-square&labelColor=1E3B39" alt="%ED%9B%85" /><br>
+<img src="https://img.shields.io/badge/Claude%20Code-D97757?style=flat-square&labelColor=1E2230&logo=anthropic&logoColor=white" alt="Claude Code" /> <img src="https://img.shields.io/badge/%EC%8A%A4%ED%82%AC-6B7280?style=flat-square&labelColor=1E2230" alt="%EC%8A%A4%ED%82%AC" /> <img src="https://img.shields.io/badge/%ED%9B%85-6B7280?style=flat-square&labelColor=1E2230" alt="%ED%9B%85" /><br>
 <sub>페르소나는 가상이며 실제 조사 데이터가 아닙니다. 법무 스킬은 법률 자문이 아닙니다.</sub>
 
 ---

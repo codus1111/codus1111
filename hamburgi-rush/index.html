@@ -427,6 +427,15 @@
   .b-tut{background:#fff8e8;color:var(--ink);font-size:14px;padding:9px 8px;position:relative}
   .b-tut .newb{position:absolute;top:-9px;right:-6px;background:var(--red);color:#fff;font-size:10px;padding:1px 5px;border:2px solid var(--line);font-family:"Galmuri9"}
   .b-tut .newb.hide{display:none}
+  /* ===== 오프닝 상단: 계정 + 코인 (⚙ 옆) ===== */
+  .ttop{position:absolute;top:8px;right:56px;display:flex;align-items:center;gap:6px;z-index:2}
+  .ttop .acct{animation:none;flex-wrap:nowrap}
+  .ttop .acct-desc{display:none}
+  .ttop .acct .btn{font-size:12px;padding:6px 10px}
+  .ttop .acct-t{font-size:12px;white-space:nowrap}
+  .tcoin{background:#fff8e8;border:3px solid var(--line);padding:4px 10px;font-size:13px;color:var(--ink);white-space:nowrap}
+  .tcoin b{font-family:"Galmuri9";color:#b36b00}
+  @media (max-width:879px){ .ttop{position:static;align-self:stretch;justify-content:flex-start;padding-right:46px;flex-wrap:wrap} .ttop .acct-t{font-size:11px} }
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -506,6 +515,7 @@
   </div>
 </div>
 <div class="title" id="titleOv">
+  <div class="ttop"><div class="acct acct-top" id="acctTitle"></div><div class="tcoin" title="보유 코인 · 매출 1,000원마다 1개">🪙 <b class="coinNow">0</b></div></div>
   <div class="tlogo" aria-label="햄부기 러시">
     <span style="--i:0">햄</span><span style="--i:1">부</span><span style="--i:2">기</span><span class="sp"></span><span style="--i:3">러</span><span style="--i:4">시</span>
   </div>
@@ -524,8 +534,6 @@
       <button class="btn b-shop" id="btnShop">🛍 상점</button>
     </div>
   </div>
-  <div class="acct" id="acctTitle"></div>
-  <div class="tcoins">보유 🪙 <b class="coinNow">0</b> · 매출 1,000원마다 코인 1개</div>
   <div class="tblink">PRESS ENTER / TOUCH START</div>
   <div class="tcredit">패스트푸드 매장 알바 2년 7개월의 기억으로 만든 게임</div>
 </div>
@@ -1480,7 +1488,7 @@ const CLOUD = (() => {
 function renderAcct(){
   const u=CLOUD.user(), st=CLOUD.status();
   const html = !u
-    ? `<button class="btn acct-in" data-login>☁ 구글로 로그인</button><span class="acct-t">코인·스킨을 계정에 저장하고 다른 기기에서도 이어 하기</span>`
+    ? `<button class="btn acct-in" data-login>☁ 구글로 로그인</button><span class="acct-t acct-desc">코인·스킨을 계정에 저장하고 다른 기기에서도 이어 하기</span>`
     : `<span class="acct-t">👤 <b>${esc((u.displayName||u.email||'내 계정').slice(0,14))}</b> · ${
         st==='error' ? '<em class="err">⚠ 저장 실패</em>' : st==='sync' ? '☁ 저장 중…' : '☁ 계정에 저장됨 ✓'}</span><button class="btn acct-out" data-logout>로그아웃</button>`;
   document.querySelectorAll('.acct').forEach(el=>{ el.innerHTML=html;
@@ -1572,7 +1580,7 @@ function fitTitle(){
   if (!matchMedia('(min-width:880px)').matches){
     if (tcv.width!==160){ tcv.width=160; TW=160; } tcv.style.width=''; tcv.style.height=''; return;
   }
-  const availH = Math.max(180, innerHeight - (innerHeight>920 ? 470 : innerHeight>700 ? 420 : 300));
+  const availH = Math.max(180, innerHeight - (innerHeight>920 ? 520 : innerHeight>700 ? 480 : 330));
   const availW = Math.min(innerWidth*0.94, 1400);
   const tw = Math.max(160, Math.min(320, Math.round(120*availW/availH)));
   if (tcv.width!==tw){ tcv.width=tw; TW=tw; }

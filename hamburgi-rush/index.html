@@ -328,6 +328,15 @@
   .sm-row b{font-family:"Galmuri9";font-size:12px;padding:3px 7px;border:2px solid var(--line);background:#9aa3ab;color:#fff;min-width:44px;text-align:center}
   .sm-row.on b{background:var(--green)}
 </style>
+<!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
+<script>
+  window.CLARITY_ID = 'zienre3eg7';
+  if (window.CLARITY_ID) (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", window.CLARITY_ID);
+</script>
 </head>
 <body>
 <div id="app">
@@ -614,7 +623,7 @@ function fireEvent(){
   } else if (ins.length>3){
     const m = ins[rand(ins.length)], it=S.items[m.id];
     it.stock=false; it.kBack=it.aBack=null; it.kOut = it.kiosk?S.t:null; it.aOut = it.app?S.t:null;
-    notice(`⚠ ${m.n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); SND.sfx('alert');
+    notice(`⚠ ${m.n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); SND.sfx('alert'); track('sold_out');
   }
   S.nextEvent = S.t + 8 + Math.random()*5;
 }
@@ -779,7 +788,18 @@ function drawFx(){
     else ctx.fillText(f.kind==='fail'?'NO':'...', x+4, y+9);
   });
 }
+
+// ---- 분석 이벤트 (Clarity) : 퍼널(오프닝→시작→종료→랭킹 등록)과 게임 지표를 기록 ----
+function track(name, tags){
+  try{
+    if (typeof window.clarity !== 'function') return;
+    window.clarity('event', name);
+    if (tags) for (const k in tags) window.clarity('set', k, String(tags[k]));
+  }catch(e){}
+}
+const scoreBand = v => v<=0?'0': v<20000?'~2만': v<50000?'2~5만': v<100000?'5~10만': v<200000?'10~20만':'20만+';
 function startRush(){
+  track('rush_start', {rush_at_sec: Math.round(S.t)});
   S.rushT=10; S.rushes++; document.body.classList.add('rush'); SND.setRush(true); SND.sfx('rush');
   const b=$('rushBanner'); b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
   notice('🔥 RUSH MODE! 10초 동안 매출 ×2 · 손님이 몰려와요!','good');
@@ -865,6 +885,10 @@ const avg = a => a.length ? (a.reduce((s,v)=>s+v,0)/a.length).toFixed(1)+'초' :
 function end(byLife){
   S.running=false; cancelAnimationFrame(raf); document.body.classList.remove('rush');
   SND.stop(); SND.setRush(false); SND.sfx(byLife?'over':'end');
+  track('game_end', {end_reason: byLife?'claims':'time', score_band: scoreBand(S.score), play_sec: Math.round(S.t),
+    served: S.served, delivered: S.delivered, rushes: S.rushes, left: S.leftC, late: S.lateD, wrong: S.wrong,
+    kiosk_off_avg: S.kDelay.length? (S.kDelay.reduce((a,b)=>a+b,0)/S.kDelay.length).toFixed(1):'-',
+    device: matchMedia('(pointer:fine)').matches?'pc':'mobile'});
   const top = rankGet()[0], isBest = !top || S.score>top.score;
   $('endTitle').textContent = byLife ? '💢 클레임 폭주! 영업 종료' : (isBest && S.score>0 ? '★ 최고 매출 달성!' : '피크타임 끝! 수고했어요');
   const why = $('endWhy');
@@ -912,6 +936,7 @@ async function submitOnline(name, keepalive){
   const nm = (name || defaultName()).slice(0,8);
   try{
     const row = await onlineSubmit(nm, sub.score, keepalive); sub.id=row && row.id;
+    track('rank_submit', {named: name ? 'yes':'no'});
     if (S && S.submit===sub && !$('endOv').classList.contains('hide')){
       $('entryMsg').innerHTML = `✔ <b>${esc(nm)}</b>(으)로 전체 랭킹에 등록했어요`;
       $('entry').querySelector('.er').classList.add('hide');
@@ -934,6 +959,7 @@ function saveRank(){
 }
 document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState==='hidden') flushSubmit(); });
 function start(){
+  track('game_start', {retry: S && S.t>0 ? 'yes':'no'});
   flushSubmit();
   SND.play('game'); SND.setRush(false);
   const mb=$('muteBtn'); document.querySelector('.rushbar').append(mb); mb.classList.add('inbar');
@@ -943,8 +969,8 @@ function start(){
   renderUI(true); last=performance.now(); raf=requestAnimationFrame(loop);
 }
 $('btnStart').onclick=start; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
-$('btnHow').onclick=()=>$('howOv').classList.remove('hide');
-$('btnRank').onclick=()=>{ renderRank($('rankStart')); $('rankOv').classList.remove('hide'); };
+$('btnHow').onclick=()=>{ $('howOv').classList.remove('hide'); track('how_open'); };
+$('btnRank').onclick=()=>{ renderRank($('rankStart')); $('rankOv').classList.remove('hide'); track('rank_open'); };
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add('hide'));
 $('btnHome').onclick=()=>{ flushSubmit(); showTitle(); };
 $('btnSave').onclick=saveRank;
@@ -1159,9 +1185,9 @@ function openSndMenu(){
 }
 $('muteBtn').addEventListener('click', e=>{ e.stopPropagation(); SND.init();
   $('sndMenu').classList.contains('hide') ? openSndMenu() : $('sndMenu').classList.add('hide'); });
-$('sndMusic').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setMusic(!SND.musicOn()); syncMute();
+$('sndMusic').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setMusic(!SND.musicOn()); syncMute(); track('music_toggle',{music:SND.musicOn()?'on':'off'});
   if (SND.musicOn() && !SND.current()) SND.play(S && S.running ? 'game' : 'title'); });
-$('sndSfx').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setSfx(!SND.sfxOn()); syncMute(); if (SND.sfxOn()) SND.sfx('button'); });
+$('sndSfx').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setSfx(!SND.sfxOn()); syncMute(); track('sfx_toggle',{sfx:SND.sfxOn()?'on':'off'}); if (SND.sfxOn()) SND.sfx('button'); });
 document.addEventListener('pointerdown', e=>{ if (!e.target.closest('#sndMenu, #muteBtn')) $('sndMenu').classList.add('hide'); });
 syncMute();
 // 브라우저는 사용자가 한 번 누르기 전에는 소리를 못 내게 막아서, 첫 클릭/키 입력 때 오프닝 음악 시작

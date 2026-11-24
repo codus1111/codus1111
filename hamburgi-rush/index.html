@@ -409,6 +409,24 @@
   .set-msg{font-size:11px;color:var(--green);min-height:14px;margin-top:4px}
   .card .acct-set{margin:0}
   .rank li .tag{font-size:10px;color:var(--sub)}
+
+  /* ===== 튜토리얼 ===== */
+  .tutbox{position:fixed;left:50%;top:42%;transform:translateX(-50%);z-index:25;width:min(94vw,540px);
+          background:#fff8e8;border:3px solid var(--line);box-shadow:5px 5px 0 rgba(0,0,0,.4),0 0 0 3px #ffd34d;padding:10px 12px}
+  .tutbox.hide{display:none}
+  .tut-step{font-family:"Galmuri9";font-size:10px;color:var(--sub)}
+  .tut-title{font-family:"Galmuri9";font-size:17px;color:var(--red);margin:2px 0 4px}
+  .tut-text{font-size:13px;line-height:1.6}
+  .tut-text b{color:#b36b00}
+  .tut-btns{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
+  .tut-btns .btn{font-size:12px;padding:7px 12px}
+  .tut-hi{position:relative;z-index:6;outline:3px solid #ffd34d !important;outline-offset:1px;animation:tutPulse .9s ease-in-out infinite}
+  @keyframes tutPulse{50%{outline-color:#e4002b;box-shadow:0 0 16px #ffd34d}}
+  @media (max-width:879px){ .tutbox{top:4px} .tut-text{font-size:12px} }
+  @media (min-width:880px){ .tutbox{left:auto;right:3vw;top:26%;transform:none;width:min(36vw,440px)} }
+  .b-tut{background:#fff8e8;color:var(--ink);font-size:14px;padding:9px 8px;position:relative}
+  .b-tut .newb{position:absolute;top:-9px;right:-6px;background:var(--red);color:#fff;font-size:10px;padding:1px 5px;border:2px solid var(--line);font-family:"Galmuri9"}
+  .b-tut .newb.hide{display:none}
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -499,6 +517,7 @@
   <canvas id="tcv" width="160" height="120"></canvas>
   <div class="tmenu">
     <button class="btn b-go tbig" id="btnTitleStart">▶ 게임 시작</button>
+    <button class="btn b-tut" id="btnTitleTut">🎓 처음이라면? 튜토리얼 (1분)<span class="newb" id="tutNew">NEW</span></button>
     <div class="trow">
       <button class="btn b-sorry" id="btnHow">📖 게임 방법</button>
       <button class="btn b-clear" id="btnRank">🏆 랭킹</button>
@@ -526,6 +545,7 @@
     <p class="keyhint">⌨ PC: 1~6 메뉴 · Space 전달 · Q 품절 메뉴 취소 · X 비우기</p>
     <div class="trow">
       <button class="btn b-clear" data-close="howOv">닫기</button>
+      <button class="btn b-shop" id="btnTut">🎓 튜토리얼</button>
       <button class="btn b-go" id="btnStart">▶ 바로 시작</button>
     </div>
   </div>
@@ -538,6 +558,13 @@
     <p class="dim small" id="rankNote">랭킹은 이 기기(브라우저)에 저장돼요.</p>
     <div class="trow"><button class="btn b-clear" data-close="rankOv">닫기</button></div>
   </div>
+</div>
+
+<div class="tutbox hide" id="tutBox" role="dialog" aria-live="polite">
+  <div class="tut-step" id="tutStep"></div>
+  <div class="tut-title" id="tutTitle"></div>
+  <div class="tut-text" id="tutText"></div>
+  <div class="tut-btns"><button class="btn b-clear" id="tutSkip">건너뛰기</button><button class="btn b-go" id="tutNext">다음 ▶</button></div>
 </div>
 
 <div class="ov hide" id="pauseOv">
@@ -858,7 +885,7 @@ function tick(dt){
   if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (12.5-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1);
   if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); SND.setRush(false); notice('러시 끝! 다시 5연속에 도전해 보세요'); } } }
   if (S.t>=S.nextEvent) fireEvent();
-  S.queue.forEach(c=>c.pat-=dt); S.dels.forEach(d=>d.pat-=dt);
+  if (!S.tutorial){ S.queue.forEach(c=>c.pat-=dt); S.dels.forEach(d=>d.pat-=dt); }
   const goneC = S.queue.filter(c=>c.pat<=0), goneD = S.dels.filter(d=>d.pat<=0);
   if (goneC.includes(S.queue[0])) stamp('c','fail','✖ 손님 이탈');
   goneC.forEach(c=>addFx(c.x+6,'fail')); goneD.forEach(d=>addFx(d.x+6,'fail'));
@@ -875,7 +902,7 @@ function tick(dt){
   S.leaving = S.leaving.filter(l=>l.x>-30 && l.x<SW+30);
   const wtx = S.wt==='d' ? 22 : CX();
   S.wx += Math.sign(wtx-S.wx)*Math.min(Math.abs(wtx-S.wx), 120*dt);
-  if (S.t>=ROUND && S.running) end(false);
+  if (S.t>=ROUND && S.running && !S.tutorial) end(false);
 }
 function loop(ts){ if (!S.running || S.paused) return; const dt=Math.min(.1,(ts-last)/1000); last=ts; tick(dt); draw(); renderUI(); raf=requestAnimationFrame(loop); }
 
@@ -1061,7 +1088,7 @@ function renderUI(force){
   for (let i=0;i<5;i++) segs[i].className = i<n ? 'on' : '';
   $('rushTxt').textContent = S.rushT>0 ? `×2 ${Math.ceil(S.rushT)}s` : `${S.combo%5}/5`;
   $('coinRun').textContent = coinOf(S.score);
-  $('hTime').textContent=Math.ceil(left); $('timebar').style.width=(left/ROUND*100)+'%';
+  $('hTime').textContent= S.tutorial ? '연습' : Math.ceil(left); $('timebar').style.width=(S.tutorial?100:left/ROUND*100)+'%';
   $('hScore').textContent=S.score.toLocaleString(); $('hCombo').textContent=S.combo;
   $('hLife').textContent='♥'.repeat(Math.max(0,S.life))+'♡'.repeat(MAX_LIFE-Math.max(0,S.life));
   // 주문표
@@ -1092,6 +1119,7 @@ function renderUI(force){
   const objs=[f, ...S.dels];
   bars.forEach((b,i)=>{ const o=objs[i]; if(!o){b.style.width='0';return;} const r=Math.max(0,o.pat/o.max);
     b.style.width=(r*100)+'%'; b.className=r<.3?'low':r<.6?'mid':''; });
+  tutCheck();
 }
 function build(){
   const k=$('kitchen'), g=$('chgrid'); k.innerHTML=''; g.innerHTML='';
@@ -1215,11 +1243,14 @@ function start(){
   SND.play('game'); SND.setRush(false);
   const mb=$('muteBtn'); document.querySelector('.rushbar').append(mb); mb.classList.add('inbar');
   S=newState(); S.running=true; tKey='';
+  if (TUT && !S.tutorial){ /* 튜토리얼 중 재시작 대비 */ }
   ['titleOv','howOv','rankOv','endOv'].forEach(id=>$(id).classList.add('hide')); stopTitle();
   notice('영업 시작! 되는 주문부터 만들어요','good');
   renderUI(true); fitScene(); last=performance.now(); raf=requestAnimationFrame(loop);
 }
 $('btnStart').onclick=()=>{ if (S && S.running && S.paused){ $('howOv').classList.add('hide'); resumeGame(); } else start(); }; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
+$('btnTitleTut').onclick=startTutorial;
+$('btnTut').onclick=()=>{ $('howOv').classList.add('hide'); if (S && S.running){ S.running=false; cancelAnimationFrame(raf); } startTutorial(); };
 $('btnHow').onclick=()=>{ $('howOv').classList.remove('hide'); track('how_open'); };
 $('btnRank').onclick=()=>{ renderRank($('rankStart')); $('rankOv').classList.remove('hide'); track('rank_open'); };
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add('hide'));
@@ -1457,10 +1488,72 @@ function renderAcct(){
     el.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>CLOUD.signOut()); });
 }
 
+
+// ================= 튜토리얼 (처음 한 번 자동, 게임 방법에서 다시 보기) =================
+// 시간 제한·클레임 없이 손님이 한 명씩 와서 핵심 규칙을 직접 해 보며 익힌다
+const TUT_STEPS = [
+  { t:'① 손님이 왔어요!', d:'위 <b>주문표</b>(그리고 손님 말풍선)에 주문한 메뉴가 보여요. 지금 손님은 <b>버거 + 콜라</b>를 시켰어요.',
+    hi:()=>['#tickets [data-k="c"]'], next:true, enter:()=>tutCust(['burger','cola']) },
+  { t:'② 주문과 똑같이 담아요', d:'아래 <b>주방</b>에서 버거와 콜라를 눌러 쟁반에 담아 보세요. (PC는 숫자키 1~6)',
+    hi:()=>['#f_burger','#f_cola'], done:()=>[...S.tray].sort().join()==='burger,cola' },
+  { t:'③ 전달!', d:'<b>전달</b>을 누르면 쟁반과 똑같은 주문에 자동으로 가요. (PC는 Space)',
+    hi:()=>['#btnGo'], done:()=>S.served>=1 },
+  { t:'④ 배달 주문도 들어와요', d:'배달 주문표의 메뉴(<b>감자튀김 + 치킨</b>)를 담아서 똑같이 <b>전달</b>하세요. 매장이든 배달이든 맞는 곳으로 알아서 가요.',
+    hi:()=>{ const d=S.dels[0]; return [d?`#tickets [data-k="d${d.no}"]`:'#tickets','#f_fries','#f_chicken','#btnGo']; },
+    enter:()=>tutDel(['chicken','fries']), done:()=>S.delivered>=1 },
+  { t:'⑤ 품절 발생!', d:'<b>치즈스틱</b>이 품절됐어요. 아래 <b>채널 관리</b>에서 치즈스틱의 <b>키오</b>와 <b>배달</b>을 둘 다 눌러 OFF 하세요. 안 끄면 품절 메뉴로 주문이 계속 들어와요.',
+    hi:()=>['#c_cheese'], enter:()=>tutSoldOut('cheese'), done:()=>!S.items.cheese.kiosk && !S.items.cheese.app },
+  { t:'⑥ 이미 들어온 품절 주문', d:'끄기 전에 들어온 주문(빨간 <b>품절</b> 딱지)은 만들 수 없어요. <b>품절 메뉴 취소</b>로 정리하세요. (PC는 Q)',
+    hi:()=>['#tickets [data-k="c"]','#btnSorry'], enter:()=>tutCust(['cheese','fries']), done:()=>S.sorry>=1 },
+  { t:'⑦ 준비 끝!', d:'실전은 <b>70초</b>예요. <b>연속 5건</b> 완료하면 🔥<b>러시 ×2</b>! 손님이 기다리다 떠나거나 배달이 늦으면 <b>클레임</b>, 3건이면 영업 종료예요. 번 매출만큼 🪙코인도 모여요.',
+    hi:()=>['.rushbar','.hud .stat:last-child'], next:true, last:true },
+];
+let TUT = null;
+function tutCust(order){ S.queue.push({look:makeLook(), order:[...order], pat:99, max:99, x:SW+10}); }
+function tutDel(order){ S.dels.push({no:S.dNo++, order:[...order], pat:99, max:99, x:-14}); }
+function tutSoldOut(id){ const it=S.items[id]; it.stock=false; it.kOut=it.kiosk?S.t:null; it.aOut=it.app?S.t:null; SND.sfx('alert');
+  notice(`⚠ ${nm(id).n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); }
+function startTutorial(){
+  restoreTutSteps(); start(); S.tutorial=true; S.nextCust=S.nextDel=S.nextEvent=1e9;
+  TUT={step:-1}; $('tutBox').classList.remove('hide'); track('tut_start'); tutGo(0);
+}
+function tutGo(i){
+  TUT.step=i; const st=TUT_STEPS[i];
+  if (st.enter) st.enter();
+  $('tutStep').textContent = `튜토리얼 ${i+1} / ${TUT_STEPS.length}`;
+  $('tutTitle').textContent = st.t; $('tutText').innerHTML = st.d;
+  $('tutNext').classList.toggle('hide', !st.next); $('tutNext').textContent = st.last ? '▶ 실전 시작' : '다음 ▶';
+  track('tut_step', {step:i+1}); renderUI(true); tutHilite();
+}
+function tutHilite(){
+  if (!TUT) return;
+  const want = new Set(); TUT_STEPS[TUT.step].hi().forEach(sel=>document.querySelectorAll(sel).forEach(el=>want.add(el)));
+  document.querySelectorAll('.tut-hi').forEach(el=>{ if (!want.has(el)) el.classList.remove('tut-hi'); });
+  want.forEach(el=>el.classList.add('tut-hi'));
+}
+function tutCheck(){                // 매 프레임: 강조 유지 + 완료 조건 확인
+  if (!TUT || !S || !S.tutorial) return;
+  tutHilite();
+  const st=TUT_STEPS[TUT.step];
+  if (st.done && st.done()){ SND.sfx('coin'); setTimeout(()=>{ if (TUT && TUT_STEPS[TUT.step]===st) tutGo(TUT.step+1); }, 450); TUT.step=TUT.step; st.done=null; st._was=true; }
+}
+function endTutorial(skipped){
+  try{ localStorage.setItem('hbr_tut_done','1'); }catch(e){}
+  track(skipped?'tut_skip':'tut_done', {step:TUT?TUT.step+1:0});
+  TUT=null; $('tutBox').classList.add('hide'); document.querySelectorAll('.tut-hi').forEach(el=>el.classList.remove('tut-hi'));
+  restoreTutSteps(); start();
+}
+const TUT_DONE = TUT_STEPS.map(st=>st.done);
+function restoreTutSteps(){ TUT_STEPS.forEach((st,i)=>st.done=TUT_DONE[i]); }
+function tutSeen(){ try{ return localStorage.getItem('hbr_tut_done')==='1'; }catch(e){ return true; } }
+function syncTutBadge(){ const b=document.getElementById('tutNew'); if (b) b.classList.toggle('hide', tutSeen()); }
+
 // ================= 오프닝 모션 =================
 const tcv=$('tcv'), tx=tcv.getContext('2d');
 let tRaf=null, tT0=0, tWalkers=[], tNext=0, tRider=-40;
 function showTitle(){
+  syncTutBadge();
+  if (TUT){ TUT=null; $('tutBox').classList.add('hide'); document.querySelectorAll('.tut-hi').forEach(el=>el.classList.remove('tut-hi')); }
   syncCoins();
   if (SND.current()) SND.play('title');
   const mb=$('muteBtn'); document.body.append(mb); mb.classList.remove('inbar');
@@ -1609,6 +1702,8 @@ if (document.fonts) document.fonts.ready.then(()=>draw());
 $('rankStart').innerHTML = rankHTML(null, null, ONLINE?'🌐 전체 랭킹':'매출 랭킹');
 showTitle();
 renderAcct(); CLOUD.init();
+$('tutNext').onclick=()=>{ if (!TUT) return; const st=TUT_STEPS[TUT.step]; if (st.last) endTutorial(false); else tutGo(TUT.step+1); };
+$('tutSkip').onclick=()=>{ if (TUT) endTutorial(true); };
 if (ONLINE) $('rankNote').textContent='전체 랭킹 · 누구나 같은 순위를 봐요';
 
 function syncMute(){

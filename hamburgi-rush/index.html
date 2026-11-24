@@ -310,6 +310,12 @@
   #tcv{width:min(94vw,1000px,calc((100dvh - 420px) * 4 / 3))}
   @media (max-height:920px){ .tblink,.tcredit{display:none} }
   @media (max-height:640px){ #tcv{width:min(94vw,calc((100dvh - 300px) * 4 / 3))} }
+
+  /* ===== 음소거 버튼 ===== */
+  .mute{position:fixed;top:8px;right:8px;z-index:40;width:40px;height:40px;font-size:20px;line-height:1;cursor:pointer;
+        background:var(--paper);border:3px solid var(--line);box-shadow:inset -3px -3px 0 #e3cfa6;padding:0}
+  .mute:active{box-shadow:inset 3px 3px 0 #e3cfa6}
+  .mute.inbar{position:static;width:30px;height:22px;font-size:13px;border-width:2px;box-shadow:none;flex:none}
 </style>
 </head>
 <body>
@@ -357,6 +363,7 @@
 </div>
 
 <!-- ===== 오프닝 ===== -->
+<button class="mute" id="muteBtn" aria-label="소리 켜기/끄기">🔊</button>
 <div class="title" id="titleOv">
   <div class="tlogo" aria-label="햄부기 러시">
     <span style="--i:0">햄</span><span style="--i:1">부</span><span style="--i:2">기</span><span class="sp"></span><span style="--i:3">러</span><span style="--i:4">시</span>
@@ -555,11 +562,11 @@ function fireEvent(){
   if (outs.length && (outs.length>=2 || Math.random()<.45)){
     const m = outs[rand(outs.length)], it=S.items[m.id];
     it.stock=true; it.kOut=it.aOut=null; it.kBack = it.kiosk?null:S.t; it.aBack = it.app?null:S.t;
-    notice(`📦 ${m.n} 재입고! 키오스크·배달앱 다시 ON`, 'good');
+    notice(`📦 ${m.n} 재입고! 키오스크·배달앱 다시 ON`, 'good'); SND.sfx('restock');
   } else if (ins.length>3){
     const m = ins[rand(ins.length)], it=S.items[m.id];
     it.stock=false; it.kBack=it.aBack=null; it.kOut = it.kiosk?S.t:null; it.aOut = it.app?S.t:null;
-    notice(`⚠ ${m.n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn');
+    notice(`⚠ ${m.n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); SND.sfx('alert');
   }
   S.nextEvent = S.t + 8 + Math.random()*5;
 }
@@ -569,7 +576,7 @@ function tick(dt){
   S.t += dt;
   if (S.t>=S.nextCust){ spawnCustomer(); S.nextCust = S.t + (4.6-diff()*1.6)*(.75+Math.random()*.5)*(S.rushT>0?.6:1); }
   if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (12.5-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1);
-  if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); notice('러시 끝! 다시 5연속에 도전해 보세요'); } } }
+  if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); SND.setRush(false); notice('러시 끝! 다시 5연속에 도전해 보세요'); } } }
   if (S.t>=S.nextEvent) fireEvent();
   S.queue.forEach(c=>c.pat-=dt); S.dels.forEach(d=>d.pat-=dt);
   const goneC = S.queue.filter(c=>c.pat<=0), goneD = S.dels.filter(d=>d.pat<=0);
@@ -578,6 +585,7 @@ function tick(dt){
   goneD.forEach(d=>stamp('d'+d.no,'fail','✖ 배달 지연'));
   if (goneC.length){ S.queue=S.queue.filter(c=>c.pat>0); goneC.forEach(c=>S.leaving.push({kind:'c',look:c.look,x:c.x,mad:true})); }
   if (goneD.length){ S.dels=S.dels.filter(d=>d.pat>0); goneD.forEach(d=>S.leaving.push({kind:'d',x:d.x,mad:true})); }
+  if (goneC.length||goneD.length) SND.sfx('fail');
   for (const c of goneC){ S.timeouts++; S.leftC++; if (S.running) loseLife('💢 매장 손님이 기다리다 떠났어요'); }
   for (const d of goneD){ S.timeouts++; S.lateD++; if (S.running) loseLife('⭐ 배달 지연… 별점 1점 리뷰가 달렸어요'); }
   // 이동 애니메이션
@@ -609,7 +617,7 @@ function stampEl(el, cls, text){
 function addFood(id){
   if (!S.running) return;
   if (!S.items[id].stock){ notice(`${nm(id).n} 품절이라 만들 수 없어요`,'warn'); return; }
-  if (S.tray.length>=4) return; S.tray.push(id); renderUI(true);
+  if (S.tray.length>=4) return; S.tray.push(id); SND.sfx('pick', MENU.findIndex(m=>m.id===id)); renderUI(true);
 }
 function clearTray(){ if (S.running){ S.tray=[]; renderUI(true); } }
 function give(){
@@ -617,13 +625,13 @@ function give(){
   const key=[...S.tray].sort().join();
   const match = openOrders().filter(x=>[...x.o.order].sort().join()===key).sort((a,b)=>urgency(a)-urgency(b))[0];
   S.tray=[];
-  if (!match){ S.combo=0; S.wrong++; stampEl($('trayBox'),'fail','✖ 맞는 주문 없음'); notice('🗑 쟁반과 맞는 주문이 없어서 버렸어요 (콤보 끊김)','warn'); renderUI(true); return; }
+  if (!match){ SND.sfx('fail'); S.combo=0; S.wrong++; stampEl($('trayBox'),'fail','✖ 맞는 주문 없음'); notice('🗑 쟁반과 맞는 주문이 없어서 버렸어요 (콤보 끊김)','warn'); renderUI(true); return; }
   const o=match.o, isDel=match.isDel;
   stamp(isDel?'d'+o.no:'c', 'ok', isDel?'✔ 포장 완료':'✔ 서빙 완료');
   removeOrder(match, false);
   {
     S.combo++; S.maxCombo=Math.max(S.maxCombo,S.combo);
-    addFx(o.x+6,'ok');
+    addFx(o.x+6,'ok'); SND.sfx(isDel?'deliver':'serve');
     const inRush = S.rushT>0;
     const base = o.order.reduce((s,id)=>s+nm(id).p,0), speed=Math.max(0,o.pat/o.max);
     // 매출 = 메뉴 가격 합 + 콤보 보너스(1콤보당 5%, 최대 50%) + 빠른 처리 팁(최대 10%) + 배달팁
@@ -643,13 +651,13 @@ function sorry(){
   const x = openOrders().filter(x=>hasOut(x.o.order)).sort((a,b)=>urgency(a)-urgency(b))[0];
   if (!x){ notice('품절 메뉴가 들어간 주문이 없어요'); return; }
   stamp(x.isDel?'d'+x.o.no:'c', 'sorry', x.isDel?'🙇 주문 취소':'🙇 품절 안내');
-  addFx(x.o.x+6,'sorry'); removeOrder(x, false); S.combo=0; S.sorry++;
+  addFx(x.o.x+6,'sorry'); SND.sfx('sorry'); removeOrder(x, false); S.combo=0; S.sorry++;
   notice(x.isDel?`🙇 품절로 배달 #${x.o.no} 주문을 취소했어요`:'🙇 품절 안내 완료. 클레임은 막았어요');
   renderUI(true);
 }
 function toggle(id, ch){
   if (!S.running) return;
-  const it=S.items[id]; it[ch]=!it[ch];
+  const it=S.items[id]; it[ch]=!it[ch]; SND.sfx('click');
   const out = ch==='kiosk'?'kOut':'aOut', back = ch==='kiosk'?'kBack':'aBack', arr = ch==='kiosk'?S.kDelay:S.aDelay;
   if (!it[ch] && !it.stock && it[out]!=null){ arr.push(S.t-it[out]); it[out]=null; }
   if (it[ch] && it.stock && it[back]!=null){ it[back]=null; }
@@ -724,7 +732,7 @@ function drawFx(){
   });
 }
 function startRush(){
-  S.rushT=10; S.rushes++; document.body.classList.add('rush');
+  S.rushT=10; S.rushes++; document.body.classList.add('rush'); SND.setRush(true); SND.sfx('rush');
   const b=$('rushBanner'); b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
   notice('🔥 RUSH MODE! 10초 동안 매출 ×2 · 손님이 몰려와요!','good');
 }
@@ -808,6 +816,7 @@ function build(){
 const avg = a => a.length ? (a.reduce((s,v)=>s+v,0)/a.length).toFixed(1)+'초' : '-';
 function end(byLife){
   S.running=false; cancelAnimationFrame(raf); document.body.classList.remove('rush');
+  SND.stop(); SND.setRush(false); SND.sfx(byLife?'over':'end');
   const top = rankGet()[0], isBest = !top || S.score>top.score;
   $('endTitle').textContent = byLife ? '💢 클레임 폭주! 영업 종료' : (isBest && S.score>0 ? '★ 최고 매출 달성!' : '피크타임 끝! 수고했어요');
   const why = $('endWhy');
@@ -847,6 +856,8 @@ function saveRank(){
   $('rankEnd').innerHTML = rankHTML(S.rankId);
 }
 function start(){
+  SND.play('game'); SND.setRush(false);
+  const mb=$('muteBtn'); document.querySelector('.rushbar').append(mb); mb.classList.add('inbar');
   S=newState(); S.running=true; tKey='';
   ['titleOv','howOv','rankOv','endOv'].forEach(id=>$(id).classList.add('hide')); stopTitle();
   notice('영업 시작! 되는 주문부터 만들어요','good');
@@ -872,10 +883,99 @@ document.addEventListener('keydown',e=>{
   else if (e.key==='q'||e.key==='Q') sorry();
 });
 
+
+// ================= 사운드 (직접 작곡한 칩튠 · WebAudio 합성, 외부 음원 없음) =================
+const SND = (() => {
+  let ac=null, master, musicG, sfxG, muted=false;
+  try{ muted = localStorage.getItem('hbr_mute')==='1'; }catch(e){}
+  const hz = m => 440*Math.pow(2,(m-69)/12);
+  function init(){
+    if (ac) { if (ac.state==='suspended') ac.resume(); return true; }
+    const AC = window.AudioContext||window.webkitAudioContext; if (!AC) return false;
+    ac = new AC(); master = ac.createGain(); master.gain.value = muted?0:.55; master.connect(ac.destination);
+    musicG = ac.createGain(); musicG.gain.value=.32; musicG.connect(master);
+    sfxG = ac.createGain(); sfxG.gain.value=.7; sfxG.connect(master);
+    return true;
+  }
+  // 기본 음 하나
+  function tone(dest, type, f, t, dur, vol, f2){
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type; o.frequency.setValueAtTime(f,t); if (f2) o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.008); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+    o.connect(g); g.connect(dest); o.start(t); o.stop(t+dur+.02);
+  }
+  let noiseBuf=null;
+  function noise(dest, t, dur, vol, hp){
+    if (!noiseBuf){ noiseBuf=ac.createBuffer(1, ac.sampleRate*.5, ac.sampleRate); const d=noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; }
+    const n=ac.createBufferSource(), f=ac.createBiquadFilter(), g=ac.createGain();
+    n.buffer=noiseBuf; f.type='highpass'; f.frequency.value=hp||5000;
+    g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+    n.connect(f); f.connect(g); g.connect(dest); n.start(t); n.stop(t+dur+.02);
+  }
+
+  // ---- 배경음악: 50년대 다이너풍 두왑 진행 C - Am - F - G ----
+  const _=null;
+  const MEL = [ // 8분음표 단위, 8마디
+    76,79,84,79, 81,79,76,_,   76,76,72,76, 79,_,76,_,   77,81,84,81, 79,77,76,74,   74,_,79,_, 77,76,74,_,
+    84,_,83,84, 79,_,76,_,     81,79,76,79, 81,_,84,_,   81,79,77,81, 79,77,76,77,   79,_,74,76, 72,_,_,_ ];
+  const BASS = [[48,52,55,52],[45,48,52,48],[41,45,48,45],[43,47,50,47]];
+  const CHORD = [[60,64,67],[57,60,64],[53,57,60],[55,59,62]];
+  let playing=null, step=0, nextT=0, timer=null, rush=false;
+  function schedule(){
+    const bpm = playing==='title' ? 118 : rush ? 168 : 138;
+    const st = 60/bpm/2;
+    while (nextT < ac.currentTime + .12){
+      const s=step%64, bar=Math.floor(s/8)%4, b=s%8, swing = (b%2) ? st*.14 : 0, t=nextT+swing;
+      const up = rush ? 12 : 0, mVol = playing==='title' ? .07 : .09;
+      const m = MEL[s]; if (m) tone(musicG,'square',hz(m+up),t,st*1.7,mVol);
+      if (b%2===0) tone(musicG,'triangle',hz(BASS[bar][b/2]),t,st*1.8,.32);
+      if (b%2===1) CHORD[bar].forEach(c=>tone(musicG,'square',hz(c+up),t,st*.5,.025));
+      if (playing==='game'){
+        if (b===0||b===4) tone(musicG,'sine',150,t,.12,.5,45);          // 킥
+        if (b===2||b===6) noise(musicG,t,.09,.22,1800);                   // 스네어
+        noise(musicG,t,.03,rush?.08:.05,7000);                            // 하이햇
+      } else if (b===0) noise(musicG,t,.04,.04,7000);
+      nextT += st; step++;
+    }
+  }
+  function play(kind){
+    if (!init()) return;
+    if (playing===kind) return;
+    stop(); playing=kind; step=0; nextT=ac.currentTime+.05;
+    timer=setInterval(schedule, 25); schedule();
+  }
+  function stop(){ clearInterval(timer); timer=null; playing=null; }
+  function setRush(v){ rush=v; }
+
+  // ---- 효과음 ----
+  function sfx(name, arg){
+    if (!ac || muted) return; const t=ac.currentTime;
+    switch(name){
+      case 'pick': tone(sfxG,'square',hz(72+[0,2,4,5,7,9][arg||0]),t,.07,.12); break;                         // 담기: 뽁
+      case 'serve': tone(sfxG,'triangle',hz(96),t,.18,.25); tone(sfxG,'triangle',hz(100),t+.09,.35,.25);
+                    noise(sfxG,t,.06,.15,3000); break;                                                            // 계산대: 딩딩
+      case 'deliver': tone(sfxG,'sawtooth',90,t,.35,.12,260); tone(sfxG,'triangle',hz(91),t+.18,.25,.2); break;  // 스쿠터 부릉 + 딩
+      case 'fail': tone(sfxG,'square',220,t,.28,.14,110); tone(sfxG,'square',180,t+.12,.3,.1,90); break;          // 뿌우
+      case 'sorry': tone(sfxG,'triangle',hz(76),t,.12,.18); tone(sfxG,'triangle',hz(72),t+.12,.2,.18); break;
+      case 'alert': for(let i=0;i<3;i++){ tone(sfxG,'square',hz(88),t+i*.16,.08,.12); tone(sfxG,'square',hz(81),t+i*.16+.08,.08,.12); } break;
+      case 'restock': [72,76,79,84].forEach((m,i)=>tone(sfxG,'triangle',hz(m),t+i*.06,.15,.18)); break;
+      case 'rush': [72,76,79,84,88,91].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.07,.2,.12)); noise(sfxG,t+.42,.3,.15,2000); break;
+      case 'click': tone(sfxG,'square',hz(84),t,.03,.08); break;
+      case 'combo': tone(sfxG,'square',hz(84+(arg||0)),t,.06,.08); break;
+      case 'end': [79,84,83,84,88].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.13,.22,.12)); break;
+      case 'over': [67,63,60,55].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.18,.3,.12)); break;
+    }
+  }
+  function setMuted(v){ muted=v; try{ localStorage.setItem('hbr_mute', v?'1':'0'); }catch(e){} if (master) master.gain.value = v?0:.55; }
+  return {init, play, stop, setRush, sfx, setMuted, isMuted:()=>muted, current:()=>playing};
+})();
+
 // ================= 오프닝 모션 =================
 const tcv=$('tcv'), tx=tcv.getContext('2d');
 let tRaf=null, tT0=0, tWalkers=[], tNext=0, tRider=-40;
 function showTitle(){
+  if (SND.current()) SND.play('title');
+  const mb=$('muteBtn'); document.body.append(mb); mb.classList.remove('inbar');
   ['endOv','howOv','rankOv'].forEach(id=>$(id).classList.add('hide'));
   $('titleOv').classList.remove('hide');
   // 로고 글자 애니메이션 다시 재생
@@ -961,6 +1061,17 @@ build(); S=newState(); renderUI(true); draw();
 if (document.fonts) document.fonts.ready.then(()=>draw());
 $('rankStart').innerHTML = rankHTML();
 showTitle();
+
+function syncMute(){ $('muteBtn').textContent = SND.isMuted() ? '🔇' : '🔊'; }
+$('muteBtn').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setMuted(!SND.isMuted()); syncMute();
+  if (!SND.isMuted() && !SND.current()) SND.play(S && S.running ? 'game' : 'title'); });
+syncMute();
+// 브라우저는 사용자가 한 번 누르기 전에는 소리를 못 내게 막아서, 첫 클릭/키 입력 때 오프닝 음악 시작
+function unlockAudio(){
+  if (SND.init() && !SND.current() && !$('titleOv').classList.contains('hide')) SND.play('title');
+  window.removeEventListener('pointerdown', unlockAudio); window.removeEventListener('keydown', unlockAudio);
+}
+window.addEventListener('pointerdown', unlockAudio); window.addEventListener('keydown', unlockAudio);
 })();
 </script>
 </body>

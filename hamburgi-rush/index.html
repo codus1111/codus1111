@@ -444,6 +444,10 @@
   .cd-num.pop{animation:cdPop .55s cubic-bezier(.3,1.6,.5,1)}
   @keyframes cdPop{from{transform:scale(2.4);opacity:0}}
   .cd-sub{font-size:clamp(14px,2.4vw,22px);color:#fff4dc;margin-top:10px;text-shadow:2px 2px 0 #2b1d14}
+
+  /* ===== v19: 채널 관리 없앰 / 품절 표시에 재입고까지 남은 시간 ===== */
+  .chan{display:none !important}
+  .food.out::after{content:"품절 " attr(data-left);white-space:nowrap}
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -530,7 +534,7 @@
   <div class="tsub">PEAK TIME FAST-FOOD RUSH</div>
   <div class="tdesc">🍔 내가 운영하는 <b>햄버거 가게 시뮬레이션</b> · 점심 피크 60초를 버텨라!</div>
   <div class="tchips">
-    <span>🏪 매장 + 🛵 배달 동시 운영</span><span>⚠ 품절 나면 키오스크·배달앱 OFF</span><span>🔥 5연속 완료 시 러시 ×2</span>
+    <span>🏪 매장 + 🛵 배달 동시 운영</span><span>⚠ 품절은 취소 · 잠시 뒤 자동 재입고</span><span>🔥 5연속 완료 시 러시 ×2</span>
   </div>
   <canvas id="tcv" width="160" height="120"></canvas>
   <div class="tmenu">
@@ -554,7 +558,7 @@
     <ul>
       <li><b>매장 손님</b>과 <b>배달 주문</b>이 동시에 들어와요. 순서는 상관없어요, 되는 것부터 만드세요.</li>
       <li>주방 메뉴를 눌러 쟁반에 담고 <b>전달</b>. 쟁반과 똑같은 주문에 자동으로 가요 (초록 테두리). 연속으로 맞히면 콤보!</li>
-      <li>재료가 <b>품절</b>되면 채널 관리에서 <b>키오스크와 배달앱 둘 다</b> OFF. 재입고되면 다시 ON.</li>
+      <li>재료가 <b>품절</b>되면 그 메뉴는 새 주문에서 빠지고, <b>8초 뒤 자동으로 재입고</b>돼요.</li>
       <li>품절 메뉴가 들어간 주문(빨간 "품절" 딱지)은 <b>품절 메뉴 취소</b>로 정리하세요. 가장 급한 주문부터 하나씩 취소돼요. 그냥 두면 결국 클레임이 돼요.</li>
       <li><b>💢 클레임 기준:</b> 매장 손님이 기다리다 떠나거나, 배달이 제한 시간을 넘기면 ♥ 1개 감소. <b>3건이면 영업 끝.</b></li>
     </ul>
@@ -857,7 +861,7 @@ function newState(){
   MENU.forEach(m => items[m.id] = {stock:true, kiosk:true, app:true, kOut:null, aOut:null, kBack:null, aBack:null});
   return {t:0, running:false, score:0, shopRev:0, delRev:0, combo:0, maxCombo:0, life:MAX_LIFE,
     queue:[], dels:[], leaving:[], tray:[], items, wt:'c', dNo:101,
-    nextCust:1.0, nextDel:9, nextEvent:14, served:0, delivered:0,
+    nextCust:1.0, nextDel:8, nextEvent:12, served:0, delivered:0,
     soldOutOrders:0, sorry:0, kDelay:[], aDelay:[], wrong:0, timeouts:0, leftC:0, lateD:0, rushT:0, rushes:0, rushRev:0, fx:[], wx:CX()};
 }
 const diff = () => Math.min(1, S.t/ROUND);
@@ -868,44 +872,56 @@ const hasOut = o => o.some(id => !S.items[id].stock);
 
 function spawnCustomer(){
   if (S.queue.length>=MAX_Q) return;
-  const shown = MENU.filter(m=>S.items[m.id].kiosk); if (!shown.length) return;
+  const shown = MENU.filter(m=>S.items[m.id].stock); if (!shown.length) return;
   // v18 쉬운 밸런스: 처음엔 대부분 1개 주문, 3개 주문은 후반에만 드물게 / 대기 시간 +4~5초
-  const d=diff(), n = 1 + (Math.random()<.2+d*.35?1:0) + (Math.random()<d*.15?1:0);
-  const order = pick(shown, n), pat = 26 - d*4 + n*3;
+  const d=diff(), n = 1 + (Math.random()<.25+d*.375?1:0) + (Math.random()<d*.225?1:0);
+  const order = pick(shown, n), pat = 24 - d*4.5 + n*2.75;   // v20: 쉬운 버전과 예전 버전의 중간
   if (hasOut(order)) S.soldOutOrders++;
   S.queue.push({look:makeLook(), order, pat, max:pat, x:SW+10});
 }
 function spawnDelivery(){
   if (S.dels.length>=MAX_D) return;
-  const shown = MENU.filter(m=>S.items[m.id].app); if (!shown.length) return;
+  const shown = MENU.filter(m=>S.items[m.id].stock); if (!shown.length) return;
   // v18: 배달은 2~3개 위주, 제한 시간 +6초
-  const d=diff(), n = 2 + (Math.random()<.25+d*.3?1:0) + (Math.random()<d*.12?1:0);
-  const order = pick(shown, n), pat = 46 - d*6;
+  const d=diff(), n = 2 + (Math.random()<.325+d*.3?1:0) + (Math.random()<d*.185?1:0);
+  const order = pick(shown, n), pat = 43 - d*7;
   if (hasOut(order)) S.soldOutOrders++;
   S.dels.push({no:S.dNo++, order, pat, max:pat, x:-14});
 }
+// v19: 채널 ON/OFF 없이 — 품절되면 새 주문에서 빠지고, 8초 뒤 자동 재입고
+const RESTOCK_SEC = 8;
 function fireEvent(){
   const ins = MENU.filter(m=>S.items[m.id].stock), outs = MENU.filter(m=>!S.items[m.id].stock);
-  if (outs.length && (outs.length>=2 || Math.random()<.45)){
-    const m = outs[rand(outs.length)], it=S.items[m.id];
-    it.stock=true; it.kOut=it.aOut=null; it.kBack = it.kiosk?null:S.t; it.aBack = it.app?null:S.t;
-    notice(`📦 ${m.n} 재입고! 키오스크·배달앱 다시 ON`, 'good'); SND.sfx('restock');
-  } else if (ins.length>3){
-    const m = ins[rand(ins.length)], it=S.items[m.id];
-    it.stock=false; it.kBack=it.aBack=null; it.kOut = it.kiosk?S.t:null; it.aOut = it.app?S.t:null;
-    notice(`⚠ ${m.n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); SND.sfx('alert'); track('sold_out');
+  if (!outs.length && ins.length>3){
+    const inOrders = new Set([S.queue[0], ...S.dels].filter(Boolean).flatMap(o=>o.order));
+    const free = ins.filter(m=>!inOrders.has(m.id));          // 지금 들어온 주문에 없는 메뉴
+    const pool = (free.length && Math.random()<.8) ? free : ins;   // 80%는 주문에 영향 없는 메뉴를 품절
+    const m = pool[rand(pool.length)];
+    soldOut(m.id, RESTOCK_SEC);
   }
-  S.nextEvent = S.t + 12 + Math.random()*5;   // v18: 품절·재입고 간격 넓힘
+  S.nextEvent = S.t + 10 + Math.random()*5;
+}
+function soldOut(id, sec){
+  const it=S.items[id], m=nm(id); it.stock=false; it.restockAt=S.t+sec;
+  const hit = [S.queue[0], ...S.dels].filter(o=>o && o.order.includes(id)).length;   // 이미 들어온 주문 중 걸린 것
+  S.soldOutOrders += hit;
+  notice(`⚠ ${m.n} 품절! ${sec<100?sec+'초 뒤 자동 재입고 · ':''}품절 딱지 주문은 '품절 메뉴 취소'`, 'warn'); SND.sfx('alert'); track('sold_out');
+  tKey='';
+}
+function checkRestock(){
+  MENU.forEach(m=>{ const it=S.items[m.id]; if (!it.stock && it.restockAt!=null && S.t>=it.restockAt){
+    it.stock=true; it.restockAt=null; notice(`📦 ${m.n} 재입고! 다시 주문이 들어와요`, 'good'); SND.sfx('restock'); tKey=''; } });
 }
 function loseLife(msg){ S.life--; S.combo=0; notice(`${msg} (클레임 ${MAX_LIFE-S.life}/${MAX_LIFE})`,'warn'); if (S.life<=0) end(true); }
 
 function tick(dt){
   S.t += dt;
-  if (S.t>=S.nextCust){ spawnCustomer(); S.nextCust = S.t + (5.2-diff()*1.6)*(.75+Math.random()*.5)*(S.rushT>0?.6:1); }
-  if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (14-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1); }
+  if (S.t>=S.nextCust){ spawnCustomer(); S.nextCust = S.t + (4.9-diff()*1.6)*(.75+Math.random()*.5)*(S.rushT>0?.6:1); }
+  if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (13.25-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1); }
   // 러시 남은 시간은 매 프레임 줄어듦 (예전엔 배달 생성 블록 안에 있어서 러시가 거의 끝나지 않던 버그)
   if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); SND.setRush(false); notice('러시 끝! 다시 5연속에 도전해 보세요'); } }
   if (S.t>=S.nextEvent) fireEvent();
+  checkRestock();
   if (!S.tutorial){ S.queue.forEach(c=>c.pat-=dt); S.dels.forEach(d=>d.pat-=dt); }
   const goneC = S.queue.filter(c=>c.pat<=0), goneD = S.dels.filter(d=>d.pat<=0);
   if (goneC.includes(S.queue[0])) stamp('c','fail','✖ 손님 이탈');
@@ -1055,12 +1071,12 @@ const HEART=[[1,0],[3,0],[0,1],[1,1],[2,1],[3,1],[4,1],[1,2],[2,2],[3,2],[2,3]];
 function drawFx(){
   S.fx = S.fx.filter(f=>S.t-f.t<1);
   S.fx.forEach(f=>{
-    const a=S.t-f.t, y=Math.round(57-a*10), w=f.kind==='ok'?24:18, x=Math.round(Math.min(SW-2-w,Math.max(1,f.x-w/2)));
+    const a=S.t-f.t, y=Math.round(57-a*10), w=f.kind==='ok'?50:18, x=Math.round(Math.min(SW-2-w,Math.max(1,f.x-w/2)));
     const col = f.kind==='ok'?'#2e9e5b':f.kind==='fail'?'#e4002b':'#f2a71b';
     ctx.fillStyle=col; ctx.fillRect(x-1,y-1,w+2,13); ctx.fillStyle='#fff8e8'; ctx.fillRect(x,y,w,11);
     ctx.fillStyle=col; ctx.fillRect(Math.round(f.x)-1,y+12,3,2);
     ctx.font='8px Galmuri9'; ctx.fillStyle=col;
-    if (f.kind==='ok'){ ctx.fillText('OK',x+2,y+9); ctx.fillStyle='#ff5a8a'; HEART.forEach(([i,j])=>ctx.fillRect(x+16+i,y+3+j,1,1)); }
+    if (f.kind==='ok'){ ctx.font='7px Galmuri9'; ctx.fillText('맛있게 드세요!',x+2,y+8); }
     else ctx.fillText(f.kind==='fail'?'NO':'...', x+4, y+9);
   });
 }
@@ -1140,6 +1156,8 @@ function renderUI(force){
   const objs=[f, ...S.dels];
   bars.forEach((b,i)=>{ const o=objs[i]; if(!o){b.style.width='0';return;} const r=Math.max(0,o.pat/o.max);
     b.style.width=(r*100)+'%'; b.className=r<.3?'low':r<.6?'mid':''; });
+  MENU.forEach(m=>{ const it=S.items[m.id], el=document.getElementById('f_'+m.id);
+    if (el) el.dataset.left = (!it.stock && it.restockAt!=null && it.restockAt-S.t<100) ? Math.max(1,Math.ceil(it.restockAt-S.t))+'초' : ''; });
   tutCheck();
 }
 function build(){
@@ -1183,10 +1201,10 @@ function end(byLife){
       <small>매장 ${S.shopRev.toLocaleString()}점 (${S.served}건) · 배달 ${S.delRev.toLocaleString()}점 (${S.delivered}건, 배달 보너스 포함)</small></div>
     <div><b>${S.maxCombo} · 🔥${S.rushes}회</b><span>최고 콤보 · 러시 점수 ${S.rushRev.toLocaleString()}점</span></div>
     <div><b>${S.leftC+S.lateD}건</b><span>클레임 (이탈 ${S.leftC} · 배달 지연 ${S.lateD})</span></div>
-    <div><b>${avg(S.kDelay)}</b><span>품절 → 키오스크 OFF</span></div>
-    <div><b>${avg(S.aDelay)}</b><span>품절 → 배달앱 OFF</span></div>`;
+    <div><b>${S.soldOutOrders}건</b><span>품절에 걸린 주문</span></div>
+    <div><b>${S.sorry}건</b><span>품절 메뉴 취소로 정리</span></div>`;
   let tip;
-  if (S.soldOutOrders>=3) tip=`품절 메뉴로 들어온 주문이 ${S.soldOutOrders}건이었어요. 품절 알림이 뜨면 두 채널부터 꺼 보세요.`;
+  if (S.soldOutOrders>S.sorry) tip=`품절에 걸린 주문이 ${S.soldOutOrders}건이었어요. 빨간 품절 딱지 주문은 바로 '품절 메뉴 취소'로 정리하면 클레임을 막을 수 있어요.`;
   else if (S.lateD>S.leftC) tip='배달이 자주 늦었어요. 배달 주문표의 게이지도 같이 봐 주세요.';
   else if (S.leftC) tip='매장 손님이 떠났어요. 2개 이상 주문은 미리 담아 두면 빨라요.';
   else if (S.wrong) tip=`맞는 주문이 없어 버린 쟁반이 ${S.wrong}번 있었어요. 담기 전에 주문표를 한 번 더 확인!`;
@@ -1538,18 +1556,16 @@ const TUT_STEPS = [
   { t:'② 배달도 똑같이', d:'배달 주문(<b>감자튀김 + 치킨</b>)도 담아서 <b>전달</b>! 맞는 주문으로 알아서 가요.',
     hi:()=>{ const d=S.dels[0]; return [d?`#tickets [data-k="d${d.no}"]`:'#tickets','#f_fries','#f_chicken','#btnGo']; },
     enter:()=>tutDel(['chicken','fries']), done:()=>S.delivered>=1 },
-  { t:'③ 품절! 채널 끄기', d:'<b>치즈스틱</b> 품절! 아래 채널 관리에서 치즈스틱의 <b>키오</b>와 <b>배달</b>을 둘 다 OFF 하세요.',
-    hi:()=>['#c_cheese'], enter:()=>tutSoldOut('cheese'), done:()=>!S.items.cheese.kiosk && !S.items.cheese.app },
-  { t:'④ 품절 주문 정리', d:'끄기 전에 들어온 품절 주문은 <b>품절 메뉴 취소</b>로 정리해요. (PC: Q)',
-    hi:()=>['#tickets [data-k="c"]','#btnSorry'], enter:()=>tutCust(['cheese','fries']), done:()=>S.sorry>=1 },
-  { t:'⑤ 준비 끝!', d:'실전 <b>60초</b>. <b>5연속</b> 완료하면 🔥<b>러시 ×2</b>, 손님 이탈·배달 지연 <b>클레임 3건</b>이면 끝!',
+  { t:'③ 품절이 나면?', d:'<b>치즈스틱</b>이 품절됐어요! 빨간 <b>품절</b> 딱지가 붙은 주문은 만들 수 없으니 <b>품절 메뉴 취소</b>로 정리하세요. (PC: Q) 품절은 잠시 뒤 <b>자동으로 재입고</b>돼요.',
+    hi:()=>['#tickets [data-k="c"]','#btnSorry','#f_cheese'], enter:()=>{ tutCust(['cheese','fries']); tutSoldOut('cheese'); }, done:()=>S.sorry>=1 },
+  { t:'④ 준비 끝!', d:'실전 <b>60초</b>. <b>5연속</b> 완료하면 🔥<b>러시 ×2</b>, 손님 이탈·배달 지연 <b>클레임 3건</b>이면 끝!',
     hi:()=>['.rushbar','.hud .stat:last-child'], next:true, last:true },
 ];
 let TUT = null;
 function tutCust(order){ S.queue.push({look:makeLook(), order:[...order], pat:99, max:99, x:SW+10}); }
 function tutDel(order){ S.dels.push({no:S.dNo++, order:[...order], pat:99, max:99, x:-14}); }
 function tutSoldOut(id){ const it=S.items[id]; it.stock=false; it.kOut=it.kiosk?S.t:null; it.aOut=it.app?S.t:null; SND.sfx('alert');
-  notice(`⚠ ${nm(id).n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); }
+  it.restockAt=S.t+999; tKey=''; notice(`⚠ ${nm(id).n} 품절! 품절 딱지 주문은 '품절 메뉴 취소'`, 'warn'); }
 function startTutorial(){
   restoreTutSteps(); start('tutorial'); S.tutorial=true; S.nextCust=S.nextDel=S.nextEvent=1e9;
   TUT={step:-1}; $('tutBox').classList.remove('hide'); track('tut_start'); tutGo(0);

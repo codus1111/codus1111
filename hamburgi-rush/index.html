@@ -377,6 +377,12 @@
   .sk .btn:disabled{opacity:.55;cursor:default}
   .sk-on{background:var(--green)}
   .card .trow .btn{min-width:0}
+
+  /* ===== 상점 탭 / 인테리어 ===== */
+  .stabs{display:flex;gap:4px;margin-bottom:8px}
+  .stab{flex:1;font-family:inherit;font-size:13px;padding:8px 4px;border:2px solid var(--line);background:#e3cfa6;color:var(--ink);cursor:pointer}
+  .stab.on{background:#fff;box-shadow:inset 0 -3px 0 var(--red)}
+  .sk.sk-t img{width:96px;height:72px;border:2px solid var(--line)}
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -506,7 +512,8 @@
 
 <div class="ov hide" id="shopOv">
   <div class="box card">
-    <h2>🛍 알바생 옷장</h2>
+    <h2>🛍 햄부기 상점</h2>
+    <div class="stabs"><button class="stab on" data-tab="skin">👕 알바생 옷</button><button class="stab" data-tab="theme">🏪 매장 인테리어</button></div>
     <div class="shopc">보유 코인 🪙 <b id="shopCoins">0</b> <span>· 매출 1,000원 = 🪙1</span></div>
     <div class="skins" id="skinGrid"></div>
     <div class="trow"><button class="btn b-clear" data-close="shopOv">닫기</button></div>
@@ -612,6 +619,30 @@ const skinId  = () => { const id=W$.get('hbr_skin','basic'); return owned().incl
 const skinPal = () => (SKINS.find(k=>k.id===skinId())||SKINS[0]).pal;
 const coinOf  = score => Math.floor(Math.max(0,score)/1000);     // 매출 1,000원 = 1코인
 function addCoins(n){ W$.set('hbr_coins', coins()+n); }
+// ---- 매장 인테리어 테마 ----
+// wall 벽, stripe 벽 줄무늬, band 띠, dot 띠 점, board 메뉴판, ctop/cbody/cline 카운터, side 배달 쪽 받침, f1/f2 바닥 타일
+const THEMES = [
+  {id:'basic', n:'기본 햄부기',   price:0,    c:{wall:'#f6e3c4',stripe:'#ecd2a8',band:'#c8102e',dot:'#fff8e8',board:'#2f3b2f',ctop:'#b07a45',cbody:'#8b5a2b',cline:'#7a4a22',side:'#6b5a4a',sideTop:'#a08a72',f1:'#e9d5b5',f2:'#dcc29a'}},
+  {id:'mint',  n:'민트 카페',     price:150,  c:{wall:'#e3f6f1',stripe:'#cdeee5',band:'#2bb3a3',dot:'#ffffff',board:'#24403b',ctop:'#d9c4a3',cbody:'#b89a74',cline:'#9a7d58',side:'#5d7f78',sideTop:'#8fb3ab',f1:'#e0f2f7',f2:'#c4e3ec'}},
+  {id:'wood',  n:'우드 캐빈',     price:300,  c:{wall:'#d9b88f',stripe:'#c79f72',band:'#6b3b23',dot:'#f2d6a8',board:'#2b3a2b',ctop:'#7a4a22',cbody:'#5a3418',cline:'#3f230f',side:'#4a3626',sideTop:'#6b5040',f1:'#b98a5b',f2:'#a7784b'}},
+  {id:'pink',  n:'딸기 팝',       price:450,  c:{wall:'#ffe6ef',stripe:'#ffd3e2',band:'#f06292',dot:'#ffffff',board:'#5a2a44',ctop:'#f7c3d6',cbody:'#e89ab8',cline:'#d27aa0',side:'#b86b8c',sideTop:'#e3a3bf',f1:'#fff4f8',f2:'#ffdde9'}},
+  {id:'neon',  n:'네온 다이너',   price:700,  c:{wall:'#2a2350',stripe:'#352d66',band:'#ff3cac',dot:'#3cf2ff',board:'#120e26',ctop:'#3cf2ff',cbody:'#3a2f6b',cline:'#4b3f86',side:'#1d1838',sideTop:'#ff3cac',f1:'#221c42',f2:'#2e2757'}},
+  {id:'gold',  n:'골드 프리미엄', price:1200, c:{wall:'#2b1d14',stripe:'#3a2a1e',band:'#d4a017',dot:'#fff3b0',board:'#14100c',ctop:'#d4a017',cbody:'#5a4230',cline:'#3a2a1e',side:'#1a120c',sideTop:'#d4a017',f1:'#3a2a1e',f2:'#4a3626'}},
+];
+const ownedTh = () => W$.get('hbr_owned_th', ['basic']);
+const themeId = () => { const id=W$.get('hbr_theme','basic'); return ownedTh().includes(id) ? id : 'basic'; };
+const TH = () => (THEMES.find(t=>t.id===themeId())||THEMES[0]).c;
+function themePreview(c){   // 작은 매장 미리보기 그림
+  const cv=document.createElement('canvas'); cv.width=48; cv.height=36; const x=cv.getContext('2d');
+  x.fillStyle=c.wall; x.fillRect(0,0,48,17); x.fillStyle=c.stripe; for(let i=0;i<48;i+=6) x.fillRect(i,0,1,14);
+  x.fillStyle=c.board; x.fillRect(14,2,20,7); x.fillStyle=c.band; x.fillRect(0,14,48,4); x.fillStyle=c.dot; for(let i=1;i<48;i+=6) x.fillRect(i,15,3,1);
+  x.fillStyle=c.ctop; x.fillRect(0,18,48,2); x.fillStyle=c.cbody; x.fillRect(0,20,48,5);
+  for(let yy=25;yy<36;yy+=4) for(let xx=0;xx<48;xx+=4){ x.fillStyle=((xx+yy)/4)%2?c.f1:c.f2; x.fillRect(xx,yy,4,4); }
+  spr(x, WORKER, skinPal(), 18, 3);
+  const big=document.createElement('canvas'); big.width=144; big.height=108; const b=big.getContext('2d'); b.imageSmoothingEnabled=false; b.drawImage(cv,0,0,144,108);
+  return big.toDataURL();
+}
+
 
 // 브라우저 탭 아이콘 = 도트 햄버거 (12x12 칸에 그려서 64px로 확대)
 try{ document.getElementById('favicon').href = toImg(ICON.burger, {}, 12, 12, 6); }catch(e){}
@@ -837,13 +868,14 @@ function toggle(id, ch){
 function draw(){
   const t=S?S.t:0;
   // 벽
-  ctx.fillStyle='#f6e3c4'; ctx.fillRect(0,0,SW,56);
-  ctx.fillStyle='#ecd2a8'; for(let x=0;x<SW;x+=8) ctx.fillRect(x,0,1,48);
-  ctx.fillStyle='#c8102e'; ctx.fillRect(0,48,SW,8);
-  ctx.fillStyle='#fff8e8'; for(let x=2;x<SW;x+=10) ctx.fillRect(x,51,5,2);
+  const th=TH();
+  ctx.fillStyle=th.wall; ctx.fillRect(0,0,SW,56);
+  ctx.fillStyle=th.stripe; for(let x=0;x<SW;x+=8) ctx.fillRect(x,0,1,48);
+  ctx.fillStyle=th.band; ctx.fillRect(0,48,SW,8);
+  ctx.fillStyle=th.dot; for(let x=2;x<SW;x+=10) ctx.fillRect(x,51,5,2);
   // 메뉴판 (가운데)
   const mb=Math.round(SW/2-39);
-  ctx.fillStyle='#2b1d14'; ctx.fillRect(mb,3,78,22); ctx.fillStyle='#2f3b2f'; ctx.fillRect(mb+1,4,76,20);
+  ctx.fillStyle='#2b1d14'; ctx.fillRect(mb,3,78,22); ctx.fillStyle=th.board; ctx.fillRect(mb+1,4,76,20);
   if (SW>=210) drawWideDecor();
   MENU.forEach((m,i)=>{ const x=mb+4+i*12, y=9; spr(ctx, ICON[m.id], {}, x, y+(10-ICON[m.id].length)/2);
     if (S && !S.items[m.id].stock){ ctx.fillStyle='#ff3b5c'; for(let k=0;k<10;k++){ ctx.fillRect(x+k,y+k,1,1); ctx.fillRect(x+9-k,y+k,1,1);} } });
@@ -855,13 +887,13 @@ function draw(){
   const bob = Math.floor(t*3)%2;
   spr(ctx, WORKER, skinPal(), S?S.wx:CX(), 36+bob);
   // 카운터
-  ctx.fillStyle='#b07a45'; ctx.fillRect(32,56,SW-32,3); ctx.fillStyle='#8b5a2b'; ctx.fillRect(32,59,SW-32,11);
-  ctx.fillStyle='#7a4a22'; for(let x=36;x<SW;x+=16) ctx.fillRect(x,61,1,8);
-  ctx.fillStyle='#6b5a4a'; ctx.fillRect(0,56,32,14); ctx.fillStyle='#a08a72'; ctx.fillRect(0,56,32,2);
+  ctx.fillStyle=th.ctop; ctx.fillRect(32,56,SW-32,3); ctx.fillStyle=th.cbody; ctx.fillRect(32,59,SW-32,11);
+  ctx.fillStyle=th.cline; for(let x=36;x<SW;x+=16) ctx.fillRect(x,61,1,8);
+  ctx.fillStyle=th.side; ctx.fillRect(0,56,32,14); ctx.fillStyle=th.sideTop; ctx.fillRect(0,56,32,2);
   // POS
   const px=CX()+48; ctx.fillStyle='#2b1d14'; ctx.fillRect(px,46,14,10); ctx.fillStyle='#7ee0c3'; ctx.fillRect(px+1,47,12,7);
   // 바닥
-  for(let y=70;y<112;y+=7) for(let x=0;x<SW;x+=7){ ctx.fillStyle=((x+y)/7)%2?'#e9d5b5':'#dcc29a'; ctx.fillRect(x,y,7,7); }
+  for(let y=70;y<112;y+=7) for(let x=0;x<SW;x+=7){ ctx.fillStyle=((x+y)/7)%2?th.f1:th.f2; ctx.fillRect(x,y,7,7); }
   if (!S) return;
   // 배달 라이더
   S.dels.forEach(d=>{
@@ -1111,31 +1143,37 @@ $('btnRank').onclick=()=>{ renderRank($('rankStart')); $('rankOv').classList.rem
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add('hide'));
 $('btnHome').onclick=()=>{ flushSubmit(); showTitle(); };
 $('btnShop').onclick=openShop; $('btnShop2').onclick=openShop;
-// ---- 상점 화면 ----
+// ---- 상점 화면 (탭: 알바생 옷 / 매장 인테리어) ----
+let shopTab = 'skin';
+const SHOP = {
+  skin:  {list:()=>SKINS,  owned, cur:skinId,  key:'hbr_owned',    eqKey:'hbr_skin',  img:k=>toImg(WORKER, k.pal, 12, 18, 4), cls:'sk-p'},
+  theme: {list:()=>THEMES, owned:ownedTh, cur:themeId, key:'hbr_owned_th', eqKey:'hbr_theme', img:t=>themePreview(t.c), cls:'sk-t'},
+};
 function renderShop(){
   $('shopCoins').textContent = coins().toLocaleString();
-  const have=owned(), cur=skinId(), c=coins();
-  $('skinGrid').innerHTML = SKINS.map(k=>{
-    const img = toImg(WORKER, k.pal, 12, 18, 4);
+  document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('on', b.dataset.tab===shopTab));
+  const T=SHOP[shopTab], have=T.owned(), cur=T.cur(), c=coins();
+  $('skinGrid').innerHTML = T.list().map(k=>{
     const own = have.includes(k.id), on = k.id===cur;
-    const btn = on ? `<button class="btn sk-on" disabled>✔ 장착 중</button>`
-             : own ? `<button class="btn b-go" data-eq="${k.id}">장착</button>`
+    const btn = on ? `<button class="btn sk-on" disabled>✔ 사용 중</button>`
+             : own ? `<button class="btn b-go" data-eq="${k.id}">사용하기</button>`
              : `<button class="btn b-sorry" data-buy="${k.id}" ${c<k.price?'disabled':''}>🪙 ${k.price.toLocaleString()}</button>`;
-    return `<div class="sk ${on?'on':''} ${!own&&c<k.price?'locked':''}"><img class="px" src="${img}"><div class="skn">${k.n}</div>${btn}</div>`;
+    return `<div class="sk ${T.cls} ${on?'on':''} ${!own&&c<k.price?'locked':''}"><img class="px" src="${T.img(k)}"><div class="skn">${k.n}</div>${btn}</div>`;
   }).join('');
-  $('skinGrid').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buySkin(b.dataset.buy));
-  $('skinGrid').querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>equipSkin(b.dataset.eq));
+  $('skinGrid').querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>buyItem(b.dataset.buy));
+  $('skinGrid').querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>equipItem(b.dataset.eq));
 }
-function buySkin(id){
-  const k=SKINS.find(x=>x.id===id); if (!k || owned().includes(id) || coins()<k.price) return;
-  W$.set('hbr_coins', coins()-k.price); W$.set('hbr_owned', [...owned(), id]);
-  SND.sfx('coin'); track('shop_buy', {skin:id});
-  equipSkin(id);
+function buyItem(id){
+  const T=SHOP[shopTab], k=T.list().find(x=>x.id===id); if (!k || T.owned().includes(id) || coins()<k.price) return;
+  W$.set('hbr_coins', coins()-k.price); W$.set(T.key, [...T.owned(), id]);
+  SND.sfx('coin'); track('shop_buy', {item:shopTab+':'+id});
+  equipItem(id);
 }
-function equipSkin(id){
-  if (!owned().includes(id)) return; W$.set('hbr_skin', id);
-  renderShop(); refreshSkin(); track('skin_equip', {skin:id});
+function equipItem(id){
+  const T=SHOP[shopTab]; if (!T.owned().includes(id)) return; W$.set(T.eqKey, id);
+  renderShop(); refreshSkin(); track('shop_equip', {item:shopTab+':'+id});
 }
+document.querySelectorAll('.stab').forEach(b=>b.addEventListener('click',()=>{ shopTab=b.dataset.tab; renderShop(); }));
 function refreshSkin(){
   const img=document.querySelector('#cast img'); if (img) img.src = toImg(WORKER, skinPal(), 12, 18, 4);
   syncCoins(); if (S) draw();

@@ -516,7 +516,13 @@ const cv = $('scene'), ctx = cv.getContext('2d');
 let S, raf=null, last=0;
 // ---- 랭킹 TOP 5 (이 기기에 저장) ----
 const RANK_KEY='hbr_rank_v2', RANK_N=5;
-function rankGet(){ try{ const a=JSON.parse(localStorage.getItem(RANK_KEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+// 한 사람(이름)당 최고 점수 하나만 남기기
+function bestPerName(list){
+  const m=new Map();
+  for (const e of list){ const k=String(e.name); const o=m.get(k); if (!o || e.score>o.score) m.set(k, e); }
+  return [...m.values()].sort((a,b)=>b.score-a.score);
+}
+function rankGet(){ try{ const a=JSON.parse(localStorage.getItem(RANK_KEY)||'[]'); return Array.isArray(a)?bestPerName(a).slice(0,RANK_N):[]; }catch(e){ return []; } }
 function rankSave(a){ try{ localStorage.setItem(RANK_KEY, JSON.stringify(a)); }catch(e){} }
 function lastName(){ try{ return localStorage.getItem('hbr_name')||''; }catch(e){ return ''; } }
 // 이름을 안 쓰면 기기마다 고정된 '사용자####'로 기록
@@ -527,14 +533,17 @@ function defaultName(){
 }
 function rankRename(id, name){
   const r=rankGet(), e=r.find(x=>x.id===id); if (!e || !name) return;
-  e.name=name.slice(0,8); rankSave(r); try{ localStorage.setItem('hbr_name', e.name); }catch(_){}
+  e.name=name.slice(0,8); rankSave(bestPerName(r).slice(0,RANK_N));   // 같은 이름 기록이 있으면 높은 점수만 남김
+  try{ localStorage.setItem('hbr_name', e.name); }catch(_){}
 }
-function qualifies(score){ const r=rankGet(); return score>0 && (r.length<RANK_N || score>r[r.length-1].score); }
+function qualifies(score){ return score>0; }
+// 기록 추가: 같은 이름은 최고 점수만 갱신. 이번 기록이 TOP 5에 남으면 id, 아니면 null
 function rankAdd(name, score){
-  const r=rankGet(), e={name:(name||defaultName()).slice(0,8), score, d:new Date().toISOString().slice(5,10).replace('-','/'), id:Date.now()};
-  r.push(e); r.sort((a,b)=>b.score-a.score); rankSave(r.slice(0,RANK_N));
-  return e.id;
+  const e={name:(name||defaultName()).slice(0,8), score, d:new Date().toISOString().slice(5,10).replace('-','/'), id:Date.now()};
+  const top=bestPerName([...rankGet(), e]).slice(0,RANK_N); rankSave(top);
+  return top.some(x=>x.id===e.id) ? e.id : null;
 }
+function myBest(){ const n=defaultName(); const e=rankGet().find(x=>x.name===n); return e?e.score:0; }
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function rankHTML(meId, list, label){
   const r = list || rankGet();
@@ -549,18 +558,18 @@ const RANK_API = { url:'', key:'' };
 const ONLINE = !!(RANK_API.url && RANK_API.key);
 const apiH = () => ({ apikey:RANK_API.key, Authorization:'Bearer '+RANK_API.key, 'Content-Type':'application/json' });
 async function onlineTop(){
-  const r = await fetch(`${RANK_API.url}/rest/v1/scores?select=id,name,score&order=score.desc,created_at.asc&limit=${RANK_N}`, {headers:apiH()});
-  if (!r.ok) throw new Error('rank '+r.status); return r.json();
+  const r = await fetch(`${RANK_API.url}/rest/v1/scores?select=id,name,score&order=score.desc,created_at.asc&limit=200`, {headers:apiH()});
+  if (!r.ok) throw new Error('rank '+r.status); return bestPerName(await r.json()).slice(0,RANK_N);
 }
 async function onlineSubmit(name, score, keepalive){
   const r = await fetch(`${RANK_API.url}/rest/v1/scores`, {method:'POST', keepalive:!!keepalive,
     headers:{...apiH(), Prefer:'return=representation'}, body:JSON.stringify({name, score})});
   if (!r.ok) throw new Error('submit '+r.status); const j = await r.json(); return j[0];
 }
-async function renderRank(el, meId){
+async function renderRank(el, meId, meName){
   if (!ONLINE){ el.innerHTML = rankHTML(meId, null, '매출 랭킹'); return; }
   el.innerHTML = '<h3>🌐 전체 랭킹 TOP '+RANK_N+'</h3><div class="empty">불러오는 중…</div>';
-  try{ el.innerHTML = rankHTML(meId, await onlineTop(), '🌐 전체 랭킹'); }
+  try{ const l=await onlineTop(); const me = meName ? (l.find(x=>x.name===meName)||{}).id : meId; el.innerHTML = rankHTML(me, l, '🌐 전체 랭킹'); }
   catch(e){ el.innerHTML = rankHTML(null, null, '이 기기 랭킹') + '<div class="empty">전체 랭킹 서버에 연결하지 못했어요</div>'; }
 }
 
@@ -874,6 +883,8 @@ function end(byLife){
   else if (S.wrong) tip=`맞는 주문이 없어 버린 쟁반이 ${S.wrong}번 있었어요. 담기 전에 주문표를 한 번 더 확인!`;
   else tip='깔끔한 영업이었어요! 콤보를 이어서 최고 매출에 도전해 보세요.';
   $('endTip').textContent=tip;
+  setTimeout(()=>{ if (S.score>0 && S.score<=prevBest) $('endTip').textContent += ` (내 최고 기록 ${prevBest.toLocaleString()}원은 그대로 유지돼요)`; },0);
+  const prevBest = myBest();
   // 이 기기 랭킹은 항상 기록 (오프라인 대비)
   S.rankId = qualifies(S.score) ? rankAdd('', S.score) : null;
   $('nameIn').value='';
@@ -888,7 +899,7 @@ function end(byLife){
     $('entry').classList.toggle('hide', !S.rankId);
     if (S.rankId){
       const rk=rankGet(), place=rk.findIndex(x=>x.id===S.rankId)+1, me=rk[place-1];
-      $('entryMsg').innerHTML=`🏆 ${place}위! <b>${esc(me.name)}</b>(으)로 기록했어요`;
+      $('entryMsg').innerHTML=`🏆 ${place}위! <b>${esc(me.name)}</b>(으)로 기록했어요 (내 최고 기록 갱신)`;
     }
     $('rankEnd').innerHTML = rankHTML(S.rankId);
   }
@@ -902,7 +913,7 @@ async function submitOnline(name, keepalive){
     if (S && S.submit===sub && !$('endOv').classList.contains('hide')){
       $('entryMsg').innerHTML = `✔ <b>${esc(nm)}</b>(으)로 전체 랭킹에 등록했어요`;
       $('entry').querySelector('.er').classList.add('hide');
-      renderRank($('rankEnd'), sub.id);
+      renderRank($('rankEnd'), null, nm);
     }
   }catch(e){
     sub.done=false;

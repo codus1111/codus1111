@@ -857,7 +857,7 @@ function newState(){
   MENU.forEach(m => items[m.id] = {stock:true, kiosk:true, app:true, kOut:null, aOut:null, kBack:null, aBack:null});
   return {t:0, running:false, score:0, shopRev:0, delRev:0, combo:0, maxCombo:0, life:MAX_LIFE,
     queue:[], dels:[], leaving:[], tray:[], items, wt:'c', dNo:101,
-    nextCust:1.0, nextDel:7, nextEvent:10, served:0, delivered:0,
+    nextCust:1.0, nextDel:9, nextEvent:14, served:0, delivered:0,
     soldOutOrders:0, sorry:0, kDelay:[], aDelay:[], wrong:0, timeouts:0, leftC:0, lateD:0, rushT:0, rushes:0, rushRev:0, fx:[], wx:CX()};
 }
 const diff = () => Math.min(1, S.t/ROUND);
@@ -869,16 +869,18 @@ const hasOut = o => o.some(id => !S.items[id].stock);
 function spawnCustomer(){
   if (S.queue.length>=MAX_Q) return;
   const shown = MENU.filter(m=>S.items[m.id].kiosk); if (!shown.length) return;
-  const d=diff(), n = 1 + (Math.random()<.3+d*.4?1:0) + (Math.random()<d*.3?1:0);
-  const order = pick(shown, n), pat = 22 - d*5 + n*2.5;   // v3: 대기 시간 +4~5초
+  // v18 쉬운 밸런스: 처음엔 대부분 1개 주문, 3개 주문은 후반에만 드물게 / 대기 시간 +4~5초
+  const d=diff(), n = 1 + (Math.random()<.2+d*.35?1:0) + (Math.random()<d*.15?1:0);
+  const order = pick(shown, n), pat = 26 - d*4 + n*3;
   if (hasOut(order)) S.soldOutOrders++;
   S.queue.push({look:makeLook(), order, pat, max:pat, x:SW+10});
 }
 function spawnDelivery(){
   if (S.dels.length>=MAX_D) return;
   const shown = MENU.filter(m=>S.items[m.id].app); if (!shown.length) return;
-  const d=diff(), n = 2 + (Math.random()<.4+d*.3?1:0) + (Math.random()<d*.25?1:0);
-  const order = pick(shown, n), pat = 40 - d*8;           // v3: 배달 제한 +6초
+  // v18: 배달은 2~3개 위주, 제한 시간 +6초
+  const d=diff(), n = 2 + (Math.random()<.25+d*.3?1:0) + (Math.random()<d*.12?1:0);
+  const order = pick(shown, n), pat = 46 - d*6;
   if (hasOut(order)) S.soldOutOrders++;
   S.dels.push({no:S.dNo++, order, pat, max:pat, x:-14});
 }
@@ -893,14 +895,14 @@ function fireEvent(){
     it.stock=false; it.kBack=it.aBack=null; it.kOut = it.kiosk?S.t:null; it.aOut = it.app?S.t:null;
     notice(`⚠ ${m.n} 품절! 키오스크·배달앱 둘 다 OFF`, 'warn'); SND.sfx('alert'); track('sold_out');
   }
-  S.nextEvent = S.t + 8 + Math.random()*5;
+  S.nextEvent = S.t + 12 + Math.random()*5;   // v18: 품절·재입고 간격 넓힘
 }
 function loseLife(msg){ S.life--; S.combo=0; notice(`${msg} (클레임 ${MAX_LIFE-S.life}/${MAX_LIFE})`,'warn'); if (S.life<=0) end(true); }
 
 function tick(dt){
   S.t += dt;
-  if (S.t>=S.nextCust){ spawnCustomer(); S.nextCust = S.t + (4.6-diff()*1.6)*(.75+Math.random()*.5)*(S.rushT>0?.6:1); }
-  if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (12.5-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1); }
+  if (S.t>=S.nextCust){ spawnCustomer(); S.nextCust = S.t + (5.2-diff()*1.6)*(.75+Math.random()*.5)*(S.rushT>0?.6:1); }
+  if (S.t>=S.nextDel){ spawnDelivery(); S.nextDel = S.t + (14-diff()*3)*(.8+Math.random()*.4)*(S.rushT>0?.6:1); }
   // 러시 남은 시간은 매 프레임 줄어듦 (예전엔 배달 생성 블록 안에 있어서 러시가 거의 끝나지 않던 버그)
   if (S.rushT>0){ S.rushT-=dt; if (S.rushT<=0){ S.rushT=0; document.body.classList.remove('rush'); SND.setRush(false); notice('러시 끝! 다시 5연속에 도전해 보세요'); } }
   if (S.t>=S.nextEvent) fireEvent();

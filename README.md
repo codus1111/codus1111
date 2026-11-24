@@ -14,6 +14,8 @@
 <a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-play.svg?v=3" width="164" height="38" alt="햄부기 러시 게임 하러 가기" /></a>
 &nbsp;
 <a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg?v=3" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
+&nbsp;
+<a href="https://codus1111.github.io/codus1111/portfolio-neo/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-portfolio.svg?v=3" width="164" height="38" alt="햄부기 러시 포트폴리오 보기" /></a>
 
 <img src="https://img.shields.io/badge/JavaScript-4B5563?style=flat-square&labelColor=1E2230&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-4B5563?style=flat-square&labelColor=1E2230&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-4B5563?style=flat-square&labelColor=1E2230&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-4B5563?style=flat-square&labelColor=1E2230&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-4B5563?style=flat-square&labelColor=1E2230&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-4B5563?style=flat-square&labelColor=1E2230&logo=anthropic&logoColor=white" alt="Claude Code" />
 

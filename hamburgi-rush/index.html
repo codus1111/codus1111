@@ -554,9 +554,11 @@ function rankHTML(meId, list, label){
 
 // ---- 전체 공개 랭킹 (Supabase) : url/key를 넣으면 켜지고, 비어 있거나 연결 실패 시 이 기기 랭킹으로 ----
 // key는 Supabase의 공개용 anon key (브라우저에 노출되도록 설계된 키). 테이블 권한은 '읽기 + 추가'만 허용.
-const RANK_API = { url:'', key:'' };
+const RANK_API = { url:'https://yedsgvkmdecsrwrynuks.supabase.co', key:'sb_publishable_ZkZAGVCUP-a_U21KnmEBGQ_P05VqppU' };
 const ONLINE = !!(RANK_API.url && RANK_API.key);
-const apiH = () => ({ apikey:RANK_API.key, Authorization:'Bearer '+RANK_API.key, 'Content-Type':'application/json' });
+// 예전 anon key(eyJ...)는 Authorization 헤더도 필요, 새 publishable key(sb_publishable_...)는 apikey 헤더만
+const apiH = () => Object.assign({ apikey:RANK_API.key, 'Content-Type':'application/json' },
+  RANK_API.key.startsWith('eyJ') ? { Authorization:'Bearer '+RANK_API.key } : {});
 async function onlineTop(){
   const r = await fetch(`${RANK_API.url}/rest/v1/scores?select=id,name,score&order=score.desc,created_at.asc&limit=200`, {headers:apiH()});
   if (!r.ok) throw new Error('rank '+r.status); return bestPerName(await r.json()).slice(0,RANK_N);

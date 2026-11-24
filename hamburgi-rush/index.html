@@ -436,6 +436,7 @@
   .tcoin{background:#fff8e8;border:3px solid var(--line);padding:4px 10px;font-size:13px;color:var(--ink);white-space:nowrap}
   .tcoin b{font-family:"Galmuri9";color:#b36b00}
   @media (max-width:879px){ .ttop{position:static;align-self:stretch;justify-content:flex-start;padding-right:46px;flex-wrap:wrap} .ttop .acct-t{font-size:11px} }
+  @media (min-width:880px){ .tmenu{width:min(100%,600px)} }
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -527,7 +528,7 @@
   <canvas id="tcv" width="160" height="120"></canvas>
   <div class="tmenu">
     <button class="btn b-go tbig" id="btnTitleStart">▶ 게임 시작</button>
-    <button class="btn b-tut" id="btnTitleTut">🎓 처음이라면? 튜토리얼 (1분)<span class="newb" id="tutNew">NEW</span></button>
+    <button class="btn b-tut" id="btnTitleTut">🎓 처음이라면? 튜토리얼 (30초)<span class="newb" id="tutNew">NEW</span></button>
     <div class="trow">
       <button class="btn b-sorry" id="btnHow">📖 게임 방법</button>
       <button class="btn b-clear" id="btnRank">🏆 랭킹</button>
@@ -1500,20 +1501,16 @@ function renderAcct(){
 // ================= 튜토리얼 (처음 한 번 자동, 게임 방법에서 다시 보기) =================
 // 시간 제한·클레임 없이 손님이 한 명씩 와서 핵심 규칙을 직접 해 보며 익힌다
 const TUT_STEPS = [
-  { t:'① 손님이 왔어요!', d:'위 <b>주문표</b>(그리고 손님 말풍선)에 주문한 메뉴가 보여요. 지금 손님은 <b>버거 + 콜라</b>를 시켰어요.',
-    hi:()=>['#tickets [data-k="c"]'], next:true, enter:()=>tutCust(['burger','cola']) },
-  { t:'② 주문과 똑같이 담아요', d:'아래 <b>주방</b>에서 버거와 콜라를 눌러 쟁반에 담아 보세요. (PC는 숫자키 1~6)',
-    hi:()=>['#f_burger','#f_cola'], done:()=>[...S.tray].sort().join()==='burger,cola' },
-  { t:'③ 전달!', d:'<b>전달</b>을 누르면 쟁반과 똑같은 주문에 자동으로 가요. (PC는 Space)',
-    hi:()=>['#btnGo'], done:()=>S.served>=1 },
-  { t:'④ 배달 주문도 들어와요', d:'배달 주문표의 메뉴(<b>감자튀김 + 치킨</b>)를 담아서 똑같이 <b>전달</b>하세요. 매장이든 배달이든 맞는 곳으로 알아서 가요.',
+  { t:'① 담고 → 전달!', d:'손님 주문표에 <b>버거 + 콜라</b>가 보여요. 아래 주방에서 둘을 눌러 담고 <b>전달</b>을 누르세요. (PC: 숫자키 1~6, Space)',
+    hi:()=>['#tickets [data-k="c"]','#f_burger','#f_cola','#btnGo'], enter:()=>tutCust(['burger','cola']), done:()=>S.served>=1 },
+  { t:'② 배달도 똑같이', d:'배달 주문(<b>감자튀김 + 치킨</b>)도 담아서 <b>전달</b>! 맞는 주문으로 알아서 가요.',
     hi:()=>{ const d=S.dels[0]; return [d?`#tickets [data-k="d${d.no}"]`:'#tickets','#f_fries','#f_chicken','#btnGo']; },
     enter:()=>tutDel(['chicken','fries']), done:()=>S.delivered>=1 },
-  { t:'⑤ 품절 발생!', d:'<b>치즈스틱</b>이 품절됐어요. 아래 <b>채널 관리</b>에서 치즈스틱의 <b>키오</b>와 <b>배달</b>을 둘 다 눌러 OFF 하세요. 안 끄면 품절 메뉴로 주문이 계속 들어와요.',
+  { t:'③ 품절! 채널 끄기', d:'<b>치즈스틱</b> 품절! 아래 채널 관리에서 치즈스틱의 <b>키오</b>와 <b>배달</b>을 둘 다 OFF 하세요.',
     hi:()=>['#c_cheese'], enter:()=>tutSoldOut('cheese'), done:()=>!S.items.cheese.kiosk && !S.items.cheese.app },
-  { t:'⑥ 이미 들어온 품절 주문', d:'끄기 전에 들어온 주문(빨간 <b>품절</b> 딱지)은 만들 수 없어요. <b>품절 메뉴 취소</b>로 정리하세요. (PC는 Q)',
+  { t:'④ 품절 주문 정리', d:'끄기 전에 들어온 품절 주문은 <b>품절 메뉴 취소</b>로 정리해요. (PC: Q)',
     hi:()=>['#tickets [data-k="c"]','#btnSorry'], enter:()=>tutCust(['cheese','fries']), done:()=>S.sorry>=1 },
-  { t:'⑦ 준비 끝!', d:'실전은 <b>70초</b>예요. <b>연속 5건</b> 완료하면 🔥<b>러시 ×2</b>! 손님이 기다리다 떠나거나 배달이 늦으면 <b>클레임</b>, 3건이면 영업 종료예요. 번 매출만큼 🪙코인도 모여요.',
+  { t:'⑤ 준비 끝!', d:'실전 <b>70초</b>. <b>5연속</b> 완료하면 🔥<b>러시 ×2</b>, 손님 이탈·배달 지연 <b>클레임 3건</b>이면 끝!',
     hi:()=>['.rushbar','.hud .stat:last-child'], next:true, last:true },
 ];
 let TUT = null;
@@ -1581,8 +1578,8 @@ function fitTitle(){
     if (tcv.width!==160){ tcv.width=160; TW=160; } tcv.style.width=''; tcv.style.height=''; return;
   }
   const availH = Math.max(180, innerHeight - (innerHeight>920 ? 520 : innerHeight>700 ? 480 : 330));
-  const availW = Math.min(innerWidth*0.94, 1400);
-  const tw = Math.max(160, Math.min(320, Math.round(120*availW/availH)));
+  const availW = Math.min(innerWidth*0.94, 1760);
+  const tw = Math.max(160, Math.min(480, Math.round(120*availW/availH)));
   if (tcv.width!==tw){ tcv.width=tw; TW=tw; }
   const sc = Math.min(availW/TW, availH/120);
   tcv.style.width = (TW*sc)+'px'; tcv.style.height = (120*sc)+'px';

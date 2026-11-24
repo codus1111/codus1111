@@ -2,10 +2,29 @@
 
 <br>
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-data.svg" width="360" height="28" alt="01 · DATA ANALYSIS / AI SERVICE" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-game-01.svg" width="360" height="28" alt="01 · GAME / AI COLLABORATION" />
+
+### 햄부기 러시
+패스트푸드 매장 알바 경험으로 기획하고 AI(Claude Code)와 함께 만든 도트 피크타임 게임. 매장과 배달이 동시에 몰리는 피크타임과 **품절 주문 처리**를 게임 규칙으로 옮겼고, 플레이 피드백을 받아 **20번 업데이트**하며 다듬었습니다. [게임 설명](hamburgi-rush/README.md) · [개발 로그](hamburgi-rush/DEVLOG.md)
+
+<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/play-hamburgi.gif" width="654" alt="햄부기 러시 실제 플레이 화면: 손님이 줄을 서고, 메뉴를 담아 전달하면 '맛있게 드세요!' 말풍선이 뜬다" /></a>
+
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-game.svg" width="654" height="172" alt="아이디어 출처 패스트푸드 알바 2년 7개월 · 직접 플레이 후 개선 20번 · 상점 아이템 스킨과 인테리어 12종 · 외부 이미지와 음원 0개" />
+
+<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-play.svg" width="164" height="38" alt="햄부기 러시 게임 하러 가기" /></a>
+&nbsp;
+<a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
+
+<img src="https://img.shields.io/badge/JavaScript-2F6F6B?style=flat-square&labelColor=1E3B39&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-2F6F6B?style=flat-square&labelColor=1E3B39&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-2F6F6B?style=flat-square&labelColor=1E3B39&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="Claude Code" />
+
+---
+
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-data-02.svg" width="360" height="28" alt="02 · DATA ANALYSIS / AI SERVICE" />
 
 ### 회사 연봉 AI
 국민연금 데이터로 연봉을 추정하고, 실제 공시 급여로 검증한 회사 탐색 서비스.
+
+<a href="https://codus1111.github.io/codus1111/pension-salary/dashboard/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-salary-agent.png" width="654" alt="회사 연봉 AI 에이전트 관제실: 질문을 받은 AI가 어떤 도구를 쓰는지 연결 그래프로 보여 주는 화면" /></a>
 
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-salary.svg" width="654" height="172" alt="검증 기업 2,392곳 · 평균 절대 오차율 14.6%에서 11.1%로 개선 · 순위 상관 0.88 · AI 평가 28문항 중 27문항 통과" />
 
@@ -19,10 +38,12 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu.svg" width="360" height="28" alt="02 · DATA ANALYSIS / AI AGENT" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-tashu-03.svg" width="360" height="28" alt="03 · DATA ANALYSIS / AI AGENT" />
 
 ### 타슈 수급 불균형 분석
 대전 공영자전거 대여 기록으로 대여소가 언제 비고 넘치는지 찾고, 점검 우선순위와 질의응답 에이전트까지 만든 분석.
+
+<a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-tashu.png" width="654" alt="타슈 분석 대시보드 첫 화면: 분석 대여 기록 754만 건, 대여소 1,384곳" /></a>
 
 <img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-tashu.svg" width="654" height="172" alt="분석한 대여 기록 801만 건 · 대여소 1,406곳 · 비 1mm 이상일 때 수요 0.36배 · 에이전트 평가 3차 반복 총 36문항" />
 
@@ -33,21 +54,6 @@
 <a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-tashu-agent.svg" width="164" height="38" alt="타슈 에이전트 관제 화면 보기" /></a>
 
 <img src="https://img.shields.io/badge/Python-2F6F6B?style=flat-square&labelColor=1E3B39&logo=python&logoColor=white" alt="Python" /> <img src="https://img.shields.io/badge/DuckDB-2F6F6B?style=flat-square&labelColor=1E3B39&logo=duckdb&logoColor=white" alt="DuckDB" /> <img src="https://img.shields.io/badge/numpy-2F6F6B?style=flat-square&labelColor=1E3B39&logo=numpy&logoColor=white" alt="numpy" /> <img src="https://img.shields.io/badge/xgboost-2F6F6B?style=flat-square&labelColor=1E3B39&logo=xgboost&logoColor=white" alt="xgboost" /> <img src="https://img.shields.io/badge/Gemini-2F6F6B?style=flat-square&labelColor=1E3B39&logo=googlegemini&logoColor=white" alt="Gemini" />
-
----
-
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-game.svg" width="360" height="28" alt="03 · GAME / AI COLLABORATION" />
-
-### 햄부기 러시
-패스트푸드 매장 알바 경험으로 기획하고 AI(Claude Code)와 함께 만든 도트 피크타임 게임. 매장과 배달이 동시에 몰리는 피크타임과 **품절 주문 처리**를 게임 규칙으로 옮겼고, 플레이 피드백을 받아 **20번 업데이트**하며 다듬었습니다. [게임 설명](hamburgi-rush/README.md) · [개발 로그](hamburgi-rush/DEVLOG.md)
-
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-game.svg" width="654" height="172" alt="아이디어 출처 패스트푸드 알바 2년 7개월 · 직접 플레이 후 개선 20번 · 상점 아이템 스킨과 인테리어 12종 · 외부 이미지와 음원 0개" />
-
-<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-play.svg" width="164" height="38" alt="햄부기 러시 게임 하러 가기" /></a>
-&nbsp;
-<a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
-
-<img src="https://img.shields.io/badge/JavaScript-2F6F6B?style=flat-square&labelColor=1E3B39&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-2F6F6B?style=flat-square&labelColor=1E3B39&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-2F6F6B?style=flat-square&labelColor=1E3B39&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="Claude Code" />
 
 ---
 

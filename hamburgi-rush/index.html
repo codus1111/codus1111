@@ -408,6 +408,7 @@
   .set-sec input{flex:1;min-width:0;font-family:inherit;font-size:16px;padding:6px;border:2px solid var(--line);background:#fff}
   .set-msg{font-size:11px;color:var(--green);min-height:14px;margin-top:4px}
   .card .acct-set{margin:0}
+  .rank li .tag{font-size:10px;color:var(--sub)}
 </style>
 <!-- Microsoft Clarity: 방문자 행동 분석 (히트맵·세션 녹화·게임 이벤트). ID가 비어 있으면 아무것도 불러오지 않음 -->
 <script>
@@ -760,7 +761,7 @@ function myBest(){ const n=defaultName(); const e=rankGet().find(x=>x.name===n);
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function rankHTML(meId, list, label){
   const r = list || rankGet();
-  const rows = r.length ? r.map((e,i)=>`<li class="${meId!=null && e.id===meId?'me':''}"><span class="r">${i+1}위</span><span>${esc(e.name)}</span><b>${Number(e.score).toLocaleString()}원</b></li>`).join('')
+  const rows = r.length ? r.map((e,i)=>`<li class="${meId!=null && e.id===meId?'me':''}"><span class="r">${i+1}위</span><span>${esc(e.name)}${e.tag?`<small class="tag"> #${esc(e.tag)}</small>`:''}</span><b>${Number(e.score).toLocaleString()}원</b></li>`).join('')
                         : '<div class="empty">아직 기록이 없어요. 첫 1위가 되어 보세요!</div>';
   return `<h3>🏆 ${label||'매출 랭킹'} TOP ${RANK_N}</h3><ol>${rows}</ol>`;
 }
@@ -772,19 +773,37 @@ const ONLINE = !!(RANK_API.url && RANK_API.key);
 // 예전 anon key(eyJ...)는 Authorization 헤더도 필요, 새 publishable key(sb_publishable_...)는 apikey 헤더만
 const apiH = () => Object.assign({ apikey:RANK_API.key, 'Content-Type':'application/json' },
   RANK_API.key.startsWith('eyJ') ? { Authorization:'Bearer '+RANK_API.key } : {});
+// 플레이어 고유 번호 (이름이 같아도 다른 사람으로 구분). 로그인하면 계정에 저장돼 기기 간 동일
+function myPid(){
+  try{ let v=localStorage.getItem('hbr_pid');
+    if (!v){ v=(crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2)).replace(/-/g,'').slice(0,12); localStorage.setItem('hbr_pid', v); }
+    return v; }catch(e){ return ''; }
+}
 async function onlineTop(){
-  const r = await fetch(`${RANK_API.url}/rest/v1/scores?select=id,name,score&order=score.desc,created_at.asc&limit=200`, {headers:apiH()});
-  if (!r.ok) throw new Error('rank '+r.status); return bestPerName(await r.json()).slice(0,RANK_N);
+  const r = await fetch(`${RANK_API.url}/rest/v1/scores?select=id,name,score,pid&order=score.desc,created_at.asc&limit=300`, {headers:apiH()});
+  if (!r.ok) throw new Error('rank '+r.status);
+  // 사람 기준(번호가 없는 예전 기록은 이름 기준)으로 최고 점수 하나만
+  const m=new Map();
+  for (const e of await r.json()){ const k = e.pid ? 'p:'+e.pid : 'n:'+e.name; const o=m.get(k); if (!o || e.score>o.score) m.set(k, e); }
+  // 번호가 없는 예전 기록은 같은 이름을 쓰는 번호 있는 플레이어가 딱 한 명일 때만 그 사람 기록으로 합침
+  for (const [k,e] of [...m]){ if (!k.startsWith('n:')) continue;
+    const owners=[...m.values()].filter(x=>x.pid && x.name===e.name);
+    if (owners.length===1){ if (e.score>owners[0].score) owners[0].score=e.score; m.delete(k); } }
+  const top=[...m.values()].sort((a,b)=>b.score-a.score).slice(0,RANK_N);
+  // 같은 이름이 둘 이상이면 번호 끝 4자리를 태그로
+  const cnt={}; top.forEach(e=>cnt[e.name]=(cnt[e.name]||0)+1);
+  top.forEach(e=>{ if (cnt[e.name]>1) e.tag = e.pid ? e.pid.slice(-4) : '예전'; });
+  return top;
 }
 async function onlineSubmit(name, score, keepalive){
   const r = await fetch(`${RANK_API.url}/rest/v1/scores`, {method:'POST', keepalive:!!keepalive,
-    headers:{...apiH(), Prefer:'return=representation'}, body:JSON.stringify({name, score})});
+    headers:{...apiH(), Prefer:'return=representation'}, body:JSON.stringify({name, score, pid:myPid()})});
   if (!r.ok) throw new Error('submit '+r.status); const j = await r.json(); return j[0];
 }
 async function renderRank(el, meId, meName){
   if (!ONLINE){ el.innerHTML = rankHTML(meId, null, '매출 랭킹'); return; }
   el.innerHTML = '<h3>🌐 전체 랭킹 TOP '+RANK_N+'</h3><div class="empty">불러오는 중…</div>';
-  try{ const l=await onlineTop(); const me = meName ? (l.find(x=>x.name===meName)||{}).id : meId; el.innerHTML = rankHTML(me, l, '🌐 전체 랭킹'); }
+  try{ const l=await onlineTop(); const mp=myPid(); const me = (l.find(x=>x.pid && x.pid===mp)||{}).id ?? meId; el.innerHTML = rankHTML(me, l, '🌐 전체 랭킹'); }
   catch(e){ el.innerHTML = rankHTML(null, null, '이 기기 랭킹') + '<div class="empty">전체 랭킹 서버에 연결하지 못했어요</div>'; }
 }
 
@@ -1370,7 +1389,7 @@ const FIREBASE_CONFIG = {
 const CLOUD = (() => {
   const V='10.12.2', CDN=`https://www.gstatic.com/firebasejs/${V}`;
   let fb=null, user=null, timer=null, status='', ready=false;
-  const local = () => ({ coins:coins(), owned:owned(), ownedTh:ownedTh(), skin:W$.get('hbr_skin','basic'), theme:W$.get('hbr_theme','basic'), name:lastName() });
+  const local = () => ({ coins:coins(), owned:owned(), ownedTh:ownedTh(), skin:W$.get('hbr_skin','basic'), theme:W$.get('hbr_theme','basic'), name:lastName(), pid:myPid() });
   function applyMerged(r){
     const l = local();
     const m = {
@@ -1383,7 +1402,8 @@ const CLOUD = (() => {
     localStorage.setItem('hbr_coins', JSON.stringify(m.coins)); localStorage.setItem('hbr_owned', JSON.stringify(m.owned));
     localStorage.setItem('hbr_owned_th', JSON.stringify(m.ownedTh)); localStorage.setItem('hbr_skin', JSON.stringify(m.skin));
     localStorage.setItem('hbr_theme', JSON.stringify(m.theme));
-    if (r.name && !lastName()) localStorage.setItem('hbr_name', String(r.name).slice(0,8));   // 다른 기기에서 정한 닉네임 가져오기
+    if (r.name && !lastName()) localStorage.setItem('hbr_name', String(r.name).slice(0,8));
+    if (r.pid) localStorage.setItem('hbr_pid', String(r.pid));   // 계정의 플레이어 번호를 이 기기에서도 사용   // 다른 기기에서 정한 닉네임 가져오기
     if (!$('setOv').classList.contains('hide')) $('setName').value = defaultName();
     refreshSkin(); if (!$('shopOv').classList.contains('hide')) renderShop();
   }

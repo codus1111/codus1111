@@ -1303,72 +1303,109 @@ function showTitle(){
   $('titleOv').classList.remove('hide');
   // 로고 글자 애니메이션 다시 재생
   document.querySelectorAll('.tlogo span').forEach(el=>{ el.style.animation='none'; void el.offsetWidth; el.style.animation=''; });
+  fitTitle();
   tWalkers=[]; tNext=0; tT0=performance.now(); cancelAnimationFrame(tRaf); tRaf=requestAnimationFrame(titleLoop);
 }
 function stopTitle(){ cancelAnimationFrame(tRaf); tRaf=null; }
-let tLast=0;
+let tLast=0, TW=160;                       // TW: 오프닝 장면 가로 도트 수 (PC에서 화면 비율에 맞게 늘어남)
+const TOX = () => Math.round((TW-160)/2);  // 가게를 가운데 두기 위한 오프셋
+// PC: 오프닝 그림을 화면 비율에 맞춰 가로로 넓힘
+function fitTitle(){
+  if (!matchMedia('(min-width:880px)').matches){
+    if (tcv.width!==160){ tcv.width=160; TW=160; } tcv.style.width=''; tcv.style.height=''; return;
+  }
+  const availH = Math.max(180, innerHeight - (innerHeight>920 ? 470 : innerHeight>700 ? 420 : 300));
+  const availW = Math.min(innerWidth*0.94, 1400);
+  const tw = Math.max(160, Math.min(320, Math.round(120*availW/availH)));
+  if (tcv.width!==tw){ tcv.width=tw; TW=tw; }
+  const sc = Math.min(availW/TW, availH/120);
+  tcv.style.width = (TW*sc)+'px'; tcv.style.height = (120*sc)+'px';
+}
+addEventListener('resize', fitTitle);
 function titleLoop(ts){
   const t=(ts-tT0)/1000, dt=Math.min(.1,(ts-(tLast||ts))/1000); tLast=ts;
-  // 손님 등장
-  if (t>=tNext){ const fromR=Math.random()<.65; tWalkers.push({look:makeLook(), x:fromR?168:-14, dir:fromR?-1:1, sp:16+Math.random()*10}); tNext=t+1.1+Math.random()*1.2; }
+  const door = 74 + TOX();
+  // 손님 등장 (넓을수록 조금 더 자주)
+  if (t>=tNext){ const fromR=Math.random()<.6; tWalkers.push({look:makeLook(), x:fromR?TW+8:-14, dir:fromR?-1:1, sp:16+Math.random()*10});
+    tNext=t+(1.1+Math.random()*1.2)*160/TW; }
   tWalkers.forEach(w=>w.x+=w.dir*w.sp*dt);
-  tWalkers=tWalkers.filter(w=> w.dir<0 ? w.x>74 : w.x<74);   // 문(가운데)으로 들어감
-  tRider += 55*dt; if (tRider>200) tRider=-60-Math.random()*80;
+  tWalkers=tWalkers.filter(w=> w.dir<0 ? w.x>door : w.x<door);   // 문(가운데)으로 들어감
+  tRider += 55*dt; if (tRider>TW+40) tRider=-60-Math.random()*80;
   drawTitle(t);
   tRaf=requestAnimationFrame(titleLoop);
 }
+function drawStreetDecor(c, t){
+  const OX=TOX(); if (OX<12) return;
+  // 가로등 (가게 양옆)
+  [OX-10, OX+168].forEach(x=>{
+    c.fillStyle='#3a3a44'; c.fillRect(x,62,2,36); c.fillRect(x-2,96,6,2); c.fillRect(x-2,60,6,3);
+    c.fillStyle = Math.floor(t*2+x)%7 ? '#ffe9a3' : '#fff6cf'; c.fillRect(x-1,63,4,3);
+    c.fillStyle='rgba(255,233,163,.25)'; c.fillRect(x-5,66,12,6);
+  });
+  // 나무 (바깥쪽으로 반복)
+  const tree = x => {
+    c.fillStyle='#6b3b23'; c.fillRect(x+5,84,3,14);
+    c.fillStyle='#3f8f4a'; c.fillRect(x,70,13,10); c.fillRect(x+2,66,9,4); c.fillRect(x+1,80,11,4);
+    c.fillStyle='#56ad5f'; c.fillRect(x+3,68,4,3); c.fillRect(x+2,72,3,3);
+  };
+  for (let x=OX-34; x>-14; x-=30) tree(x);
+  for (let x=OX+180; x<TW+2; x+=30) tree(x);
+  // 벤치
+  if (OX>=40){ c.fillStyle='#8b5a2b'; c.fillRect(OX-30+40,92,16,2); c.fillRect(OX-30+40,88,16,2); c.fillStyle='#3a3a44'; c.fillRect(OX-30+41,94,1,4); c.fillRect(OX-30+54,94,1,4); }
+}
 function drawTitle(t){
-  const c=tx;
-  // 노을 하늘
+  const c=tx, OX=TOX();
+  // 노을 하늘 (전체 폭)
   const sky=['#ffe3a3','#ffcf8a','#ffb877','#ff9f6b','#f58a68'];
-  sky.forEach((col,i)=>{ c.fillStyle=col; c.fillRect(0,i*8,160,8); });
-  c.fillStyle='#f58a68'; c.fillRect(0,40,160,60);
+  sky.forEach((col,i)=>{ c.fillStyle=col; c.fillRect(0,i*8,TW,8); });
+  c.fillStyle='#f58a68'; c.fillRect(0,40,TW,60);
   // 해
-  c.fillStyle='#fff1b8'; for(let y=-8;y<=8;y++){ const w=Math.round(Math.sqrt(64-y*y)); c.fillRect(132-w,22+y,w*2,1); }
+  const sx=TW-28;
+  c.fillStyle='#fff1b8'; for(let y=-8;y<=8;y++){ const w=Math.round(Math.sqrt(64-y*y)); c.fillRect(sx-w,22+y,w*2,1); }
   // 반짝이
-  for (let i=0;i<6;i++){ if ((Math.floor(t*2)+i)%3) continue; const x=(i*37)%150+5, y=(i*13)%20+3; c.fillStyle='#fff'; c.fillRect(x,y,1,1); c.fillRect(x-1,y,3,1); c.fillRect(x,y-1,1,3); }
+  const nS = Math.round(6*TW/160);
+  for (let i=0;i<nS;i++){ if ((Math.floor(t*2)+i)%3) continue; const x=(i*37)%(TW-10)+5, y=(i*13)%20+3; c.fillStyle='#fff'; c.fillRect(x,y,1,1); c.fillRect(x-1,y,3,1); c.fillRect(x,y-1,1,3); }
   // 구름
-  [[0,8,1],[70,16,.6],[120,4,.8]].forEach(([o,y,sp])=>{ const x=((t*6*sp+o)%200)-30; c.fillStyle='#fff6e6';
-    c.fillRect(x,y,18,4); c.fillRect(x+3,y-2,10,2); c.fillRect(x+12,y+4,8,2); });
-  // 떠다니는 메뉴
-  MENU.forEach((m,i)=>{ const x=8+i*25+(i%2?4:0), y=26+Math.round(Math.sin(t*2.2+i)*3); if (i===2||i===3) return; spr(c, ICON[m.id], {}, x, y); });
-  // 건물
+  const nC = Math.max(3, Math.round(3*TW/160));
+  for (let i=0;i<nC;i++){ const o=i*71%(TW+40), y=[8,16,4,12,6][i%5], sp=[1,.6,.8,.7,.9][i%5];
+    const x=((t*6*sp+o)%(TW+40))-30; c.fillStyle='#fff6e6'; c.fillRect(x,y,18,4); c.fillRect(x+3,y-2,10,2); c.fillRect(x+12,y+4,8,2); }
+  // 떠다니는 메뉴 (전체 폭에 흩뿌림)
+  const nI = Math.max(4, Math.round(4*TW/160));
+  for (let i=0;i<nI;i++){ const m=MENU[[0,1,4,5,2,3][i%6]]; const x=Math.round(8+i*(TW-26)/(nI-1)), y=26+Math.round(Math.sin(t*2.2+i)*3);
+    if (x>OX+44 && x<OX+116) continue; spr(c, ICON[m.id], {}, x, y); }
+  // 인도 (전체 폭)
+  for(let x=0;x<TW;x+=8){ c.fillStyle=(x/8)%2?'#d9c7a8':'#cbb894'; c.fillRect(x,98,8,8); }
+  drawStreetDecor(c, t);
+  // ---- 가게 (가운데) ----
+  c.save(); c.translate(OX,0);
   c.fillStyle='#5a4a3a'; c.fillRect(26,34,108,6);
   c.fillStyle='#f6e3c4'; c.fillRect(28,40,104,58);
   c.fillStyle='#ecd2a8'; for(let x=28;x<132;x+=8) c.fillRect(x,40,1,58);
-  // 간판
   c.fillStyle='#2b1d14'; c.fillRect(47,38,66,17); c.fillStyle='#e4002b'; c.fillRect(48,39,64,15);
   const glow = Math.floor(t*3)%2;
   spr(c, ICON.burger, {}, 51, 42);
   c.fillStyle= glow?'#fff8e8':'#ffd34d'; c.font='10px Galmuri9'; c.fillText('햄부기',64,51);
   spr(c, ICON.chicken, {}, 99, 42);
-  // 차양
   for(let x=28;x<132;x+=6){ c.fillStyle=(x/6)%2?'#fff8e8':'#e4002b'; c.fillRect(x,58,6,6); c.fillRect(x+1,64,4,2); }
-  // 왼쪽 창 + 알바생
   c.fillStyle='#5a4a3a'; c.fillRect(32,68,30,24); c.fillStyle='#a7d3e8'; c.fillRect(34,70,26,20);
   c.save(); c.beginPath(); c.rect(34,70,26,20); c.clip();
   spr(c, WORKER, skinPal(), 41, 72+(Math.floor(t*3)%2));
-  // 손 흔들기
   if (Math.floor(t*4)%2){ c.fillStyle='#f2c29b'; c.fillRect(54,78,2,2); c.fillRect(55,76,2,2); }
   c.restore();
   c.fillStyle='#d6eef8'; c.fillRect(35,71,2,12);
-  // 문
   c.fillStyle='#5a4a3a'; c.fillRect(68,66,24,32); c.fillStyle='#8fc1d6'; c.fillRect(70,68,9,30); c.fillRect(81,68,9,30);
   c.fillStyle='#ffd34d'; c.fillRect(77,82,1,3); c.fillRect(82,82,1,3);
-  c.fillStyle='#2bb3a3'; c.fillRect(70,60+0,0,0);
-  // 오른쪽 창: OPEN 사인
   c.fillStyle='#5a4a3a'; c.fillRect(98,68,30,24); c.fillStyle='#a7d3e8'; c.fillRect(100,70,26,20);
   c.fillStyle='#2b1d14'; c.fillRect(103,74,20,9); c.fillStyle=Math.floor(t*2)%2?'#ff5a6e':'#ff9fb0'; c.font='7px Galmuri9'; c.fillText('OPEN',104,81);
   spr(c, ICON.cola, {}, 104, 84-3); spr(c, ICON.fries, {}, 114, 84-2);
-  // 인도 / 도로
-  for(let x=0;x<160;x+=8){ c.fillStyle=(x/8)%2?'#d9c7a8':'#cbb894'; c.fillRect(x,98,8,8); }
-  c.fillStyle='#4a4a55'; c.fillRect(0,106,160,14);
-  c.fillStyle='#e8e8e8'; for(let x=-((t*30)%16);x<160;x+=16) c.fillRect(Math.round(x),112,8,1);
+  c.restore();
+  // 도로 (전체 폭)
+  c.fillStyle='#4a4a55'; c.fillRect(0,106,TW,14);
+  c.fillStyle='#e8e8e8'; for(let x=-((t*30)%16);x<TW;x+=16) c.fillRect(Math.round(x),112,8,1);
   // 걷는 손님
   tWalkers.forEach(w=> spr(c, w.look.rows, w.look, w.x, 80-(Math.floor(t*8+w.x)%2), w.dir>0));
   // 배달 라이더
   spr(c, SCOOTER, {}, tRider-2, 108); spr(c, RIDER.slice(0,14), {P:'#2e3a59'}, tRider, 96);
-  // 배기 연기
   c.fillStyle='rgba(255,255,255,.6)'; c.fillRect(tRider-6-((t*20)%6), 113, 2, 2);
 }
 // PC에서는 주문표를 조작부(쟁반) 바로 위로 옮겨 시선 흐름을 '주문 → 담기 → 전달'로

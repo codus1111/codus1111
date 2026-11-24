@@ -316,6 +316,7 @@
         background:var(--paper);border:3px solid var(--line);box-shadow:inset -3px -3px 0 #e3cfa6;padding:0}
   .mute:active{box-shadow:inset 3px 3px 0 #e3cfa6}
   .mute.inbar{position:static;width:30px;height:22px;font-size:13px;border-width:2px;box-shadow:none;flex:none}
+  .entry .er.hide{display:none}
 </style>
 </head>
 <body>
@@ -409,7 +410,7 @@
 <div class="ov hide" id="rankOv">
   <div class="box card">
     <div class="rank" id="rankStart"></div>
-    <p class="dim small">랭킹은 이 기기(브라우저)에 저장돼요.</p>
+    <p class="dim small" id="rankNote">랭킹은 이 기기(브라우저)에 저장돼요.</p>
     <div class="trow"><button class="btn b-clear" data-close="rankOv">닫기</button></div>
   </div>
 </div>
@@ -520,11 +521,32 @@ function rankAdd(name, score){
   return e.id;
 }
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function rankHTML(meId){
-  const r=rankGet();
-  const rows = r.length ? r.map((e,i)=>`<li class="${e.id===meId?'me':''}"><span class="r">${i+1}위</span><span>${esc(e.name)}</span><b>${e.score.toLocaleString()}원</b></li>`).join('')
+function rankHTML(meId, list, label){
+  const r = list || rankGet();
+  const rows = r.length ? r.map((e,i)=>`<li class="${meId!=null && e.id===meId?'me':''}"><span class="r">${i+1}위</span><span>${esc(e.name)}</span><b>${Number(e.score).toLocaleString()}원</b></li>`).join('')
                         : '<div class="empty">아직 기록이 없어요. 첫 1위가 되어 보세요!</div>';
-  return `<h3>🏆 매출 랭킹 TOP ${RANK_N}</h3><ol>${rows}</ol>`;
+  return `<h3>🏆 ${label||'매출 랭킹'} TOP ${RANK_N}</h3><ol>${rows}</ol>`;
+}
+
+// ---- 전체 공개 랭킹 (Supabase) : url/key를 넣으면 켜지고, 비어 있거나 연결 실패 시 이 기기 랭킹으로 ----
+// key는 Supabase의 공개용 anon key (브라우저에 노출되도록 설계된 키). 테이블 권한은 '읽기 + 추가'만 허용.
+const RANK_API = { url:'', key:'' };
+const ONLINE = !!(RANK_API.url && RANK_API.key);
+const apiH = () => ({ apikey:RANK_API.key, Authorization:'Bearer '+RANK_API.key, 'Content-Type':'application/json' });
+async function onlineTop(){
+  const r = await fetch(`${RANK_API.url}/rest/v1/scores?select=id,name,score&order=score.desc,created_at.asc&limit=${RANK_N}`, {headers:apiH()});
+  if (!r.ok) throw new Error('rank '+r.status); return r.json();
+}
+async function onlineSubmit(name, score, keepalive){
+  const r = await fetch(`${RANK_API.url}/rest/v1/scores`, {method:'POST', keepalive:!!keepalive,
+    headers:{...apiH(), Prefer:'return=representation'}, body:JSON.stringify({name, score})});
+  if (!r.ok) throw new Error('submit '+r.status); const j = await r.json(); return j[0];
+}
+async function renderRank(el, meId){
+  if (!ONLINE){ el.innerHTML = rankHTML(meId, null, '매출 랭킹'); return; }
+  el.innerHTML = '<h3>🌐 전체 랭킹 TOP '+RANK_N+'</h3><div class="empty">불러오는 중…</div>';
+  try{ el.innerHTML = rankHTML(meId, await onlineTop(), '🌐 전체 랭킹'); }
+  catch(e){ el.innerHTML = rankHTML(null, null, '이 기기 랭킹') + '<div class="empty">전체 랭킹 서버에 연결하지 못했어요</div>'; }
 }
 
 function newState(){
@@ -837,25 +859,54 @@ function end(byLife){
   else if (S.wrong) tip=`맞는 주문이 없어 버린 쟁반이 ${S.wrong}번 있었어요. 담기 전에 주문표를 한 번 더 확인!`;
   else tip='깔끔한 영업이었어요! 콤보를 이어서 최고 매출에 도전해 보세요.';
   $('endTip').textContent=tip;
-  // TOP 5면 바로 자동 기록, 이름 변경은 선택
+  // 이 기기 랭킹은 항상 기록 (오프라인 대비)
   S.rankId = qualifies(S.score) ? rankAdd('', S.score) : null;
-  $('entry').classList.toggle('hide', !S.rankId);
-  if (S.rankId){
-    const rk=rankGet(), place=rk.findIndex(x=>x.id===S.rankId)+1, me=rk[place-1];
-    $('entryMsg').innerHTML=`🏆 ${place}위! <b>${esc(me.name)}</b>(으)로 기록했어요`;
-    $('nameIn').value='';
+  $('nameIn').value='';
+  if (ONLINE){
+    // 전체 랭킹: 이름은 선택. '등록'을 누르거나, 다음 판/처음으로 가면 기본 이름으로 자동 등록
+    S.submit = S.score>0 ? {score:S.score, done:false} : null;
+    $('entry').classList.toggle('hide', !S.submit);
+    $('entryMsg').innerHTML = `🌐 전체 랭킹에 올라가요 · 이름은 선택 (안 쓰면 <b>${esc(defaultName())}</b>)`;
+    $('btnSave').textContent='등록';
+    renderRank($('rankEnd'));
+  } else {
+    $('entry').classList.toggle('hide', !S.rankId);
+    if (S.rankId){
+      const rk=rankGet(), place=rk.findIndex(x=>x.id===S.rankId)+1, me=rk[place-1];
+      $('entryMsg').innerHTML=`🏆 ${place}위! <b>${esc(me.name)}</b>(으)로 기록했어요`;
+    }
+    $('rankEnd').innerHTML = rankHTML(S.rankId);
   }
-  $('rankEnd').innerHTML = rankHTML(S.rankId);
   $('endOv').classList.remove('hide');
 }
+async function submitOnline(name, keepalive){
+  const sub = S && S.submit; if (!sub || sub.done) return; sub.done = true;
+  const nm = (name || defaultName()).slice(0,8);
+  try{
+    const row = await onlineSubmit(nm, sub.score, keepalive); sub.id=row && row.id;
+    if (S && S.submit===sub && !$('endOv').classList.contains('hide')){
+      $('entryMsg').innerHTML = `✔ <b>${esc(nm)}</b>(으)로 전체 랭킹에 등록했어요`;
+      $('entry').querySelector('.er').classList.add('hide');
+      renderRank($('rankEnd'), sub.id);
+    }
+  }catch(e){
+    sub.done=false;
+    if (!$('endOv').classList.contains('hide')) $('entryMsg').textContent='등록에 실패했어요. 다시 눌러 주세요.';
+  }
+}
+function flushSubmit(){ if (ONLINE && S && S.submit && !S.submit.done) submitOnline('', true); }
 function saveRank(){
-  const v=$('nameIn').value.trim(); if (!S.rankId || !v) return;
+  const v=$('nameIn').value.trim();
+  if (ONLINE){ if (v){ try{ localStorage.setItem('hbr_name', v.slice(0,8)); }catch(e){} } submitOnline(v); $('nameIn').blur(); return; }
+  if (!S.rankId || !v) return;
   rankRename(S.rankId, v); $('nameIn').blur(); $('nameIn').value='';
   const me=rankGet().find(x=>x.id===S.rankId);
   $('entryMsg').innerHTML = me ? `✔ <b>${esc(me.name)}</b>(으)로 바꿨어요` : '';
   $('rankEnd').innerHTML = rankHTML(S.rankId);
 }
+document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState==='hidden') flushSubmit(); });
 function start(){
+  flushSubmit();
   SND.play('game'); SND.setRush(false);
   const mb=$('muteBtn'); document.querySelector('.rushbar').append(mb); mb.classList.add('inbar');
   S=newState(); S.running=true; tKey='';
@@ -865,9 +916,9 @@ function start(){
 }
 $('btnStart').onclick=start; $('btnRetry').onclick=start; $('btnTitleStart').onclick=start;
 $('btnHow').onclick=()=>$('howOv').classList.remove('hide');
-$('btnRank').onclick=()=>{ $('rankStart').innerHTML=rankHTML(); $('rankOv').classList.remove('hide'); };
+$('btnRank').onclick=()=>{ renderRank($('rankStart')); $('rankOv').classList.remove('hide'); };
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.add('hide'));
-$('btnHome').onclick=showTitle;
+$('btnHome').onclick=()=>{ flushSubmit(); showTitle(); };
 $('btnSave').onclick=saveRank;
 $('nameIn').addEventListener('keydown',e=>{ e.stopPropagation(); if (e.key==='Enter'){ e.preventDefault(); saveRank(); } });
 $('btnGo').addEventListener('pointerdown',e=>{e.preventDefault(); give();});
@@ -961,6 +1012,7 @@ const SND = (() => {
       case 'restock': [72,76,79,84].forEach((m,i)=>tone(sfxG,'triangle',hz(m),t+i*.06,.15,.18)); break;
       case 'rush': [72,76,79,84,88,91].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.07,.2,.12)); noise(sfxG,t+.42,.3,.15,2000); break;
       case 'click': tone(sfxG,'square',hz(84),t,.03,.08); break;
+      case 'button': tone(sfxG,'square',hz(79),t,.04,.09); tone(sfxG,'square',hz(86),t+.04,.06,.08); break;   // 버튼: 삑뽁
       case 'combo': tone(sfxG,'square',hz(84+(arg||0)),t,.06,.08); break;
       case 'end': [79,84,83,84,88].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.13,.22,.12)); break;
       case 'over': [67,63,60,55].forEach((m,i)=>tone(sfxG,'square',hz(m),t+i*.18,.3,.12)); break;
@@ -1059,8 +1111,9 @@ mqPC.addEventListener ? mqPC.addEventListener('change',placeTickets) : mqPC.addL
 placeTickets();
 build(); S=newState(); renderUI(true); draw();
 if (document.fonts) document.fonts.ready.then(()=>draw());
-$('rankStart').innerHTML = rankHTML();
+$('rankStart').innerHTML = rankHTML(null, null, ONLINE?'🌐 전체 랭킹':'매출 랭킹');
 showTitle();
+if (ONLINE) $('rankNote').textContent='전체 랭킹 · 누구나 같은 순위를 봐요';
 
 function syncMute(){ $('muteBtn').textContent = SND.isMuted() ? '🔇' : '🔊'; }
 $('muteBtn').addEventListener('click', e=>{ e.stopPropagation(); SND.init(); SND.setMuted(!SND.isMuted()); syncMute();
@@ -1072,6 +1125,12 @@ function unlockAudio(){
   window.removeEventListener('pointerdown', unlockAudio); window.removeEventListener('keydown', unlockAudio);
 }
 window.addEventListener('pointerdown', unlockAudio); window.addEventListener('keydown', unlockAudio);
+// 일반 버튼 누를 때 효과음 (메뉴 담기·전달·품절 처리·채널 토글은 각자 고유 효과음이 있어서 제외)
+document.addEventListener('pointerdown', e=>{
+  const btn = e.target.closest && e.target.closest('button'); if (!btn || btn.disabled) return;
+  if (btn.matches('.food, .tg, #btnGo, #btnSorry')) return;
+  if (SND.init()) SND.sfx('button');
+}, true);
 })();
 </script>
 </body>

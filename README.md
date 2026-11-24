@@ -36,7 +36,22 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content.svg" width="360" height="28" alt="03 · CONTENT / AI AUTOMATION" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-game.svg" width="360" height="28" alt="03 · GAME / AI COLLABORATION" />
+
+### 햄부기 러시
+패스트푸드 매장 알바 경험으로 기획하고 AI(Claude Code)와 함께 만든 도트 피크타임 게임. 품절이 나면 **키오스크와 배달앱을 둘 다 꺼야 하는 멀티채널 운영**을 게임 규칙으로 옮겼습니다. [게임 설명](hamburgi-rush/README.md)
+
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-game.svg" width="654" height="172" alt="아이디어 출처 패스트푸드 알바 2년 7개월 · 직접 플레이 후 개선 14번 · 상점 아이템 스킨과 인테리어 12종 · 외부 이미지와 음원 0개" />
+
+<a href="https://codus1111.github.io/codus1111/hamburgi-rush/"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-play.svg" width="164" height="38" alt="햄부기 러시 게임 하러 가기" /></a>
+&nbsp;
+<a href="https://github.com/codus1111/codus1111/tree/main/hamburgi-rush#readme"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-game-readme.svg" width="164" height="38" alt="햄부기 러시 게임 설명 보기" /></a>
+
+<img src="https://img.shields.io/badge/JavaScript-2F6F6B?style=flat-square&labelColor=1E3B39&logo=javascript&logoColor=white" alt="JavaScript" /> <img src="https://img.shields.io/badge/Canvas%20%C2%B7%20Web%20Audio-2F6F6B?style=flat-square&labelColor=1E3B39&logo=html5&logoColor=white" alt="Canvas · Web Audio" /> <img src="https://img.shields.io/badge/Supabase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=supabase&logoColor=white" alt="Supabase" /> <img src="https://img.shields.io/badge/Firebase-2F6F6B?style=flat-square&labelColor=1E3B39&logo=firebase&logoColor=white" alt="Firebase" /> <img src="https://img.shields.io/badge/Clarity-2F6F6B?style=flat-square&labelColor=1E3B39&logo=microsoft&logoColor=white" alt="Microsoft Clarity" /> <img src="https://img.shields.io/badge/Claude%20Code-2F6F6B?style=flat-square&labelColor=1E3B39&logo=anthropic&logoColor=white" alt="Claude Code" />
+
+---
+
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-content-04.svg" width="360" height="28" alt="04 · CONTENT / AI AUTOMATION" />
 
 ### 솔트웨어 인사이트
 리서치·글쓰기·이미지 제작을 분담한 AI 에이전트 팀과 블로그 콘텐츠 **12편**. [프로젝트 설명](saltware-blog/README.md)
@@ -49,7 +64,7 @@
 
 ---
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills.svg" width="360" height="28" alt="04 · CLAUDE CODE SKILLS" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/section-skills-05.svg" width="360" height="28" alt="05 · CLAUDE CODE SKILLS" />
 
 ### 클로드 코드 스킬
 직접 만든 스킬을 종류별로 모았습니다. 종류를 눌러 펼쳐 보세요. 전체 안내는 [스킬 폴더](https://github.com/codus1111/codus1111/tree/main/claude-skills)에 있습니다.
@@ -87,7 +102,7 @@
 ---
 
 <sub>¹ 5겹 교차검증의 평균 절대 오차율이며, 서비스에는 별도 혼합 보정을 적용합니다. ² 28문항을 한 번씩 실행한 결과입니다. ³ 질문 9·15·12개로 세 번 평가하며 2차에서 찾은 문제를 고쳤습니다. 각 1회 실행이고 3차는 고친 문제를 겨냥한 질문이라 일반화는 어렵습니다.<br>
-연봉 AI의 AI 기능은 비밀번호가 필요할 수 있습니다. 블로그는 학습용 비공식 시안입니다.<br>타슈 분석은 개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 타슈 대여이력(공공데이터포털), Weather data by Open-Meteo.com (CC BY 4.0). 대여소 재고는 알 수 없어 순유출 압력으로 추정했습니다.</sub>
+연봉 AI의 AI 기능은 비밀번호가 필요할 수 있습니다. 블로그는 학습용 비공식 시안입니다.<br>햄부기 러시는 개인 학습 프로젝트로 특정 패스트푸드 브랜드와 무관하며, 메뉴 가격은 대략적인 참고값입니다.<br>타슈 분석은 개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 타슈 대여이력(공공데이터포털), Weather data by Open-Meteo.com (CC BY 4.0). 대여소 재고는 알 수 없어 순유출 압력으로 추정했습니다.</sub>
 
 ---
 

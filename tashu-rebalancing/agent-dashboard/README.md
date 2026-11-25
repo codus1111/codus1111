@@ -20,6 +20,7 @@
 | 에이전트를 실행하며 기록 남기기 | `python src/agent.py "질문"` → `agent-dashboard/traces/`에 JSONL이 쌓임 |
 | 실행하는 동안 실시간으로 보기 | `python agent-dashboard/serve.py`를 켜고 http://localhost:4173 열기 |
 | 끝난 실행을 보기(서버 없이) | 대시보드 위쪽 **"실행 기록 열기"**로 `.jsonl` 파일 고르기 |
+| 공개할 글을 규칙으로 확인받기 | 맨 위 **"AI 보내기 전 확인"** 칸에 글을 붙여 넣고 **"확인 글 만들기"** → 복사된 글을 Claude 새 채팅에 붙여 넣기. 화면 안에서 AI를 부르지 않고, 키·토큰처럼 보이는 문자열이 있으면 만들지 않습니다(설계서 `docs/design/spec.md`) |
 | 샘플로 보기 | **"실제 기록 샘플 보기"** (`samples/real-run-2026-11-11.jsonl`, 실제 실행 1회) |
 
 Python만 있으면 됩니다(서버는 `http.server`). 서버는 내 컴퓨터(127.0.0.1)에서만 열립니다.

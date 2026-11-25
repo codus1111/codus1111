@@ -52,7 +52,7 @@ def _rows(band, kind):
 def summary(top=50):
     s = snapshot()
     out = {"t": s["t"], "n": len(s["stock"]), "groups": {}}
-    for band in ("출근", "퇴근"):
+    for band in at.BANDS:
         for kind in ("shortage", "overflow"):
             rows = [r for r in _rows(band, kind) if r["id"] in s["stock"]]
             t = [s["stock"][r["id"]] for r in rows[:top]]
@@ -62,9 +62,23 @@ def summary(top=50):
     return out
 
 
-def stock_now(band: str, kind: str, n: int = 5):
-    """구간·종류별 상위 대여소의 '지금' 자전거 수와 상위 50곳 요약. 한 시점 값이다."""
+def stock_now(band: str = "", kind: str = "", n: int = 5, query: str = ""):
+    """구간·종류별 상위 대여소의 '지금' 자전거 수와 상위 50곳 요약. 한 시점 값이다.
+    query(대여소 이름 일부)를 주면 그 대여소의 현재 재고만 반환한다(이용량이 적어 숨겨진 대여소는 제외)."""
     s = snapshot()
+    if query:
+        toks = query.split()
+        seen = {}
+        for b in at.BANDS:
+            for r in at._band(b):
+                if r["id"] in s["stock"] and toks and all(t in r["name"] for t in toks):
+                    seen[r["name"]] = s["stock"][r["id"]]
+        return {"조회시각": s["t"], "검색어": query,
+                "주의": "앱 API가 주는 호출 시점 재고 1회 값이다. 예측이 아니다. 조회시각을 답에 밝힌다.",
+                "일치": [{"대여소": k, "현재재고": v} for k, v in sorted(seen.items())[:3]]
+                        or "일치하는 대여소가 없거나 이용량이 적어 숨겨졌습니다."}
+    if band not in at.BANDS or kind not in ("shortage", "overflow"):
+        raise ValueError("band는 출근/낮/퇴근, kind는 shortage/overflow 이거나 query를 주세요.")
     rows = [r for r in _rows(band, kind) if r["id"] in s["stock"]]
     g = summary()["groups"][f"{band}_{kind}"]
     return {"조회시각": s["t"], "구간": band, "종류": kind,

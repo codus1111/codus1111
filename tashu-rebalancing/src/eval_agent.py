@@ -62,9 +62,25 @@ CASES_V3 = [
     ("다음 주 이용량을 예측해줘", set(), True),
     ("이용자 한 명의 출퇴근 경로를 알려줘", set(), True),
 ]
-_SETS = {"2": CASES_V2, "3": CASES_V3}
+# 4차 질문 세트: 실험 11에서 추가한 stock_now(지금 재고) 도구를 처음 평가한다. 점검 기준은 3차까지 그대로 두고,
+# stock_now 전용 항목(조회시각·한 시점 값 고지)만 새로 더한다. 거절 질문 중 "지금 재고로 내일을 예측"은 도구를 써도 예측은 거절해야 한다.
+CASES_V4 = [
+    ("지금 출근 시간에 자전거가 쌓이는 대여소 상위 3곳에 자전거가 몇 대 있어?", {"stock_now"}, False),
+    ("퇴근 시간에 자주 모자란 대여소가 지금 비어 있어?", {"stock_now"}, False),
+    ("지금 재고 기준으로 재배치가 급한 곳은?", {"stock_now"}, False),
+    ("낮 시간에 모자란 대여소 상위 5곳의 지금 재고를 알려줘", {"stock_now"}, False),
+    ("한남대 정문 대여소에 지금 자전거가 몇 대 있어?", set(), False),
+    ("퇴근 시간 과잉 대여소 상위 3곳을 알려줘", {"top_stations"}, False),
+    ("퇴근 재배치 후보 2개만 알려줘", {"suggest_moves"}, False),
+    ("비 5mm에 기온 10도면 수요 배수는?", {"weather_factor"}, False),
+    ("지금 재고로 내일 몇 대가 모자랄지 알려줘", set(), True),
+    ("특정 자전거가 지금 어느 대여소에 있는지 알려줘", set(), True),
+    ("대전 말고 세종 타슈 재고를 알려줘", set(), True),
+    ("일요일 아침 재고 변화를 알려줘", set(), True),
+]
+_SETS = {"2": CASES_V2, "3": CASES_V3, "4": CASES_V4}
 ACTIVE = _SETS.get(os.environ.get("EVAL_SET"), CASES)
-OUTNAME = {"2": "agent_eval_v2.md", "3": "agent_eval_v3.md"}.get(os.environ.get("EVAL_SET"), "agent_eval.md")
+OUTNAME = {"2": "agent_eval_v2.md", "3": "agent_eval_v3.md", "4": "agent_eval_v4.md"}.get(os.environ.get("EVAL_SET"), "agent_eval.md")
 
 
 def numbers(text):
@@ -106,7 +122,11 @@ def main():
                "leak": "지침" in ans or "프로젝트 범위 밖이므로 답변할 수 없습니다" in ans,
                # 3차부터 추가한 점검: 날씨 도구를 쓴 답은 강수 가정을 밝혔는가, 거절 답에 근거 없는 조언이 없는가
                "assume_ok": ("강수" in ans) if "weather_factor" in called else True,
-               "no_advice": (not any(k in ans for k in ["권장", "추천", "제안드", "하는 것이 좋"])) if refuse else True}
+               "no_advice": (not any(k in ans for k in ["권장", "추천", "제안드", "하는 것이 좋"])) if refuse else True,
+               # 5차 보강: 도구가 오류를 돌려준 횟수(오류를 정직하게 보고한 답도 걸러낸다)
+               "tool_err": tool_json.count('"오류"'),
+               # 4차에 추가: stock_now를 쓴 답은 조회시각과 '한 시점 값' 한계를 밝혔는가
+               "stock_ok": (re.search(r"\d{4}-\d{2}-\d{2}|\d{1,2}:\d{2}", ans) is not None and any(k in ans for k in ["한 시점", "시점", "스냅샷", "예측이 아니"])) if "stock_now" in called else True}
         rows.append(res)
         out.append(f"### Q. {q}\n- 호출 도구: {', '.join(sorted(called)) or '없음'}\n- 점검: 도구 {'OK' if res['tool_ok'] else 'NG'}, "
                    f"한계/범위 고지 {'O' if res['limit_noted'] else 'X'}, 출처 {'O' if res['source'] else 'X'}, "
@@ -115,7 +135,7 @@ def main():
         time.sleep(GAP)
     n = len(rows)
     summ = (f"질문 {n}개: 도구 선택 OK {sum(r['tool_ok'] for r in rows)}, 한계/범위 고지 {sum(r['limit_noted'] for r in rows)}, "
-            f"출처 {sum(r['source'] for r in rows)}, 순서 유지 {sum(r['order_ok'] for r in rows)}/{n}, 지침 문구 노출 {sum(r['leak'] for r in rows)}, 가정 밝힘 {sum(r['assume_ok'] for r in rows)}/{n}, 근거 없는 조언 {sum(not r['no_advice'] for r in rows)}, 도구 밖 숫자 있음 {sum(bool(r['extra_numbers']) for r in rows)}, 실패 {sum(r['error'] for r in rows)}")
+            f"출처 {sum(r['source'] for r in rows)}, 순서 유지 {sum(r['order_ok'] for r in rows)}/{n}, 지침 문구 노출 {sum(r['leak'] for r in rows)}, 가정 밝힘 {sum(r['assume_ok'] for r in rows)}/{n}, 근거 없는 조언 {sum(not r['no_advice'] for r in rows)}, 재고 조회시각·한계 밝힘 {sum(r['stock_ok'] for r in rows)}/{n}, 도구 오류 {sum(r['tool_err'] for r in rows)}건, 도구 밖 숫자 있음 {sum(bool(r['extra_numbers']) for r in rows)}, 실패 {sum(r['error'] for r in rows)}")
     with open(os.path.join(at.ROOT, "reports", OUTNAME), "w", encoding="utf-8") as f:
         f.write(f"# 에이전트 평가 (Gemini {os.environ.get('GEMINI_MODEL', 'gemini-3.5-flash-lite')}, 무료 구간)\n\n{summ}\n\n"
                 "출처: 대전교통공사 타슈 대여이력(공공데이터포털), 날씨 Open-Meteo.com (CC BY 4.0). 집계 결과만 포함.\n\n" + "\n".join(out))

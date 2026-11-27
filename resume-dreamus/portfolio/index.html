@@ -305,10 +305,10 @@
 <section id="about">
   <div class="wrap">
     <div class="stats">
-      <div class="card stat reveal"><b><span data-count="801">0</span><small>만 건</small></b><span>SQL로 집계한 이용 기록</span></div>
-      <div class="card stat reveal d1"><b><span data-count="2392">0</span><small>곳</small></b><span>추정치를 실제 공시와 비교한 회사</span></div>
-      <div class="card stat reveal d2"><b><span data-count="4">0</span><small>건</small></b><span>사용성 테스트 피드백 원인 분석·수정</span></div>
-      <div class="card stat reveal d3"><b><span data-count="20">0</span><small>번</small></b><span>직접 플레이·피드백으로 고친 횟수</span></div>
+      <div class="card stat reveal"><b><span>801</span><small>만 건</small></b><span>SQL로 집계한 이용 기록</span></div>
+      <div class="card stat reveal d1"><b><span>2,392</span><small>곳</small></b><span>추정치를 실제 공시와 비교한 회사</span></div>
+      <div class="card stat reveal d2"><b><span>4</span><small>건</small></b><span>사용성 테스트 피드백 원인 분석·수정</span></div>
+      <div class="card stat reveal d3"><b><span>20</span><small>번</small></b><span>직접 플레이·피드백으로 고친 횟수</span></div>
     </div>
 
     <div class="about">
@@ -610,16 +610,6 @@
   menuBtn.addEventListener("click", () => { const o = navEl.classList.toggle("open"); menuBtn.setAttribute("aria-expanded", String(o)); menuBtn.textContent = o ? "Close" : "Menu"; });
   navEl.querySelectorAll("ul a").forEach(a => a.addEventListener("click", closeMenu));
 
-  /* Counters */
-  const co = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
-    const el = e.target, end = +el.dataset.count, t0 = performance.now(), dur = 1600;
-    const fmt = n => n.toLocaleString("ko-KR");
-    const tick = t => { const p = Math.min((t - t0) / dur, 1); el.textContent = fmt(Math.round(end * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(tick); };
-    reduce ? (el.textContent = fmt(end)) : requestAnimationFrame(tick);
-    co.unobserve(el);
-  }), { threshold: .6 });
-  document.querySelectorAll("[data-count]").forEach(el => co.observe(el));
 
   /* Typing headline */
   (function () {

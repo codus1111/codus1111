@@ -100,6 +100,7 @@
   .stat b{display:block;font-size:40px;letter-spacing:-.04em;font-weight:800}
   .stat b small{font-size:22px;font-weight:700;margin-left:2px}
   .stat span{font-size:14px;color:var(--muted)}
+  .stat b span{font-size:inherit;color:inherit}
 
   .about{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;margin-top:72px}
   .about p{font-size:17px;margin-bottom:16px;color:#33333F}
@@ -244,6 +245,9 @@
     nav:not(.open) ul{display:none}
     .hero-grid,.about,.project{grid-template-columns:1fr}
     .stats,.stack{grid-template-columns:repeat(2,1fr)}
+    .stat{padding:20px}
+    .stat b{font-size:30px;white-space:nowrap}
+    .stat b small{font-size:17px}
     .flow,.detail,.principles,.fit,.ideas{grid-template-columns:1fr}
   }
   @media (prefers-reduced-motion:reduce){

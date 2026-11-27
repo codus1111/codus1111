@@ -28,7 +28,7 @@
 
 <a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/shot-salary-app.png?v=3" width="654" alt="회사 연봉 AI 서비스 첫 화면: 회사 이름으로 평균 연봉을 묻는 검색창과 업종·지역·규모 조건 검색" /></a>
 
-<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-salary.svg?v=3" width="654" height="172" alt="검증 기업 2,392곳 · 평균 절대 오차율 14.6%에서 11.1%로 개선 · 순위 상관 0.88 · AI 평가 28문항 중 27문항 통과" />
+<img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/metric-grid-salary.svg?v=3" width="654" height="172" alt="검증 기업 2,392곳 · 평균 절대 오차율 14.6%에서 11.4%로 개선 · 순위 상관 0.88 · AI 평가 28문항 중 27문항 통과" />
 
 <a href="https://yeon-salary-agent.streamlit.app"><img src="https://raw.githubusercontent.com/codus1111/codus1111/main/assets/link-service-v2.svg?v=3" width="164" height="38" alt="회사 연봉 AI 서비스 사용하기" /></a>
 &nbsp;
@@ -109,7 +109,7 @@
 
 ---
 
-<sub>¹ 5겹 교차검증의 평균 절대 오차율이며, 서비스에는 별도 혼합 보정을 적용합니다. ² 28문항을 한 번씩 실행한 결과입니다. ³ 질문 9·15·12개로 세 번 평가하며 2차에서 찾은 문제를 고쳤습니다. 각 1회 실행이고 3차는 고친 문제를 겨냥한 질문이라 일반화는 어렵습니다.<br>
+<sub>¹ 서비스에 쓰는 혼합 보정 모델의 5겹 교차검증 평균 절대 오차율입니다. ² 28문항을 한 번씩 실행한 결과입니다. ³ 질문 9·15·12개로 세 번 평가하며 2차에서 찾은 문제를 고쳤습니다. 각 1회 실행이고 3차는 고친 문제를 겨냥한 질문이라 일반화는 어렵습니다.<br>
 연봉 AI의 AI 기능은 비밀번호가 필요할 수 있습니다. 블로그는 학습용 비공식 시안입니다.<br>햄부기 러시는 개인 학습 프로젝트로 특정 패스트푸드 브랜드와 무관하며, 메뉴 가격은 대략적인 참고값입니다.<br>타슈 분석은 개인 학습 프로젝트이며 대전교통공사·대전광역시와 무관합니다. 출처: 대전교통공사 타슈 대여이력(공공데이터포털), Weather data by Open-Meteo.com (CC BY 4.0). 대여소 재고는 알 수 없어 순유출 압력으로 추정했습니다.</sub>
 
 ---

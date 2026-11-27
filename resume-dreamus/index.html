@@ -74,6 +74,9 @@
   .ti .when{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .ti strong{display:block;font-size:16px;letter-spacing:-.02em;margin-top:1px}
   .ti p{font-size:13.5px;color:var(--sub)}
+  .ti p.sum{color:var(--ink);font-weight:600;margin-top:2px}
+  .ti ul.roles{list-style:none;display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:6px}
+  .ti ul.roles li{font-size:12px;color:var(--sub);background:var(--bg);border-radius:999px;padding:2px 9px}
   .gpa{font-weight:700;color:var(--ink)}
   .gpa small{font-weight:500;color:var(--muted)}
   .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--soft);padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
@@ -250,7 +253,7 @@
       <div class="ti now"><span class="when">2026.10 ~ 2027.01</span><strong>CJ올리브네트웍스 L.L.M Academy<span class="tag">수강 중</span></strong><p>AX 교육 과정 · 교육기관 CJ올리브네트웍스</p></div>
       <div class="ti now"><span class="when">2024.03 ~ 2027.02</span><strong>충북대학교<span class="tag">편입 · 졸업예정</span></strong><p>정보통신공학부 · 학점 <span class="gpa">2.66 <small>/ 4.5</small></span></p></div>
       <div class="ti"><span class="when">2022.03 ~ 2024.02</span><strong>한남대학교</strong><p>정보통신공학과 · 학점 <span class="gpa">3.77 <small>/ 4.5</small></span></p></div>
-      <div class="ti"><span class="when">2024.03 ~ 2026.10</span><strong>롯데리아<span class="tag">매장 근무 · 2년 7개월</span></strong><p>고객 응대, 주문 처리, POS·키오스크 운영</p></div>
+      <div class="ti"><span class="when">2024.03 ~ 2026.10</span><strong>롯데리아 청주사창점<span class="tag">일반 메이트 · 2년 7개월</span></strong><p class="sum">고객 접점에서 주문 과정의 불편을 직접 겪고 대응하며 서비스 운영 관점을 익혔습니다.</p><ul class="roles"><li>고객 응대 및 주문 접수</li><li>POS 및 키오스크 운영</li><li>메뉴 및 상품 판매 관리</li><li>제품 제조 및 매장 운영</li><li>고객 요청 및 현장 문제 대응</li><li>동료와의 업무 분담 및 협업</li></ul></div>
     </div>
   </section>
 
@@ -259,25 +262,25 @@
     <div class="sh"><span>PROJECTS</span><h2>프로젝트</h2></div>
     <div class="projs">
       <article class="card p">
-        <div class="p-top"><span class="p-no">01</span><h3>회사 연봉 AI · AI 기반 연봉 정보 서비스</h3><p class="when">개인 프로젝트</p></div>
+        <div class="p-top"><span class="p-no">01</span><h3>회사 연봉 AI · AI 기반 연봉 정보 서비스</h3><p class="when">2026 · 개인 프로젝트</p></div>
         <p class="desc">국민연금 데이터로 회사별 평균 연봉을 추정하고, DART 공시 급여와 비교해 검증한 서비스</p>
         <p class="res"><span>상장사 2,392곳 검증, 평균 오차율 <b>14.6% → 11.4%</b></span></p>
         <div class="p-foot"><div class="chips"><span class="chip">SQL(SQLite)</span><span class="chip">Python</span><span class="chip">Streamlit</span><span class="chip">Clarity</span><span class="chip">Claude Code</span></div><a class="go" href="https://yeon-salary-agent.streamlit.app" target="_blank" rel="noopener">서비스 보기</a></div>
       </article>
       <article class="card p">
-        <div class="p-top"><span class="p-no">02</span><h3>타슈 공공자전거 수급 불균형 분석</h3><p class="when">개인 프로젝트</p></div>
+        <div class="p-top"><span class="p-no">02</span><h3>타슈 공공자전거 수급 불균형 분석</h3><p class="when">2026 · 개인 프로젝트</p></div>
         <p class="desc">대전 공영자전거 대여 기록으로 대여소별 이용 현황과 시간대·지역별 수요 차이를 분석</p>
         <p class="res"><span>대여 기록 <b>약 801만 건</b>, 대여소 <b>1,406곳</b>을 SQL로 집계해 대시보드로 정리</span></p>
         <div class="p-foot"><div class="chips"><span class="chip">SQL(DuckDB)</span><span class="chip">Python</span><span class="chip">Claude Code</span></div><a class="go" href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html" target="_blank" rel="noopener">대시보드 보기</a></div>
       </article>
       <article class="card p">
-        <div class="p-top"><span class="p-no">03</span><h3>햄부기 러시 · 햄버거 가게 시뮬레이션 웹게임</h3><p class="when">개인 프로젝트</p></div>
+        <div class="p-top"><span class="p-no">03</span><h3>햄부기 러시 · 햄버거 가게 시뮬레이션 웹게임</h3><p class="when">2026 · 개인 프로젝트</p></div>
         <p class="desc">매장 근무 경험을 바탕으로 기획하고 Claude Code로 제작·배포한 게임</p>
         <p class="res"><span>공개 초기 약 4시간 동안 <b>10명이 33판</b> 플레이, <b>7명</b> 재플레이</span></p>
         <div class="p-foot"><div class="chips"><span class="chip">Claude Code</span><span class="chip">Clarity</span><span class="chip">Supabase</span><span class="chip">Firebase</span><span class="chip">GitHub Pages</span></div><a class="go" href="https://codus1111.github.io/codus1111/hamburgi-rush/" target="_blank" rel="noopener">게임 플레이</a></div>
       </article>
       <article class="card p">
-        <div class="p-top"><span class="p-no">04</span><h3>음성인식 기반 주문 키오스크</h3><p class="when">졸업 프로젝트 · 팀</p></div>
+        <div class="p-top"><span class="p-no">04</span><h3>음성인식 기반 주문 키오스크</h3><p class="when">2025.01 ~ 2025.05 · 졸업 프로젝트(팀)</p></div>
         <p class="desc">고령자와 시각장애인을 위한 음성인식·터치 결합 카페 주문 웹 서비스</p>
         <p class="res"><span>프론트엔드 담당, <b>졸업 심사 통과</b></span></p>
         <div class="p-foot"><div class="chips"><span class="chip">HTML</span><span class="chip">JavaScript</span><span class="chip">Figma</span><span class="chip">ChatGPT API</span></div></div>

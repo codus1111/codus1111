@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김채연 포트폴리오 | 드림어스컴퍼니 고객 분석 담당자 인턴</title>
+<!--
+  모션 버전 (웹용).
+  - 히어로 타이핑 문구: 아래 <script>의 PHRASES
+  - 터미널 애니메이션: 아래 <script>의 TERMINAL
+  - 시스템에서 '동작 줄이기'를 켠 사람에게는 애니메이션이 자동으로 꺼집니다.
+-->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --bg:#F6F7FB; --surface:#FFFFFF; --surface-2:#F0F0FF;
+    --ink:#111118; --muted:#5E5E6B; --line:#E4E5EE;
+    --a1:#3F3FFF; --a2:#6B5CFF; --a3:#12A5A2;
+    --grad:linear-gradient(110deg,#3F3FFF,#6B5CFF 50%,#1FB5B3);
+    --radius:18px; --max:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Pretendard,-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;word-break:keep-all;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;position:relative}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:shine 6s linear infinite}
+  @keyframes shine{to{background-position:200% center}}
+
+  /* Background */
+  .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.16}
+  .blob.b1{width:520px;height:520px;background:#3F3FFF;top:-140px;left:-120px;animation:float1 18s ease-in-out infinite}
+  .blob.b2{width:460px;height:460px;background:#6B5CFF;top:30%;right:-160px;animation:float2 22s ease-in-out infinite}
+  .blob.b3{width:380px;height:380px;background:#2CD8D5;bottom:-120px;left:30%;animation:float3 20s ease-in-out infinite}
+  @keyframes float1{50%{transform:translate(120px,80px) scale(1.15)}}
+  @keyframes float2{50%{transform:translate(-140px,60px) scale(.9)}}
+  @keyframes float3{50%{transform:translate(80px,-100px) scale(1.1)}}
+  .grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:64px 64px;mask-image:radial-gradient(ellipse at 50% 0%,#000 20%,transparent 70%);opacity:.6}
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--grad);z-index:100;width:0}
+
+  /* Nav */
+  nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;
+    background:rgba(255,255,255,.82);box-shadow:0 6px 24px -12px rgba(20,20,60,.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--line);border-radius:999px;padding:8px 10px 8px 22px;display:flex;align-items:center;gap:28px}
+  .logo{font-weight:800;text-decoration:none;letter-spacing:-.02em}
+  nav ul{display:flex;gap:4px;list-style:none;font-size:14px;flex-wrap:nowrap}
+  nav ul li{white-space:nowrap}
+  nav ul a{white-space:nowrap;text-decoration:none;color:var(--muted);padding:7px 14px;border-radius:999px;transition:.2s}
+  nav ul a:hover,nav ul a.active{color:var(--ink);background:var(--surface-2)}
+
+  /* Hero */
+  .hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);border:1px solid var(--line);background:var(--surface);padding:6px 14px;border-radius:999px;margin-bottom:28px}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:#2CD8D5;animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(44,216,213,.6)}70%,100%{box-shadow:0 0 0 10px rgba(44,216,213,0)}}
+  .hero h1{font-size:clamp(36px,5vw,62px);line-height:1.17;letter-spacing:-.04em;font-weight:800}
+  .typed-line{display:block;min-height:1.17em}
+  .caret{display:inline-block;width:3px;height:.9em;background:var(--a1);margin-left:4px;vertical-align:-0.08em;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .hero p{margin-top:24px;font-size:18px;color:var(--muted);max-width:560px}
+  .cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
+  .btn{position:relative;display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:12px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid var(--line);background:var(--surface);transition:transform .2s,border-color .2s;overflow:hidden}
+  .btn:hover{transform:translateY(-2px);border-color:rgba(63,63,255,.45)}
+  .btn.primary{background:var(--a1);color:#fff;border-color:var(--a1)}
+  .btn.primary::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-100%);transition:transform .7s}
+  .btn.primary:hover::after{transform:translateX(100%)}
+
+  /* Terminal */
+  .terminal{background:#16162E;border:1px solid #16162E;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px -20px rgba(63,63,255,.5)}
+  .term-bar{display:flex;align-items:center;gap:7px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)}
+  .term-bar i{width:11px;height:11px;border-radius:50%;display:block}
+  .term-bar i:nth-child(1){background:#ff5f57}.term-bar i:nth-child(2){background:#febc2e}.term-bar i:nth-child(3){background:#28c840}
+  .term-bar span{margin-left:10px;font-size:12px;color:#9a9ab8;font-family:ui-monospace,Menlo,monospace}
+  .term-body{padding:18px 18px 22px;font-family:ui-monospace,"JetBrains Mono",Menlo,monospace;font-size:13px;line-height:1.75;min-height:320px;white-space:pre-wrap}
+  .t-user{color:#2CD8D5} .t-ai{color:#e4e4e7} .t-ok{color:#4ade80} .t-dim{color:#8b8b96} .t-key{color:#a5a5ff} .t-warn{color:#fbbf24}
+
+  /* Marquee */
+  .marquee{border-block:1px solid var(--line);padding:22px 0;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+  .marquee-track{display:flex;gap:48px;width:max-content;animation:marquee 32s linear infinite}
+  .marquee span{font-size:20px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .marquee span::before{content:"✦";margin-right:48px;color:var(--a1)}
+  @keyframes marquee{to{transform:translateX(-50%)}}
+
+  /* Sections */
+  section{padding:120px 0}
+  .sec-head{margin-bottom:48px}
+  .sec-head .num{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--a1);letter-spacing:.1em}
+  .sec-head h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.035em;line-height:1.2;margin-top:8px}
+  .lead{font-size:17px;color:var(--muted);max-width:680px;margin-top:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 2px rgba(20,20,60,.04),0 10px 30px -20px rgba(20,20,60,.18);position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+  .card:hover{border-color:rgba(63,63,255,.4)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .stat{padding:28px}
+  .stat b{display:block;font-size:40px;letter-spacing:-.04em;font-weight:800}
+  .stat b small{font-size:22px;font-weight:700;margin-left:2px}
+  .stat span{font-size:14px;color:var(--muted)}
+
+  .about{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;margin-top:72px}
+  .about p{font-size:17px;margin-bottom:16px;color:#33333F}
+  .about ul{list-style:none;display:grid;gap:12px}
+  .about li{padding:18px 20px;font-size:15px;color:var(--muted)}
+  .about li b{display:block;color:var(--ink);margin-bottom:2px}
+
+  .stack{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .stack .card{padding:24px}
+  .stack h3{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:16px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tag{font-size:13px;padding:5px 11px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+  .stack .ai{border-color:rgba(123,123,255,.5);background:linear-gradient(160deg,rgba(63,63,255,.08),rgba(44,216,213,.06))}
+
+  .flow{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding-top:28px}
+  .flow-line{position:absolute;top:0;left:0;right:0;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+  .flow-line i{display:block;height:100%;width:0;background:var(--grad);transition:width 1.8s cubic-bezier(.2,.8,.2,1)}
+  .flow.in .flow-line i{width:100%}
+  .step{padding:24px 20px}
+  .step .n{font-family:ui-monospace,Menlo,monospace;font-size:12px;font-weight:700}
+  .step h3{font-size:17px;margin:10px 0 8px}
+  .step p{font-size:14px;color:var(--muted)}
+
+  .projects{display:grid;gap:28px}
+  .project{display:grid;grid-template-columns:420px 1fr;gap:36px;padding:28px}
+  .project:hover{transform:translateY(-4px)}
+  .thumb{aspect-ratio:4/3;border-radius:14px;position:relative;overflow:hidden;padding:2px}
+  .thumb::before{content:"";position:absolute;inset:-50%;background:conic-gradient(from 0deg,#3F3FFF,#6B5CFF,#2CD8D5,#3F3FFF);animation:spin 8s linear infinite}
+  .thumb img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:12px;display:block;transition:transform .6s}
+  .project:hover .thumb img{transform:scale(1.04)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .project .meta{font-size:13px;color:var(--a1);font-weight:600;letter-spacing:.04em;margin-bottom:6px}
+  .project h3{font-size:26px;letter-spacing:-.03em;margin-bottom:10px}
+  .project .desc{color:var(--muted);margin-bottom:20px}
+  .detail{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+  .detail div{border-left:2px solid var(--a1);padding-left:12px;font-size:14px;color:#33333F}
+  .detail b{display:block;font-size:12px;color:var(--a1);margin-bottom:2px}
+  .links{display:flex;gap:18px;margin-top:18px;font-size:14px;font-weight:600;flex-wrap:wrap}
+  .links a{text-decoration:none;background:var(--grad);background-size:0 1px;background-repeat:no-repeat;background-position:0 100%;transition:background-size .3s;padding-bottom:2px}
+  .links a:hover{background-size:100% 1px}
+
+  .principles{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .principle{padding:28px}
+  .principle .big{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.04em;opacity:.35}
+  .principle h3{font-size:18px;margin:12px 0 6px}
+  .principle p{font-size:15px;color:var(--muted)}
+  .principle code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--surface-2);padding:2px 6px;border-radius:5px;color:var(--ink)}
+
+  .contact{text-align:center;padding:160px 0 120px}
+  .contact h2{font-size:clamp(34px,5.4vw,68px);letter-spacing:-.045em;line-height:1.15;font-weight:800}
+  .contact p{color:var(--muted);margin:22px 0 36px;font-size:17px}
+  .contact .cta{justify-content:center}
+  footer{padding:32px 0;font-size:12px;color:var(--muted);text-align:center;border-top:1px solid var(--line);line-height:1.7}
+
+  .reveal{opacity:0;transform:translateY(36px);filter:blur(6px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1),filter .9s}
+  .reveal.in{opacity:1;transform:none;filter:none}
+  .project.reveal.in{transition:opacity .9s,filter .9s,transform .3s,border-color .3s}
+  .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+  /* Hero scroll hint */
+  .hero{position:relative}
+  .scroll-hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.18em}
+  .scroll-hint i{width:22px;height:34px;border:1.5px solid var(--muted);border-radius:12px;position:relative}
+  .scroll-hint i::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;border-radius:2px;background:var(--ink);animation:wheel 1.6s infinite}
+  @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,11px)}}
+
+  /* Project media + result graphs */
+  .media{display:grid;gap:16px;align-content:start}
+  .viz{padding:18px 20px;border-radius:14px;background:#FAFAFE;border:1px solid var(--line)}
+  .viz h4{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;gap:10px}
+  .viz h4 em{font-style:normal;color:var(--a3);letter-spacing:0;white-space:nowrap}
+  .bar{display:grid;grid-template-columns:104px 1fr 52px;align-items:center;gap:10px;font-size:13px;margin-top:9px}
+  .bar span{color:var(--muted)}
+  .bar .track{height:10px;border-radius:6px;background:#ECEDF4;overflow:hidden}
+  .bar .track i{display:block;height:100%;width:0;border-radius:6px;background:var(--grad);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+  .bar .track i.dim{background:#C3C4D3}
+  .viz.in .bar .track i{width:var(--w)}
+  .viz.in .bar:nth-of-type(2) .track i{transition-delay:.15s}
+  .viz.in .bar:nth-of-type(3) .track i{transition-delay:.3s}
+  .viz.in .bar:nth-of-type(4) .track i{transition-delay:.45s}
+  .bar b{text-align:right;font-variant-numeric:tabular-nums;font-size:14px}
+  .viz .sub{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6}
+  .vline{display:flex;gap:4px;margin:12px 0 8px}
+  .vline i{flex:1;height:12px;border-radius:3px;background:#E4E5EE;transition:background .25s,box-shadow .25s}
+  .viz.in .vline i{background:var(--a1)}
+  .viz.in .vline i.hot{background:#2CD8D5;box-shadow:0 0 10px rgba(44,216,213,.6)}
+  .vlabels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .hot-key{display:inline-block;width:9px;height:9px;border-radius:2px;background:#2CD8D5;margin-right:6px;vertical-align:0}
+
+  /* Skills */
+  .skills{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .skill{padding:26px;display:flex;flex-direction:column;gap:12px}
+  .skill .kind{font-size:12px;color:var(--a1);font-weight:700;letter-spacing:.08em}
+  .skill h3{font-family:ui-monospace,"JetBrains Mono",Menlo,monospace;font-size:17px;letter-spacing:-.01em}
+  .skill p{font-size:14.5px;color:var(--muted)}
+  .skill code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:5px;color:var(--ink)}
+  .skill .trigger{margin-top:auto;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#16162E;border:1px solid #16162E;border-radius:10px;padding:10px 12px;color:#2CD8D5}
+  .skill .trigger::before{content:"> ";color:#9a9ab8}
+  .skills-foot{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:20px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+  .skills-foot a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--a1)}
+
+  /* Mobile menu + back to top */
+  .menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer}
+  .to-top{position:fixed;right:24px;bottom:24px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 6px 20px -10px rgba(20,20,60,.3);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:18px;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .3s,transform .3s,border-color .2s;z-index:40}
+  .to-top.show{opacity:1;transform:none;pointer-events:auto}
+  .to-top:hover{border-color:var(--a1)}
+
+  /* Fit (JD mapping) */
+  .fit{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .fit .card{padding:26px;display:flex;flex-direction:column;gap:10px}
+  .fit .jd{font-size:12px;color:var(--a3);font-weight:700;letter-spacing:.06em}
+  .fit h3{font-size:19px;letter-spacing:-.02em}
+  .fit ul{list-style:none;display:grid;gap:8px;font-size:14.5px;color:#33333F}
+  .fit li{padding-left:16px;position:relative}
+  .fit li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--a1)}
+  .fit li b{color:var(--ink)}
+  .fit .ev{margin-top:auto;font-size:13px;font-weight:600;display:flex;gap:14px;flex-wrap:wrap}
+  .fit .ev a{text-decoration:none;border-bottom:1px solid var(--a1)}
+  .ideas-head{margin:64px 0 20px}
+  .ideas-head h3{font-size:24px;letter-spacing:-.03em}
+  .ideas-head p{font-size:14.5px;color:var(--muted);margin-top:6px}
+  .ideas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .idea{padding:24px;border-style:dashed;border-color:#C9C9FF;box-shadow:none}
+  .idea .kind{font-size:12px;color:var(--a2);font-weight:700;letter-spacing:.06em}
+  .idea h4{font-size:17px;margin:8px 0 6px}
+  .idea p{font-size:14px;color:var(--muted)}
+  .idea .from{display:block;margin-top:12px;font-size:12.5px;color:var(--a1)}
+  .voc{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+  .voc th{text-align:left;font-size:11.5px;color:var(--muted);font-weight:600;padding:0 8px 6px 0;letter-spacing:.04em}
+  .voc td{padding:7px 8px 7px 0;border-top:1px solid var(--line);vertical-align:top;color:#33333F}
+  .voc td:first-child{color:var(--ink)}
+
+  .ai-used{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+  .ai-used .ai-tag{border-style:dashed;background:transparent;margin:0}
+
+  @media (max-width:920px){
+    nav{width:calc(100% - 32px);justify-content:space-between}
+    .menu-btn{display:block}
+    nav.open ul{display:flex;position:absolute;top:calc(100% + 8px);left:0;right:0;flex-direction:column;background:rgba(255,255,255,.98);box-shadow:0 14px 30px -14px rgba(20,20,60,.3);border:1px solid var(--line);border-radius:18px;padding:8px}
+    .skills{grid-template-columns:1fr}
+    .scroll-hint{display:none}
+    nav:not(.open) ul{display:none}
+    .hero-grid,.about,.project{grid-template-columns:1fr}
+    .stats,.stack{grid-template-columns:repeat(2,1fr)}
+    .flow,.detail,.principles,.fit,.ideas{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none;filter:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="grid-bg"></div>
+
+<nav>
+  <a href="#" class="logo">김채연<span class="grad-text">.</span></a>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#why">Why FLO</a></li>
+    <li><a href="#fit">CX Fit</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#skills">Automation</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-label="메뉴 열기">Menu</button>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge reveal"><span class="dot"></span>드림어스컴퍼니 CX팀 · 고객 분석 담당자 인턴 지원</span>
+      <h1 class="reveal d1">
+        데이터에서 문제를 찾고,<br>
+        <span class="typed-line"><span class="grad-text" id="typed">가설로 검증하고,</span><span class="caret"></span></span>
+        개선까지 연결합니다.
+      </h1>
+      <p class="reveal d2">SQL로 801만 건의 이용 기록을 집계해 대시보드를 만들었고, 사용자 피드백을 원인별로 나눠 직접 만든 서비스를 고쳤습니다. 반복되는 점검과 정리는 Claude Code로 자동화합니다.</p>
+      <div class="cta reveal d3">
+        <a class="btn primary" href="#projects">프로젝트 보기 →</a>
+        <a class="btn" href="https://github.com/codus1111" target="_blank">GitHub</a>
+      </div>
+    </div>
+    <div class="terminal reveal d2" aria-label="사용자 피드백을 원인별로 정리하는 예시">
+      <div class="term-bar"><i></i><i></i><i></i><span>~/pension-salary — claude</span></div>
+      <div class="term-body" id="term"></div>
+    </div>
+  </div>
+  <a class="scroll-hint" href="#about"><i></i>SCROLL</a>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>SQL</span><span>DuckDB</span><span>SQLite</span><span>Python</span><span>pandas</span><span>대시보드</span><span>Claude Code</span><span>Gemini API</span><span>MCP</span><span>Microsoft Clarity</span><span>Streamlit</span>
+    <span>SQL</span><span>DuckDB</span><span>SQLite</span><span>Python</span><span>pandas</span><span>대시보드</span><span>Claude Code</span><span>Gemini API</span><span>MCP</span><span>Microsoft Clarity</span><span>Streamlit</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="stats">
+      <div class="card stat reveal"><b><span data-count="801">0</span><small>만 건</small></b><span>SQL로 집계한 이용 기록</span></div>
+      <div class="card stat reveal d1"><b><span data-count="2392">0</span><small>곳</small></b><span>추정치를 실제 공시와 비교한 회사</span></div>
+      <div class="card stat reveal d2"><b><span data-count="4">0</span><small>건</small></b><span>사용성 테스트 피드백 원인 분석·수정</span></div>
+      <div class="card stat reveal d3"><b><span data-count="20">0</span><small>번</small></b><span>직접 플레이·피드백으로 고친 횟수</span></div>
+    </div>
+
+    <div class="about">
+      <div class="reveal">
+        <div class="sec-head" style="margin-bottom:24px"><span class="num">01 — ABOUT</span><h2>“왜 이런 문제가 생겼을까?”를<br><span class="grad-text">숫자로 답합니다</span></h2></div>
+        <p>롯데리아 매장에서 2년 7개월 동안 피크타임과 품절 처리를 겪으며, 불편은 대부분 운영 과정 안에서 생긴다는 걸 배웠습니다. 그 경험으로 게임을 만들었고, 취준생으로서 궁금했던 “이 회사 연봉 괜찮나?”는 공공데이터와 AI 에이전트로 답하는 서비스로 만들었습니다.</p>
+        <p>데이터를 보고 가설을 세우고, SQL로 집계해 확인하고, 결과를 대시보드로 보여줍니다. 사용자 피드백이 오면 원인을 찾아 고치고, 무엇을 고쳤는지 기록합니다.</p>
+      </div>
+      <ul>
+        <li class="card reveal d1"><b>🎯 가설부터 세우는 분석</b>“학기 효과는 사실 날씨 착시 아닐까?”처럼 질문을 먼저 정합니다</li>
+        <li class="card reveal d2"><b>📊 SQL 집계 → 대시보드</b>DuckDB SQL로 집계하고 대시보드 화면까지 직접 만들었습니다</li>
+        <li class="card reveal d3"><b>💬 피드백을 원인별로</b>사용성 테스트 피드백을 “피드백·원인·고친 방법” 표로 정리했습니다</li>
+        <li class="card reveal d4"><b>🤖 반복 업무는 AI로</b>점검·채점·정리를 Claude Code 스킬과 자동 평가로 바꿨습니다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">02 — WHY DREAMUS · FLO</span><h2>FLO 고객의 모든 순간을<br><span class="grad-text">데이터로 이해하고 싶습니다</span></h2>
+      <p class="lead">드림어스는 더 많은 음악이 팬을 만나도록 음악 IP의 생애주기를 설계하고, CX팀은 FLO 고객이 편안하게 서비스를 이용하도록 VOC와 정책을 운영합니다. 저는 그 접점에서 <b>“고객에게 왜 이런 문제가 생겼을까?”</b>를 데이터로 풀고 싶습니다.</p></div>
+    <div class="fit">
+      <div class="card reveal">
+        <span class="jd">관심을 가진 기능 · FLO 빠른 선곡</span>
+        <h3>음악이 팬을 만나는 순간을 보고 싶습니다</h3>
+        <ul>
+          <li>첫 곡만 고르면 비슷한 곡을 이어서 들려주는 <b>‘빠른 선곡’</b>에 눈길이 갔습니다</li>
+          <li>추천곡을 <b>끝까지 듣는지, 다시 재생하는지</b>를 보면 추천이 취향에 얼마나 맞았는지 가늠할 수 있다고 생각했습니다</li>
+        </ul>
+      </div>
+      <div class="card reveal d1">
+        <span class="jd">고객 분석 담당자로서 · VOC · 환불 · 커뮤니티</span>
+        <h3>어떻게 하면 고객이 FLO를 더 잘 이용할까</h3>
+        <ul>
+          <li>고객센터 VOC, 환불 요청, 커뮤니티 반응을 <b>사유별로 나눠</b> 반복되는 원인을 찾고 싶습니다</li>
+          <li>개선한 뒤 같은 불편이 줄었는지 <b>다시 숫자로 확인</b>하는 것까지가 이 일이라고 생각합니다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fit">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">03 — CX FIT</span><h2>CX팀 주요 업무와 <span class="grad-text">제가 해 본 일</span></h2>
+      <p class="lead">공고의 주요 업무 하나하나에 대해, 이미 해 본 일과 직접 확인할 수 있는 링크를 붙였습니다.</p></div>
+    <div class="fit">
+      <div class="card reveal">
+        <span class="jd">주요 업무 ① SQL·AI 툴로 대시보드 시각화</span>
+        <h3>801만 건을 SQL로 집계해 대시보드로</h3>
+        <ul>
+          <li>대전 공영자전거 대여 기록 801만 건, 대여소 1,406곳을 <b>DuckDB SQL</b>로 시간대·대여소별로 집계</li>
+          <li>집계 결과로 <b>대시보드 HTML을 자동 생성</b>하는 스크립트를 만들고, 에이전트 관제 화면도 따로 제작</li>
+          <li>연봉 서비스에서는 SQLite로 회사 데이터를 조회해 Streamlit 화면과 그래프로 제공</li>
+        </ul>
+        <div class="ev"><a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html" target="_blank">타슈 대시보드 ↗</a><a href="https://yeon-salary-agent.streamlit.app" target="_blank">연봉 서비스 ↗</a></div>
+      </div>
+      <div class="card reveal d1">
+        <span class="jd">주요 업무 ② 운영 데이터 관찰 · 가설 수립 · 검증</span>
+        <h3>“진짜 원인이 맞나?”를 숫자로 다시 확인</h3>
+        <ul>
+          <li>가설: “학기 중 수요 증가는 날씨 때문에 부풀려진 것 아닐까?” → 날씨를 통제하자 <b>2.13배 → 1.62배</b>로 줄어 계절 착시를 확인</li>
+          <li>연봉 추정치를 상장사 2,392곳의 실제 공시 급여와 비교해 <b>오차율 14.6% → 11.4%</b>로 보정</li>
+          <li>실패한 실험도 10개 남겨, 무엇이 안 통했는지까지 기록</li>
+        </ul>
+        <div class="ev"><a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme" target="_blank">타슈 분석 과정 ↗</a><a href="https://github.com/codus1111/pension-salary#readme" target="_blank">연봉 검증 과정 ↗</a></div>
+      </div>
+      <div class="card reveal">
+        <span class="jd">주요 업무 ③ AI 툴을 활용한 업무 자동화</span>
+        <h3>매번 하던 점검·채점을 자동으로</h3>
+        <ul>
+          <li>AI 에이전트 답변을 <b>평가 문항 28개로 자동 채점</b>하고, 지어낸 숫자를 잡는 검사를 추가 (27/28 통과)</li>
+          <li>법·약관 점검, 페르소나 분석을 <b>Claude Code 스킬</b>로 만들어 프로젝트마다 재사용</li>
+          <li>👍👎 사용자 피드백을 <b>구글 시트로 자동 수집</b>하는 Apps Script 연결</li>
+        </ul>
+        <div class="ev"><a href="https://github.com/codus1111/codus1111/tree/main/claude-skills" target="_blank">스킬 폴더 ↗</a></div>
+      </div>
+      <div class="card reveal d1">
+        <span class="jd">핵심 목표 · 고객 데이터의 문제를 개선까지</span>
+        <h3>사용자 피드백 → 원인 → 고친 방법</h3>
+        <table class="voc">
+          <tr><th>피드백</th><th>원인</th><th>고친 방법</th></tr>
+          <tr><td>“검색이 한 글자만 된다”</td><td>한글 조합 중 Enter를 누르면 마지막 글자로 다시 검색됨</td><td>글자 조합이 끝난 뒤 한 번만 검색</td></tr>
+          <tr><td>“아래 그래프가 눈에 안 들어온다”</td><td>그래프 3개가 숫자 카드 밑에 작게 몰림</td><td>핵심 그래프를 위로 올리고 ‘읽는 법’ 한 줄 추가</td></tr>
+          <tr><td>“버튼 12개가 어렵다” (게임)</td><td>재입고 버튼이 너무 많음</td><td>자동 재입고로 단순화</td></tr>
+        </table>
+        <div class="ev"><a href="https://github.com/codus1111/pension-salary#readme" target="_blank">사용성 테스트 기록 ↗</a><a href="https://github.com/codus1111/codus1111/blob/main/hamburgi-rush/DEVLOG.md" target="_blank">게임 개발 로그 ↗</a></div>
+      </div>
+    </div>
+
+
+    <div class="ideas-head reveal"><h3>자격 요건 · 우대 사항과 근거</h3><p>공고에 적힌 조건마다 확인할 수 있는 근거를 붙였습니다. 아직 해 보지 않은 것은 그대로 적었습니다.</p></div>
+    <div class="card reveal" style="padding:22px 26px">
+      <table class="voc">
+        <tr><th>공고 조건</th><th>근거</th></tr>
+        <tr><td>2027년 졸업예정</td><td>충북대학교 정보통신공학부, 2027.02 졸업예정</td></tr>
+        <tr><td>SQL로 데이터 추출·기본 분석</td><td>대여 기록 801만 건을 DuckDB SQL로 대여소·시간대별 집계, 회사 데이터는 SQLite로 조회</td></tr>
+        <tr><td>AI 도구로 성과를 만든 경험</td><td>Claude Code로 서비스 3개를 만들어 공개 (연봉 서비스, 분석 대시보드, 게임), ChatGPT로 자료 조사·문서 작성</td></tr>
+        <tr><td>숫자 기반 탐구력, 빠른 피드백·회고·개선 루프</td><td>틀린 가설도 원인까지 기록 (실험 10건), 게임은 이틀 동안 약 20차례 수정</td></tr>
+        <tr><td>우대 · 데이터 시각화 (Tableau, Mixpanel 등)</td><td>대시보드를 직접 만들고 Microsoft Clarity로 사용자 행동 분석. Tableau·Mixpanel은 아직 써 보지 않았습니다</td></tr>
+        <tr><td>우대 · 논리적인 문서와 커뮤니케이션</td><td>프로젝트마다 README에 가설 → 실험 → 결과 → 한계를 정리해 공개</td></tr>
+        <tr><td>우대 · 서비스 기획자 / 비즈니스 데이터 분석가 희망</td><td>데이터 분석과 서비스 기획·운영 커리어를 희망합니다</td></tr>
+      </table>
+    </div>
+
+    <div class="ideas-head reveal"><h3>FLO CX팀에서 해보고 싶은 것</h3><p>FLO 내부 데이터는 아직 본 적이 없어서, 위 경험을 바탕으로 세운 가설 수준의 아이디어입니다.</p></div>
+    <div class="ideas">
+      <div class="card idea reveal"><span class="kind">대시보드</span><h4>VOC·환불 사유 주간 대시보드</h4><p>고객센터 문의, 환불 요청, 커뮤니티 반응을 사유별로 나누고, 주마다 어떤 사유가 늘고 줄었는지 한 화면에서 보기</p><span class="from">← 타슈 SQL 집계 · 대시보드 경험</span></div>
+      <div class="card idea reveal d1"><span class="kind">자동화</span><h4>AI로 문의 사유 1차 분류</h4><p>AI가 사유를 먼저 분류하고, 사람이 검수한 샘플과 비교해 정확도를 숫자로 확인한 뒤 적용</p><span class="from">← 에이전트 자동 채점 경험</span></div>
+      <div class="card idea reveal d2"><span class="kind">개선 추적</span><h4>피드백·원인·개선 기록표</h4><p>반복되는 문의마다 원인과 개선 내용을 남기고, 개선 후 같은 문의가 줄었는지 다시 확인</p><span class="from">← 사용성 테스트 개선 기록 경험</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">04 — PROJECTS</span><h2>Projects</h2></div>
+    <div class="projects">
+
+      <article class="card project reveal">
+        <div class="media">
+          <div class="thumb"><img src="assets/shot-salary-app.png" alt="회사 연봉 AI 서비스 화면"></div>
+          <div class="viz">
+            <h4>연봉 추정 오차율 · 낮을수록 정확 <em>2,392곳 검증</em></h4>
+            <div class="bar"><span>전체 · 1차</span><div class="track"><i class="dim" style="--w:41.7%"></i></div><b>14.6%</b></div>
+            <div class="bar"><span>전체 · 보정</span><div class="track"><i style="--w:32.6%"></i></div><b>11.4%</b></div>
+            <div class="bar"><span>천장 근처 · 1차</span><div class="track"><i class="dim" style="--w:91%"></i></div><b>31.9%</b></div>
+            <div class="bar"><span>천장 근처 · 보정</span><div class="track"><i style="--w:38.6%"></i></div><b>13.5%</b></div>
+            <p class="sub">평균 절대 오차율, 5겹 교차검증, 서비스 적용 모델 기준 · 천장 근처 = 국민연금 보험료 상한에 걸린 회사</p>
+          </div>
+        </div>
+        <div>
+          <div class="meta">DATA · AI AGENT SERVICE</div>
+          <h3>💼 회사 연봉 AI</h3>
+          <p class="desc">국민연금 데이터로 회사 평균 연봉·퇴사율을 추정하고, 실제 공시 급여로 검증해 AI 에이전트로 제공하는 서비스.</p>
+          <div class="detail">
+            <div><b>문제</b>비상장사는 연봉 정보가 거의 없고, 추정치가 얼마나 맞는지 검증한 사례도 드묾</div>
+            <div><b>AI 활용</b>MCP 도구 6개와 에이전트 반복 구조를 직접 구현. 지어낸 숫자를 잡는 채점기로 평가</div>
+            <div><b>결과 · 개선</b>상장사 2,392곳 검증, 오차율 14.6% → 11.4%, 평가 27/28. Clarity 녹화와 사용자 피드백으로 화면 4곳 수정</div>
+          </div>
+          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">SQLite</span><span class="tag">Clarity</span><span class="tag">pandas</span><span class="tag">Streamlit</span><span class="tag">Gemini</span><span class="tag">MCP</span></div>
+          <p class="ai-used"><span>AI가 구현에 사용</span><span class="tag ai-tag">Docker</span><span>실행 환경 고정</span></p>
+          <div class="links"><a href="https://yeon-salary-agent.streamlit.app" target="_blank">서비스 사용하기 ↗</a><a href="https://github.com/codus1111/pension-salary#readme" target="_blank">분석 과정 ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card project reveal">
+        <div class="media">
+          <div class="thumb"><img src="assets/shot-tashu.png" alt="타슈 분석 대시보드 화면"></div>
+          <div class="viz">
+            <h4>날씨·요일별 대여 수요 배수 <em>801만 건</em></h4>
+            <div class="bar"><span>기준</span><div class="track"><i class="dim" style="--w:100%"></i></div><b>1.00</b></div>
+            <div class="bar"><span>주말</span><div class="track"><i style="--w:64%"></i></div><b>0.64</b></div>
+            <div class="bar"><span>비 1mm 이상</span><div class="track"><i style="--w:36%"></i></div><b>0.36</b></div>
+            <div class="bar"><span>5°C 미만</span><div class="track"><i style="--w:32%"></i></div><b>0.32</b></div>
+            <p class="sub">날씨를 통제하면 학기 효과는 2.13배 → 1.62배로 줄어듦 (계절 착시 약 1/4)</p>
+          </div>
+        </div>
+        <div>
+          <div class="meta">DATA ANALYSIS · AI AGENT</div>
+          <h3>🚲 타슈 수급 불균형 분석</h3>
+          <p class="desc">대전 공영자전거 대여 기록으로 대여소가 언제 비고 넘치는지 찾고, 재배치 질의응답 에이전트까지 만든 분석.</p>
+          <div class="detail">
+            <div><b>관찰 · 가설</b>801만 건·대여소 1,406곳을 SQL로 집계. 출근 시간 아파트 단지, 퇴근 시간 연구단지의 반복 불균형 발견</div>
+            <div><b>검증 · 시각화</b>날씨·요일을 통제해 원인을 다시 확인하고, 결과를 대시보드로 자동 생성</div>
+            <div><b>AI 활용</b>집계만 돌려주는 조회 도구로 답하는 에이전트를 만들고 3차에 걸쳐 36문항 평가</div>
+          </div>
+          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">DuckDB</span><span class="tag">numpy</span><span class="tag">xgboost</span><span class="tag">Gemini</span></div>
+          <div class="links"><a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html" target="_blank">대시보드 ↗</a><a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html" target="_blank">에이전트 관제 화면 ↗</a><a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme" target="_blank">분석 과정 ↗</a></div>
+        </div>
+      </article>
+
+      <article class="card project reveal">
+        <div class="media">
+          <div class="thumb"><img src="assets/play-hamburgi.gif" alt="햄부기 러시 플레이 화면"></div>
+          <div class="viz">
+            <h4>개발 로그 · 플레이하고 고친 횟수 <em>20번</em></h4>
+            <div class="vline" data-steps="20" data-hot="18-20"></div>
+            <div class="vlabels"><span>v1 첫 버전</span><span><b class="hot-key"></b>v18~v20 플레이어 피드백 반영</span></div>
+            <p class="sub">v9 전체 랭킹 · v12 코인과 상점 · v15 구글 로그인 · v18~v20 “버튼 12개가 어렵다” → 자동 재입고로 단순화</p>
+          </div>
+        </div>
+        <div>
+          <div class="meta">GAME · AI 협업 개발</div>
+          <h3>🍔 햄부기 러시</h3>
+          <p class="desc">패스트푸드 알바 2년 7개월의 기억으로 기획하고 Claude Code와 함께 만든 도트 피크타임 게임.</p>
+          <div class="detail">
+            <div><b>기획</b>매장·배달 주문이 몰리는 피크타임과 품절 주문 처리를 게임 규칙으로</div>
+            <div><b>AI와 역할 분담</b>기획·판단은 직접, 구현은 Claude Code. 도트 그래픽·칩튠 음악도 코드로</div>
+            <div><b>피드백 반영</b>공개 4시간 동안 10명이 33판, 7명 재플레이. “버튼 12개가 어렵다”는 의견에 자동 재입고로 단순화</div>
+          </div>
+          <div class="tags"><span class="tag">JavaScript</span><span class="tag">Canvas</span><span class="tag">Web Audio</span><span class="tag">Supabase 랭킹</span><span class="tag">Firebase 로그인</span></div>
+          <div class="links"><a href="https://codus1111.github.io/codus1111/hamburgi-rush/" target="_blank">게임 플레이 ↗</a><a href="https://github.com/codus1111/codus1111/blob/main/hamburgi-rush/DEVLOG.md" target="_blank">개발 로그 (v1~v20) ↗</a></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="workflow">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">05 — WORKFLOW</span><h2>문제 정의부터 <span class="grad-text">개선까지</span></h2>
+      <p class="lead">세 프로젝트 모두 이 흐름으로 진행했습니다. 방향과 기준은 제가 정하고, AI는 속도를 냅니다.</p></div>
+    <div class="flow" id="flow">
+      <div class="flow-line"><i></i></div>
+      <div class="card step reveal"><span class="n grad-text">STEP 01</span><h3>관찰 · 문제 정의</h3><p>데이터와 사용자 반응을 보고 “왜 이런 일이 생길까?”를 정함</p></div>
+      <div class="card step reveal d1"><span class="n grad-text">STEP 02</span><h3>가설 세우기</h3><p>확인할 수 있는 형태로 가설을 쓰고, 틀렸을 때의 기준도 정함</p></div>
+      <div class="card step reveal d2"><span class="n grad-text">STEP 03</span><h3>SQL로 검증</h3><p>SQL로 집계하고 정답 데이터와 비교해 숫자로 확인</p></div>
+      <div class="card step reveal d3"><span class="n grad-text">STEP 04</span><h3>시각화 · 공유</h3><p>대시보드와 README로 누구나 결과와 한계를 볼 수 있게 정리</p></div>
+      <div class="card step reveal d4"><span class="n grad-text">STEP 05</span><h3>개선 · 회고</h3><p>피드백과 실패한 실험을 기록하고 다음 버전에 반영</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">06 — AI AUTOMATION</span><h2>반복되는 일은 <span class="grad-text">AI로 자동화</span>합니다</h2>
+      <p class="lead">프로젝트마다 하던 점검과 정리를 Claude Code 스킬과 훅으로 만들어 다음 프로젝트에 재사용합니다.</p></div>
+    <div class="skills">
+      <div class="card skill reveal"><span class="kind">법무 · 컴플라이언스</span><h3>project-legal-guard</h3><p>데이터 프로젝트의 법령·약관을 조사해 <code>COMPLIANCE.md</code>로 정리하고 <code>CLAUDE.md</code>에 연결해, 진행 내내 다시 상기시킵니다.</p><div class="trigger">이 데이터 써도 법적으로 문제없어?</div></div>
+      <div class="card skill reveal d1"><span class="kind">기획 · 리서치</span><h3>persona-analysis</h3><p>프로젝트 설명으로 가상 페르소나 5개를 만들고, 대표 3개를 상세 분석해 리포트(md)와 카드(HTML)로 냅니다.</p><div class="trigger">타깃 고객 페르소나 만들어줘</div></div>
+      <div class="card skill reveal d2"><span class="kind">자동 규칙 · 훅</span><h3>준수 상기·위반 차단 훅</h3><p>세션 시작과 매 입력마다 규칙을 다시 알려주고, 키·데이터 파일 커밋과 스크래핑 도구 사용을 막습니다.</p><div class="trigger">데이터 파일 커밋 시도 → 차단</div></div>
+    </div>
+    <div class="skills-foot reveal"><span>페르소나는 가상이며 실제 조사 데이터가 아닙니다. 법무 스킬은 법률 자문이 아닙니다.</span><a href="https://github.com/codus1111/codus1111/tree/main/claude-skills" target="_blank">스킬 폴더 보기 ↗</a></div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">07 — PRINCIPLES</span><h2>AI와 일하는 원칙</h2></div>
+    <div class="principles">
+      <div class="card principle reveal"><div class="big grad-text">01</div><h3>판단은 내가, 구현은 AI와</h3><p>햄부기 러시 개발 로그에 버전마다 내가 판단한 것과 AI에게 맡긴 것을 나눠 적었습니다.</p></div>
+      <div class="card principle reveal d1"><div class="big grad-text">02</div><h3>정답과 비교해야 믿는다</h3><p>추정 연봉은 DART 공시 급여와, 에이전트 답변은 평가 문항과 비교해 틀린 곳을 찾아 고쳤습니다.</p></div>
+      <div class="card principle reveal d2"><div class="big grad-text">03</div><h3>규칙은 장치로 지킨다</h3><p>직접 만든 Claude Code 스킬로 법·약관을 점검해 <code>COMPLIANCE.md</code>를 만들고, 훅으로 키·데이터 커밋과 스크래핑을 막습니다.</p></div>
+      <div class="card principle reveal d3"><div class="big grad-text">04</div><h3>한계를 숨기지 않는다</h3><p>“못 찾음은 없음이 아니다”, “단순 평균보다 낫다고는 못 한다”처럼 결과의 한계를 함께 적습니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <p class="reveal" style="font-size:12.5px;letter-spacing:.18em;font-weight:700;color:var(--a1);margin:0 0 14px">MAKING ALL MUSIC DREAMS COME ALIVE</p>
+    <h2 class="reveal">FLO 고객의 불편을 데이터에서 찾고,<br><span class="grad-text">개선까지 끝까지</span> 가져가겠습니다.</h2>
+    <p class="reveal d1">cy8265@naver.com · github.com/codus1111</p>
+    <div class="cta reveal d2">
+      <a class="btn primary" href="mailto:cy8265@naver.com">이메일 보내기 →</a>
+      <a class="btn" href="https://github.com/codus1111" target="_blank">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<a class="to-top" id="toTop" href="#" aria-label="맨 위로">↑</a>
+
+<footer>© 2026 김채연 · 드림어스컴퍼니 CX팀 고객 분석 담당자 인턴 지원 포트폴리오<br>모든 프로젝트는 개인 학습용이며, 언급된 기업·기관(대전교통공사·대전광역시 등)과 제휴·후원 관계가 없습니다.<br>햄부기 러시는 특정 패스트푸드 브랜드와 무관합니다. 연봉 추정치는 개인이 아닌 회사 전체 평균입니다.</footer>
+
+<script>
+  /* ====== 수정 가능한 데이터 ====== */
+  const PHRASES = ["가설로 검증하고,", "대시보드로 보여주고,", "AI로 자동화하고,"];
+  const TERMINAL = [
+    ["t-user", "> 사용성 테스트 피드백, 원인별로 나눠줘\n"],
+    ["t-dim",  "  ⎿ Clarity 녹화 + 받은 피드백 읽는 중...\n"],
+    ["t-warn", "  ! \"검색이 한 글자만 된다\"\n"],
+    ["t-ai",   "  ✦ 원인: 한글 조합 중 Enter → 마지막 글자로 재검색\n"],
+    ["t-warn", "  ! \"아래 그래프가 눈에 안 들어온다\"\n"],
+    ["t-ai",   "  ✦ 원인: 그래프 3개가 숫자 카드 밑에 작게 몰림\n"],
+    ["t-ai",   "  ✦ 제안: "], ["t-key","핵심 그래프를 위로, '읽는 법' 한 줄 추가"], ["t-ai","\n\n"],
+    ["t-user", "> 고치고 README에 피드백·원인·고친 방법 표로 남겨줘\n"],
+    ["t-ok",   "  ✓ 화면 4곳 수정\n"],
+    ["t-ok",   "  ✓ README.md 개선 기록 표 업데이트"]
+  ];
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Scroll reveal */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+  }), { threshold: .15 });
+  document.querySelectorAll(".vline").forEach(v => {
+    const n = +v.dataset.steps, [h1, h2 = h1] = v.dataset.hot.split("-").map(Number);
+    for (let k = 1; k <= n; k++) { const i = document.createElement("i"); if (k >= h1 && k <= h2) i.className = "hot"; i.style.transitionDelay = (k * 55) + "ms"; v.appendChild(i); }
+  });
+  document.querySelectorAll(".reveal, #flow, .viz").forEach(el => io.observe(el));
+
+  /* Mobile menu */
+  const navEl = document.querySelector("nav"), menuBtn = document.getElementById("menuBtn");
+  const closeMenu = () => { navEl.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); menuBtn.textContent = "Menu"; };
+  menuBtn.addEventListener("click", () => { const o = navEl.classList.toggle("open"); menuBtn.setAttribute("aria-expanded", String(o)); menuBtn.textContent = o ? "Close" : "Menu"; });
+  navEl.querySelectorAll("ul a").forEach(a => a.addEventListener("click", closeMenu));
+
+  /* Counters */
+  const co = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, end = +el.dataset.count, t0 = performance.now(), dur = 1600;
+    const fmt = n => n.toLocaleString("ko-KR");
+    const tick = t => { const p = Math.min((t - t0) / dur, 1); el.textContent = fmt(Math.round(end * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(tick); };
+    reduce ? (el.textContent = fmt(end)) : requestAnimationFrame(tick);
+    co.unobserve(el);
+  }), { threshold: .6 });
+  document.querySelectorAll("[data-count]").forEach(el => co.observe(el));
+
+  /* Typing headline */
+  (function () {
+    const el = document.getElementById("typed");
+    if (reduce) return;
+    let i = 0, j = PHRASES[0].length, del = true;
+    const loop = () => {
+      el.textContent = PHRASES[i].slice(0, j);
+      if (del) { j--; if (j < 0) { del = false; i = (i + 1) % PHRASES.length; j = 0; } setTimeout(loop, 45); }
+      else { j++; if (j > PHRASES[i].length) { del = true; j = PHRASES[i].length; setTimeout(loop, 1800); return; } setTimeout(loop, 95); }
+    };
+    setTimeout(loop, 2200);
+  })();
+
+  /* Terminal typing */
+  (function () {
+    const term = document.getElementById("term");
+    const render = () => { term.innerHTML = ""; TERMINAL.forEach(([c, t]) => { const s = document.createElement("span"); s.className = c; s.textContent = t; term.appendChild(s); }); };
+    if (reduce) return render();
+    let k = 0;
+    const run = () => {
+      if (k >= TERMINAL.length) { setTimeout(() => { term.innerHTML = ""; k = 0; run(); }, 4000); return; }
+      const [cls, txt] = TERMINAL[k++];
+      const s = document.createElement("span"); s.className = cls; term.appendChild(s);
+      const speed = cls === "t-user" ? 28 : 8;
+      let c = 0;
+      const type = () => { s.textContent = txt.slice(0, ++c); if (c < txt.length) setTimeout(type, speed); else setTimeout(run, cls === "t-user" ? 500 : 180); };
+      type();
+    };
+    setTimeout(run, 900);
+  })();
+
+  /* Scroll progress + active nav */
+  const bar = document.getElementById("progress");
+  const links = [...document.querySelectorAll("nav ul a")];
+  const toTop = document.getElementById("toTop");
+  addEventListener("scroll", () => {
+    const h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + "%";
+    let cur = "";
+    document.querySelectorAll("section[id]").forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .4) cur = s.id; });
+    links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + cur));
+    toTop.classList.toggle("show", h.scrollTop > innerHeight * .8);
+  }, { passive: true });
+
+  /* Smooth anchor scroll */
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+    const id = a.getAttribute("href");
+    if (id === "#") { e.preventDefault(); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); return; }
+    e.preventDefault(); document.querySelector(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+  }));
+</script>
+</body>
+</html>

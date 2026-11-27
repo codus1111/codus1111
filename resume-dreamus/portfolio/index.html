@@ -297,8 +297,8 @@
 
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>SQL</span><span>DuckDB</span><span>SQLite</span><span>Python</span><span>pandas</span><span>대시보드</span><span>Claude Code</span><span>Gemini API</span><span>MCP</span><span>Microsoft Clarity</span><span>Streamlit</span>
-    <span>SQL</span><span>DuckDB</span><span>SQLite</span><span>Python</span><span>pandas</span><span>대시보드</span><span>Claude Code</span><span>Gemini API</span><span>MCP</span><span>Microsoft Clarity</span><span>Streamlit</span>
+    <span>SQL</span><span>대시보드</span><span>VOC 분석</span><span>가설 검증</span><span>Microsoft Clarity</span><span>사용자 피드백</span><span>Claude Code</span><span>ChatGPT</span><span>AI 업무 자동화</span><span>Python</span>
+    <span>SQL</span><span>대시보드</span><span>VOC 분석</span><span>가설 검증</span><span>Microsoft Clarity</span><span>사용자 피드백</span><span>Claude Code</span><span>ChatGPT</span><span>AI 업무 자동화</span><span>Python</span>
   </div>
 </div>
 
@@ -448,11 +448,10 @@
           <p class="desc">국민연금 데이터로 회사 평균 연봉·퇴사율을 추정하고, 실제 공시 급여로 검증해 AI 에이전트로 제공하는 서비스.</p>
           <div class="detail">
             <div><b>문제</b>비상장사는 연봉 정보가 거의 없고, 추정치가 얼마나 맞는지 검증한 사례도 드묾</div>
-            <div><b>AI 활용</b>MCP 도구 6개와 에이전트 반복 구조를 직접 구현. 지어낸 숫자를 잡는 채점기로 평가</div>
+            <div><b>AI 활용</b>Claude Code로 AI 에이전트를 만들고, 답변을 평가 문항 28개로 자동 채점. 지어낸 숫자를 잡는 검사 추가</div>
             <div><b>결과 · 개선</b>상장사 2,392곳 검증, 오차율 14.6% → 11.4%, 평가 27/28. Clarity 녹화와 사용자 피드백으로 화면 4곳 수정</div>
           </div>
-          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">SQLite</span><span class="tag">Clarity</span><span class="tag">pandas</span><span class="tag">Streamlit</span><span class="tag">Gemini</span><span class="tag">MCP</span></div>
-          <p class="ai-used"><span>AI가 구현에 사용</span><span class="tag ai-tag">Docker</span><span>실행 환경 고정</span></p>
+          <div class="tags"><span class="tag">SQL (SQLite)</span><span class="tag">Microsoft Clarity</span><span class="tag">사용자 피드백</span><span class="tag">Streamlit</span><span class="tag">Gemini API</span></div>
           <div class="links"><a href="https://yeon-salary-agent.streamlit.app" target="_blank">서비스 사용하기 ↗</a><a href="https://github.com/codus1111/pension-salary#readme" target="_blank">분석 과정 ↗</a></div>
         </div>
       </article>
@@ -478,7 +477,7 @@
             <div><b>검증 · 시각화</b>날씨·요일을 통제해 원인을 다시 확인하고, 결과를 대시보드로 자동 생성</div>
             <div><b>AI 활용</b>집계만 돌려주는 조회 도구로 답하는 에이전트를 만들고 3차에 걸쳐 36문항 평가</div>
           </div>
-          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">DuckDB</span><span class="tag">numpy</span><span class="tag">xgboost</span><span class="tag">Gemini</span></div>
+          <div class="tags"><span class="tag">SQL (DuckDB)</span><span class="tag">대시보드</span><span class="tag">가설 검증</span><span class="tag">Python</span><span class="tag">Gemini API</span></div>
           <div class="links"><a href="https://codus1111.github.io/codus1111/tashu-rebalancing/reports/dashboard.html" target="_blank">대시보드 ↗</a><a href="https://codus1111.github.io/codus1111/tashu-rebalancing/agent-dashboard/index.html" target="_blank">에이전트 관제 화면 ↗</a><a href="https://github.com/codus1111/codus1111/tree/main/tashu-rebalancing#readme" target="_blank">분석 과정 ↗</a></div>
         </div>
       </article>
@@ -496,13 +495,13 @@
         <div>
           <div class="meta">GAME · AI 협업 개발</div>
           <h3>🍔 햄부기 러시</h3>
-          <p class="desc">패스트푸드 알바 2년 7개월의 기억으로 기획하고 Claude Code와 함께 만든 도트 피크타임 게임.</p>
+          <p class="desc">롯데리아에서 2년 7개월 일한 경험으로 기획하고 Claude Code와 함께 만든 도트 피크타임 게임.</p>
           <div class="detail">
             <div><b>기획</b>매장·배달 주문이 몰리는 피크타임과 품절 주문 처리를 게임 규칙으로</div>
             <div><b>AI와 역할 분담</b>기획·판단은 직접, 구현은 Claude Code. 도트 그래픽·칩튠 음악도 코드로</div>
             <div><b>피드백 반영</b>공개 4시간 동안 10명이 33판, 7명 재플레이. “버튼 12개가 어렵다”는 의견에 자동 재입고로 단순화</div>
           </div>
-          <div class="tags"><span class="tag">JavaScript</span><span class="tag">Canvas</span><span class="tag">Web Audio</span><span class="tag">Supabase 랭킹</span><span class="tag">Firebase 로그인</span></div>
+          <div class="tags"><span class="tag">Claude Code</span><span class="tag">Microsoft Clarity</span><span class="tag">사용자 피드백</span><span class="tag">Supabase 랭킹</span><span class="tag">GitHub Pages</span></div>
           <div class="links"><a href="https://codus1111.github.io/codus1111/hamburgi-rush/" target="_blank">게임 플레이 ↗</a><a href="https://github.com/codus1111/codus1111/blob/main/hamburgi-rush/DEVLOG.md" target="_blank">개발 로그 (v1~v20) ↗</a></div>
         </div>
       </article>
